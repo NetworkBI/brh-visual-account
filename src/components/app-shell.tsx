@@ -12,7 +12,7 @@ const NAV = [
   { to: "/historico", label: "Histórico", icon: History },
 ] as const;
 
-export function AppShell() {
+export function AppShell({ children }: { children: React.ReactNode }) {
   const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -74,7 +74,7 @@ export function AppShell() {
         </nav>
       </header>
       <main className="mx-auto max-w-7xl px-4 py-8">
-        <Outlet />
+        {children ?? <Outlet />}
       </main>
     </div>
   );

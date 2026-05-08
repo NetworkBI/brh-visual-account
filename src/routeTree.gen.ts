@@ -10,12 +10,33 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as HistoricoRouteImport } from './routes/historico'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as CondominiosRouteImport } from './routes/condominios'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PrestacoesIndexRouteImport } from './routes/prestacoes.index'
+import { Route as PrestacoesNovaRouteImport } from './routes/prestacoes.nova'
+import { Route as PrestacoesIdEditarRouteImport } from './routes/prestacoes.$id.editar'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoricoRoute = HistoricoRouteImport.update({
+  id: '/historico',
+  path: '/historico',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CondominiosRoute = CondominiosRouteImport.update({
+  id: '/condominios',
+  path: '/condominios',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CadastroRoute = CadastroRouteImport.update({
@@ -28,35 +49,102 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrestacoesIndexRoute = PrestacoesIndexRouteImport.update({
+  id: '/prestacoes/',
+  path: '/prestacoes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrestacoesNovaRoute = PrestacoesNovaRouteImport.update({
+  id: '/prestacoes/nova',
+  path: '/prestacoes/nova',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrestacoesIdEditarRoute = PrestacoesIdEditarRouteImport.update({
+  id: '/prestacoes/$id/editar',
+  path: '/prestacoes/$id/editar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
+  '/condominios': typeof CondominiosRoute
+  '/dashboard': typeof DashboardRoute
+  '/historico': typeof HistoricoRoute
   '/login': typeof LoginRoute
+  '/prestacoes/nova': typeof PrestacoesNovaRoute
+  '/prestacoes/': typeof PrestacoesIndexRoute
+  '/prestacoes/$id/editar': typeof PrestacoesIdEditarRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
+  '/condominios': typeof CondominiosRoute
+  '/dashboard': typeof DashboardRoute
+  '/historico': typeof HistoricoRoute
   '/login': typeof LoginRoute
+  '/prestacoes/nova': typeof PrestacoesNovaRoute
+  '/prestacoes': typeof PrestacoesIndexRoute
+  '/prestacoes/$id/editar': typeof PrestacoesIdEditarRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
+  '/condominios': typeof CondominiosRoute
+  '/dashboard': typeof DashboardRoute
+  '/historico': typeof HistoricoRoute
   '/login': typeof LoginRoute
+  '/prestacoes/nova': typeof PrestacoesNovaRoute
+  '/prestacoes/': typeof PrestacoesIndexRoute
+  '/prestacoes/$id/editar': typeof PrestacoesIdEditarRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cadastro' | '/login'
+  fullPaths:
+    | '/'
+    | '/cadastro'
+    | '/condominios'
+    | '/dashboard'
+    | '/historico'
+    | '/login'
+    | '/prestacoes/nova'
+    | '/prestacoes/'
+    | '/prestacoes/$id/editar'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cadastro' | '/login'
-  id: '__root__' | '/' | '/cadastro' | '/login'
+  to:
+    | '/'
+    | '/cadastro'
+    | '/condominios'
+    | '/dashboard'
+    | '/historico'
+    | '/login'
+    | '/prestacoes/nova'
+    | '/prestacoes'
+    | '/prestacoes/$id/editar'
+  id:
+    | '__root__'
+    | '/'
+    | '/cadastro'
+    | '/condominios'
+    | '/dashboard'
+    | '/historico'
+    | '/login'
+    | '/prestacoes/nova'
+    | '/prestacoes/'
+    | '/prestacoes/$id/editar'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CadastroRoute: typeof CadastroRoute
+  CondominiosRoute: typeof CondominiosRoute
+  DashboardRoute: typeof DashboardRoute
+  HistoricoRoute: typeof HistoricoRoute
   LoginRoute: typeof LoginRoute
+  PrestacoesNovaRoute: typeof PrestacoesNovaRoute
+  PrestacoesIndexRoute: typeof PrestacoesIndexRoute
+  PrestacoesIdEditarRoute: typeof PrestacoesIdEditarRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -66,6 +154,27 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/historico': {
+      id: '/historico'
+      path: '/historico'
+      fullPath: '/historico'
+      preLoaderRoute: typeof HistoricoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/condominios': {
+      id: '/condominios'
+      path: '/condominios'
+      fullPath: '/condominios'
+      preLoaderRoute: typeof CondominiosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cadastro': {
@@ -82,13 +191,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/prestacoes/': {
+      id: '/prestacoes/'
+      path: '/prestacoes'
+      fullPath: '/prestacoes/'
+      preLoaderRoute: typeof PrestacoesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prestacoes/nova': {
+      id: '/prestacoes/nova'
+      path: '/prestacoes/nova'
+      fullPath: '/prestacoes/nova'
+      preLoaderRoute: typeof PrestacoesNovaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prestacoes/$id/editar': {
+      id: '/prestacoes/$id/editar'
+      path: '/prestacoes/$id/editar'
+      fullPath: '/prestacoes/$id/editar'
+      preLoaderRoute: typeof PrestacoesIdEditarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CadastroRoute: CadastroRoute,
+  CondominiosRoute: CondominiosRoute,
+  DashboardRoute: DashboardRoute,
+  HistoricoRoute: HistoricoRoute,
   LoginRoute: LoginRoute,
+  PrestacoesNovaRoute: PrestacoesNovaRoute,
+  PrestacoesIndexRoute: PrestacoesIndexRoute,
+  PrestacoesIdEditarRoute: PrestacoesIdEditarRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
