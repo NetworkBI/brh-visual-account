@@ -14,7 +14,136 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      condominios: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          nome: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          nome: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          nome?: string
+        }
+        Relationships: []
+      }
+      prestacao_eventos: {
+        Row: {
+          data_ocorrido: string
+          id: string
+          ocorrido: Database["public"]["Enums"]["evento_tipo"]
+          prestacao_id: string
+          usuario: string
+        }
+        Insert: {
+          data_ocorrido?: string
+          id?: string
+          ocorrido: Database["public"]["Enums"]["evento_tipo"]
+          prestacao_id: string
+          usuario: string
+        }
+        Update: {
+          data_ocorrido?: string
+          id?: string
+          ocorrido?: Database["public"]["Enums"]["evento_tipo"]
+          prestacao_id?: string
+          usuario?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prestacao_eventos_prestacao_id_fkey"
+            columns: ["prestacao_id"]
+            isOneToOne: false
+            referencedRelation: "prestacoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prestacoes: {
+        Row: {
+          condominio_id: string
+          created_at: string
+          data_evento: string
+          id: string
+          mes: string
+          observacoes: string | null
+          processo: Database["public"]["Enums"]["processo_tipo"]
+          updated_at: string
+          usuario: string
+          usuario_responsavel: string
+        }
+        Insert: {
+          condominio_id: string
+          created_at?: string
+          data_evento: string
+          id?: string
+          mes: string
+          observacoes?: string | null
+          processo: Database["public"]["Enums"]["processo_tipo"]
+          updated_at?: string
+          usuario: string
+          usuario_responsavel: string
+        }
+        Update: {
+          condominio_id?: string
+          created_at?: string
+          data_evento?: string
+          id?: string
+          mes?: string
+          observacoes?: string | null
+          processo?: Database["public"]["Enums"]["processo_tipo"]
+          updated_at?: string
+          usuario?: string
+          usuario_responsavel?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prestacoes_condominio_id_fkey"
+            columns: ["condominio_id"]
+            isOneToOne: false
+            referencedRelation: "condominios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          data_nascimento: string
+          email: string
+          id: string
+          matricula: string | null
+          primeiro_nome: string
+          segundo_nome: string
+        }
+        Insert: {
+          created_at?: string
+          data_nascimento: string
+          email: string
+          id: string
+          matricula?: string | null
+          primeiro_nome: string
+          segundo_nome: string
+        }
+        Update: {
+          created_at?: string
+          data_nascimento?: string
+          email?: string
+          id?: string
+          matricula?: string | null
+          primeiro_nome?: string
+          segundo_nome?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +152,12 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      evento_tipo: "criação" | "edição"
+      processo_tipo:
+        | "Doc/Recebimento"
+        | "Lançamento"
+        | "Montagem"
+        | "Data Fechamento"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +284,14 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      evento_tipo: ["criação", "edição"],
+      processo_tipo: [
+        "Doc/Recebimento",
+        "Lançamento",
+        "Montagem",
+        "Data Fechamento",
+      ],
+    },
   },
 } as const
