@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { User, KeyRound, ArrowRight } from "lucide-react";
 import logo from "@/assets/logo.png";
-import bg from "@/assets/hunter-bg.jpg";
 
 export const Route = createFileRoute("/login")({
   head: () => ({ meta: [{ title: "Login — BR Hunter Prestação de Contas" }] }),
@@ -42,10 +41,9 @@ function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden">
-      <img src={bg} alt="" className="absolute inset-0 h-full w-full object-cover scale-105" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(0,0,0,0.55)_0%,_rgba(0,0,0,0.85)_100%)]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-secondary/60 via-secondary/40 to-primary/50 mix-blend-multiply" />
+    <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden bg-secondary">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_hsl(0_0%_30%)_0%,_hsl(0_0%_12%)_70%,_hsl(0_0%_6%)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,_transparent_0%,_rgba(200,16,46,0.08)_100%)]" />
       <div className="relative z-10 w-full max-w-md overflow-hidden rounded-2xl bg-card/95 shadow-2xl backdrop-blur-sm">
         <div className="bg-secondary px-8 py-5 text-center">
           <h2 className="font-display text-xl font-bold text-secondary-foreground tracking-wide">
