@@ -42,9 +42,10 @@ function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center p-4">
-      <img src={bg} alt="" className="absolute inset-0 h-full w-full object-cover" />
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-background/20 to-secondary/40" />
+    <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden">
+      <img src={bg} alt="" className="absolute inset-0 h-full w-full object-cover scale-105" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(0,0,0,0.55)_0%,_rgba(0,0,0,0.85)_100%)]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-secondary/60 via-secondary/40 to-primary/50 mix-blend-multiply" />
       <div className="relative z-10 w-full max-w-md overflow-hidden rounded-2xl bg-card/95 shadow-2xl backdrop-blur-sm">
         <div className="bg-secondary px-8 py-5 text-center">
           <h2 className="font-display text-xl font-bold text-secondary-foreground tracking-wide">
