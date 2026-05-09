@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RedefinirSenhaRouteImport } from './routes/redefinir-senha'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HistoricoRouteImport } from './routes/historico'
 import { Route as EsqueciSenhaRouteImport } from './routes/esqueci-senha'
@@ -20,6 +21,11 @@ import { Route as PrestacoesIndexRouteImport } from './routes/prestacoes.index'
 import { Route as PrestacoesNovaRouteImport } from './routes/prestacoes.nova'
 import { Route as PrestacoesIdEditarRouteImport } from './routes/prestacoes.$id.editar'
 
+const RedefinirSenhaRoute = RedefinirSenhaRouteImport.update({
+  id: '/redefinir-senha',
+  path: '/redefinir-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/esqueci-senha': typeof EsqueciSenhaRoute
   '/historico': typeof HistoricoRoute
   '/login': typeof LoginRoute
+  '/redefinir-senha': typeof RedefinirSenhaRoute
   '/prestacoes/nova': typeof PrestacoesNovaRoute
   '/prestacoes/': typeof PrestacoesIndexRoute
   '/prestacoes/$id/editar': typeof PrestacoesIdEditarRoute
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/esqueci-senha': typeof EsqueciSenhaRoute
   '/historico': typeof HistoricoRoute
   '/login': typeof LoginRoute
+  '/redefinir-senha': typeof RedefinirSenhaRoute
   '/prestacoes/nova': typeof PrestacoesNovaRoute
   '/prestacoes': typeof PrestacoesIndexRoute
   '/prestacoes/$id/editar': typeof PrestacoesIdEditarRoute
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/esqueci-senha': typeof EsqueciSenhaRoute
   '/historico': typeof HistoricoRoute
   '/login': typeof LoginRoute
+  '/redefinir-senha': typeof RedefinirSenhaRoute
   '/prestacoes/nova': typeof PrestacoesNovaRoute
   '/prestacoes/': typeof PrestacoesIndexRoute
   '/prestacoes/$id/editar': typeof PrestacoesIdEditarRoute
@@ -118,6 +127,7 @@ export interface FileRouteTypes {
     | '/esqueci-senha'
     | '/historico'
     | '/login'
+    | '/redefinir-senha'
     | '/prestacoes/nova'
     | '/prestacoes/'
     | '/prestacoes/$id/editar'
@@ -130,6 +140,7 @@ export interface FileRouteTypes {
     | '/esqueci-senha'
     | '/historico'
     | '/login'
+    | '/redefinir-senha'
     | '/prestacoes/nova'
     | '/prestacoes'
     | '/prestacoes/$id/editar'
@@ -142,6 +153,7 @@ export interface FileRouteTypes {
     | '/esqueci-senha'
     | '/historico'
     | '/login'
+    | '/redefinir-senha'
     | '/prestacoes/nova'
     | '/prestacoes/'
     | '/prestacoes/$id/editar'
@@ -155,6 +167,7 @@ export interface RootRouteChildren {
   EsqueciSenhaRoute: typeof EsqueciSenhaRoute
   HistoricoRoute: typeof HistoricoRoute
   LoginRoute: typeof LoginRoute
+  RedefinirSenhaRoute: typeof RedefinirSenhaRoute
   PrestacoesNovaRoute: typeof PrestacoesNovaRoute
   PrestacoesIndexRoute: typeof PrestacoesIndexRoute
   PrestacoesIdEditarRoute: typeof PrestacoesIdEditarRoute
@@ -162,6 +175,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/redefinir-senha': {
+      id: '/redefinir-senha'
+      path: '/redefinir-senha'
+      fullPath: '/redefinir-senha'
+      preLoaderRoute: typeof RedefinirSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -243,6 +263,7 @@ const rootRouteChildren: RootRouteChildren = {
   EsqueciSenhaRoute: EsqueciSenhaRoute,
   HistoricoRoute: HistoricoRoute,
   LoginRoute: LoginRoute,
+  RedefinirSenhaRoute: RedefinirSenhaRoute,
   PrestacoesNovaRoute: PrestacoesNovaRoute,
   PrestacoesIndexRoute: PrestacoesIndexRoute,
   PrestacoesIdEditarRoute: PrestacoesIdEditarRoute,
