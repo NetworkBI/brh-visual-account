@@ -7,8 +7,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { User, KeyRound, ArrowRight } from "lucide-react";
 import logo from "@/assets/logo.png";
 import bg from "@/assets/hunter-bg.jpg";
 
@@ -42,49 +42,74 @@ function LoginPage() {
   };
 
   return (
-    <div className="grid min-h-screen md:grid-cols-2">
-      <div className="relative hidden md:block">
-        <img src={bg} alt="" className="absolute inset-0 h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-primary/40 to-secondary/70" />
-        <div className="relative z-10 flex h-full flex-col justify-end p-12 text-primary-foreground">
-          <h2 className="font-display text-4xl font-bold leading-tight">
-            Qualidade em<br /><span className="text-white">prestação de contas</span>
+    <div className="relative min-h-screen flex items-center justify-center p-4">
+      <img src={bg} alt="" className="absolute inset-0 h-full w-full object-cover" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-background/20 to-secondary/40" />
+      <div className="relative z-10 w-full max-w-md overflow-hidden rounded-2xl bg-card/95 shadow-2xl backdrop-blur-sm">
+        <div className="bg-secondary px-8 py-5 text-center">
+          <h2 className="font-display text-xl font-bold text-secondary-foreground tracking-wide">
+            Controle Operacional
           </h2>
-          <p className="mt-3 max-w-sm text-sm text-white/80">
-            Sistema interno do Grupo BR Hunter para o controle e auditoria das prestações de contas dos condomínios.
-          </p>
         </div>
-      </div>
-      <div className="flex items-center justify-center bg-background p-6">
-        <div className="w-full max-w-sm">
-          <div className="mb-8 flex flex-col items-center text-center">
-            <img src={logo} alt="Grupo BR Hunter" className="h-20 w-auto" />
-            <h1 className="mt-4 font-display text-2xl font-bold">Acessar sistema</h1>
-            <p className="mt-1 text-sm text-muted-foreground">Informe seus dados para continuar</p>
+        <div className="px-8 py-8">
+          <div className="mb-6 flex flex-col items-center text-center">
+            <img src={logo} alt="Grupo BR Hunter" className="h-16 w-auto" />
+            <h1 className="mt-4 font-display text-xl font-bold text-secondary">Faça o seu login</h1>
           </div>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="nome" className="text-xs font-bold uppercase tracking-wider">NOME</Label>
-              <Input id="nome" type="email" autoComplete="email" placeholder="seu.email@brhunter.com.br" {...register("nome")} />
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div className="space-y-1.5">
+              <p className="text-center text-xs text-muted-foreground">Seu usuário ou e-mail</p>
+              <div className="flex items-stretch overflow-hidden rounded-md border bg-muted/30 focus-within:ring-1 focus-within:ring-ring">
+                <div className="flex w-11 items-center justify-center bg-secondary text-secondary-foreground">
+                  <User className="h-4 w-4" />
+                </div>
+                <Input
+                  id="nome"
+                  type="email"
+                  autoComplete="email"
+                  aria-label="NOME"
+                  className="flex-1 rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0"
+                  {...register("nome")}
+                />
+              </div>
               {errors.nome && <p className="text-xs text-destructive">{errors.nome.message}</p>}
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="senha" className="text-xs font-bold uppercase tracking-wider">SENHA</Label>
-                <Link to="/esqueci-senha" className="text-xs font-medium text-primary hover:underline">
-                  Esqueci minha senha
-                </Link>
+            <div className="space-y-1.5">
+              <p className="text-center text-xs text-muted-foreground">Sua Senha</p>
+              <div className="flex items-stretch overflow-hidden rounded-md border bg-muted/30 focus-within:ring-1 focus-within:ring-ring">
+                <div className="flex w-11 items-center justify-center bg-secondary text-secondary-foreground">
+                  <KeyRound className="h-4 w-4" />
+                </div>
+                <Input
+                  id="senha"
+                  type="password"
+                  autoComplete="current-password"
+                  aria-label="SENHA"
+                  className="flex-1 rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0"
+                  {...register("senha")}
+                />
               </div>
-              <Input id="senha" type="password" autoComplete="current-password" {...register("senha")} />
               {errors.senha && <p className="text-xs text-destructive">{errors.senha.message}</p>}
             </div>
-            <Button type="submit" disabled={submitting} className="w-full">
-              {submitting ? "Entrando..." : "Entrar"}
-            </Button>
-            <p className="text-center text-sm text-muted-foreground">
-              Não tem cadastro?{" "}
-              <Link to="/cadastro" className="font-semibold text-primary hover:underline">Cadastre-se</Link>
-            </p>
+            <div className="flex justify-center pt-2">
+              <Button
+                type="submit"
+                disabled={submitting}
+                className="rounded-full bg-secondary px-8 hover:bg-secondary/90 text-secondary-foreground"
+              >
+                {submitting ? "Entrando..." : "Entrar"}
+                <ArrowRight className="ml-1 h-4 w-4" />
+              </Button>
+            </div>
+            <div className="flex flex-col items-center gap-1 pt-2 text-xs">
+              <Link to="/esqueci-senha" className="font-medium text-primary hover:underline">
+                Esqueci minha senha
+              </Link>
+              <p className="text-muted-foreground">
+                Não tem cadastro?{" "}
+                <Link to="/cadastro" className="font-semibold text-primary hover:underline">Cadastre-se</Link>
+              </p>
+            </div>
           </form>
         </div>
       </div>
