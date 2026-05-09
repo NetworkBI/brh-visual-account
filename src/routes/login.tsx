@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { User, KeyRound, ArrowRight } from "lucide-react";
 import logo from "@/assets/logo.png";
-import bg from "@/assets/hunter-bg.jpg";
 
 export const Route = createFileRoute("/login")({
   head: () => ({ meta: [{ title: "Login — BR Hunter Prestação de Contas" }] }),
