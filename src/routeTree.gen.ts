@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HistoricoRouteImport } from './routes/historico'
+import { Route as EsqueciSenhaRouteImport } from './routes/esqueci-senha'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CondominiosRouteImport } from './routes/condominios'
 import { Route as CadastroRouteImport } from './routes/cadastro'
@@ -27,6 +28,11 @@ const LoginRoute = LoginRouteImport.update({
 const HistoricoRoute = HistoricoRouteImport.update({
   id: '/historico',
   path: '/historico',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EsqueciSenhaRoute = EsqueciSenhaRouteImport.update({
+  id: '/esqueci-senha',
+  path: '/esqueci-senha',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -70,6 +76,7 @@ export interface FileRoutesByFullPath {
   '/cadastro': typeof CadastroRoute
   '/condominios': typeof CondominiosRoute
   '/dashboard': typeof DashboardRoute
+  '/esqueci-senha': typeof EsqueciSenhaRoute
   '/historico': typeof HistoricoRoute
   '/login': typeof LoginRoute
   '/prestacoes/nova': typeof PrestacoesNovaRoute
@@ -81,6 +88,7 @@ export interface FileRoutesByTo {
   '/cadastro': typeof CadastroRoute
   '/condominios': typeof CondominiosRoute
   '/dashboard': typeof DashboardRoute
+  '/esqueci-senha': typeof EsqueciSenhaRoute
   '/historico': typeof HistoricoRoute
   '/login': typeof LoginRoute
   '/prestacoes/nova': typeof PrestacoesNovaRoute
@@ -93,6 +101,7 @@ export interface FileRoutesById {
   '/cadastro': typeof CadastroRoute
   '/condominios': typeof CondominiosRoute
   '/dashboard': typeof DashboardRoute
+  '/esqueci-senha': typeof EsqueciSenhaRoute
   '/historico': typeof HistoricoRoute
   '/login': typeof LoginRoute
   '/prestacoes/nova': typeof PrestacoesNovaRoute
@@ -106,6 +115,7 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/condominios'
     | '/dashboard'
+    | '/esqueci-senha'
     | '/historico'
     | '/login'
     | '/prestacoes/nova'
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/condominios'
     | '/dashboard'
+    | '/esqueci-senha'
     | '/historico'
     | '/login'
     | '/prestacoes/nova'
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/condominios'
     | '/dashboard'
+    | '/esqueci-senha'
     | '/historico'
     | '/login'
     | '/prestacoes/nova'
@@ -140,6 +152,7 @@ export interface RootRouteChildren {
   CadastroRoute: typeof CadastroRoute
   CondominiosRoute: typeof CondominiosRoute
   DashboardRoute: typeof DashboardRoute
+  EsqueciSenhaRoute: typeof EsqueciSenhaRoute
   HistoricoRoute: typeof HistoricoRoute
   LoginRoute: typeof LoginRoute
   PrestacoesNovaRoute: typeof PrestacoesNovaRoute
@@ -161,6 +174,13 @@ declare module '@tanstack/react-router' {
       path: '/historico'
       fullPath: '/historico'
       preLoaderRoute: typeof HistoricoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/esqueci-senha': {
+      id: '/esqueci-senha'
+      path: '/esqueci-senha'
+      fullPath: '/esqueci-senha'
+      preLoaderRoute: typeof EsqueciSenhaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -220,6 +240,7 @@ const rootRouteChildren: RootRouteChildren = {
   CadastroRoute: CadastroRoute,
   CondominiosRoute: CondominiosRoute,
   DashboardRoute: DashboardRoute,
+  EsqueciSenhaRoute: EsqueciSenhaRoute,
   HistoricoRoute: HistoricoRoute,
   LoginRoute: LoginRoute,
   PrestacoesNovaRoute: PrestacoesNovaRoute,
