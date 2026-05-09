@@ -69,7 +69,12 @@ function LoginPage() {
               {errors.nome && <p className="text-xs text-destructive">{errors.nome.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="senha" className="text-xs font-bold uppercase tracking-wider">SENHA</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="senha" className="text-xs font-bold uppercase tracking-wider">SENHA</Label>
+                <Link to="/esqueci-senha" className="text-xs font-medium text-primary hover:underline">
+                  Esqueci minha senha
+                </Link>
+              </div>
               <Input id="senha" type="password" autoComplete="current-password" {...register("senha")} />
               {errors.senha && <p className="text-xs text-destructive">{errors.senha.message}</p>}
             </div>
