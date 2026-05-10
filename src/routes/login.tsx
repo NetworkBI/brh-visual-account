@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { User, KeyRound, ArrowRight } from "lucide-react";
 import logo from "@/assets/logo.png";
+import loginBg from "@/assets/login-bg.jpg";
 
 export const Route = createFileRoute("/login")({
   head: () => ({ meta: [{ title: "Login — BR Hunter Prestação de Contas" }] }),
@@ -41,9 +42,13 @@ function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden bg-secondary">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_hsl(0_0%_30%)_0%,_hsl(0_0%_12%)_70%,_hsl(0_0%_6%)_100%)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,_transparent_0%,_rgba(200,16,46,0.08)_100%)]" />
+    <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden">
+      <img
+        src={loginBg}
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 h-full w-full object-cover"
+      />
       <div className="relative z-10 w-full max-w-md overflow-hidden rounded-2xl bg-card/95 shadow-2xl backdrop-blur-sm">
         <div className="bg-secondary px-8 py-5 text-center">
           <h2 className="font-display text-xl font-bold text-secondary-foreground tracking-wide">
