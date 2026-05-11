@@ -49,22 +49,23 @@ function LoginPage() {
         aria-hidden="true"
         className="absolute inset-0 h-full w-full object-cover"
       />
-      <div className="relative z-10 w-full max-w-md overflow-hidden rounded-2xl bg-card/95 shadow-2xl backdrop-blur-sm">
-        <div className="bg-secondary px-8 py-5 text-center">
-          <h2 className="font-display text-xl font-bold text-secondary-foreground tracking-wide">
+      <div className="absolute inset-0 bg-gradient-to-b from-sky-900/20 via-transparent to-sky-950/40" aria-hidden="true" />
+      <div className="relative z-10 w-full max-w-md overflow-hidden rounded-2xl bg-white/85 shadow-[0_20px_60px_-15px_rgba(30,64,175,0.45)] ring-1 ring-white/60 backdrop-blur-xl">
+        <div className="bg-gradient-to-r from-sky-700 via-sky-600 to-sky-500 px-8 py-5 text-center">
+          <h2 className="font-display text-xl font-bold text-white tracking-wide drop-shadow-sm">
             Controle Operacional
           </h2>
         </div>
         <div className="px-8 py-8">
           <div className="mb-6 flex flex-col items-center text-center">
             <img src={logo} alt="Grupo BR Hunter" className="h-16 w-auto" />
-            <h1 className="mt-4 font-display text-xl font-bold text-secondary">Faça o seu login</h1>
+            <h1 className="mt-4 font-display text-xl font-bold text-sky-800">Faça o seu login</h1>
           </div>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-1.5">
               <p className="text-center text-xs text-muted-foreground">Seu usuário ou e-mail</p>
-              <div className="flex items-stretch overflow-hidden rounded-md border bg-muted/30 focus-within:ring-1 focus-within:ring-ring">
-                <div className="flex w-11 items-center justify-center bg-secondary text-secondary-foreground">
+              <div className="flex items-stretch overflow-hidden rounded-md border border-sky-200 bg-sky-50/40 focus-within:ring-2 focus-within:ring-sky-400">
+                <div className="flex w-11 items-center justify-center bg-gradient-to-b from-sky-600 to-sky-700 text-white">
                   <User className="h-4 w-4" />
                 </div>
                 <Input
@@ -80,8 +81,8 @@ function LoginPage() {
             </div>
             <div className="space-y-1.5">
               <p className="text-center text-xs text-muted-foreground">Sua Senha</p>
-              <div className="flex items-stretch overflow-hidden rounded-md border bg-muted/30 focus-within:ring-1 focus-within:ring-ring">
-                <div className="flex w-11 items-center justify-center bg-secondary text-secondary-foreground">
+              <div className="flex items-stretch overflow-hidden rounded-md border border-sky-200 bg-sky-50/40 focus-within:ring-2 focus-within:ring-sky-400">
+                <div className="flex w-11 items-center justify-center bg-gradient-to-b from-sky-600 to-sky-700 text-white">
                   <KeyRound className="h-4 w-4" />
                 </div>
                 <Input
@@ -99,7 +100,7 @@ function LoginPage() {
               <Button
                 type="submit"
                 disabled={submitting}
-                className="rounded-full bg-secondary px-8 hover:bg-secondary/90 text-secondary-foreground"
+                className="rounded-full bg-gradient-to-r from-sky-600 to-sky-700 px-8 text-white shadow-lg shadow-sky-700/30 hover:from-sky-700 hover:to-sky-800"
               >
                 {submitting ? "Entrando..." : "Entrar"}
                 <ArrowRight className="ml-1 h-4 w-4" />
