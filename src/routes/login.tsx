@@ -50,6 +50,11 @@ function LoginPage() {
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="relative z-10 w-full max-w-md overflow-hidden rounded-2xl bg-card/95 shadow-2xl backdrop-blur-sm">
+        <div className="bg-secondary px-8 py-5 text-center">
+          <h2 className="font-display text-xl font-bold text-secondary-foreground tracking-wide">
+            Controle Operacional
+          </h2>
+        </div>
         <div className="px-8 py-8">
           <div className="mb-6 flex flex-col items-center text-center">
             <img src={logo} alt="Grupo BR Hunter" className="h-16 w-auto" />
