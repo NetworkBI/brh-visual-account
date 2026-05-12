@@ -46,8 +46,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Controle de Prestação de Contas — Grupo BR Hunter" },
+      { title: "Grupo BR Hunter - Controle de Prestação de Contas" },
       { name: "description", content: "Sistema de controle de prestação de contas do Grupo BR Hunter." },
+      { property: "og:title", content: "Grupo BR Hunter - Controle de Prestação de Contas" },
+      { name: "twitter:title", content: "Grupo BR Hunter - Controle de Prestação de Contas" },
+      { property: "og:description", content: "Sistema de controle de prestação de contas do Grupo BR Hunter." },
+      { name: "twitter:description", content: "Sistema de controle de prestação de contas do Grupo BR Hunter." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/OGXYxj50vcaj23Sv3hVz2dvQIdK2/social-images/social-1778620682850-Captura_de_tela_12-5-2026_181710_www.instagram.com.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/OGXYxj50vcaj23Sv3hVz2dvQIdK2/social-images/social-1778620682850-Captura_de_tela_12-5-2026_181710_www.instagram.com.webp" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:type", content: "website" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
