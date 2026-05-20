@@ -9,11 +9,13 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UsuariosRouteImport } from './routes/usuarios'
 import { Route as RedefinirSenhaRouteImport } from './routes/redefinir-senha'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HistoricoRouteImport } from './routes/historico'
 import { Route as EsqueciSenhaRouteImport } from './routes/esqueci-senha'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as CondominiosRouteImport } from './routes/condominios'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as IndexRouteImport } from './routes/index'
@@ -21,6 +23,11 @@ import { Route as PrestacoesIndexRouteImport } from './routes/prestacoes.index'
 import { Route as PrestacoesNovaRouteImport } from './routes/prestacoes.nova'
 import { Route as PrestacoesIdEditarRouteImport } from './routes/prestacoes.$id.editar'
 
+const UsuariosRoute = UsuariosRouteImport.update({
+  id: '/usuarios',
+  path: '/usuarios',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RedefinirSenhaRoute = RedefinirSenhaRouteImport.update({
   id: '/redefinir-senha',
   path: '/redefinir-senha',
@@ -44,6 +51,11 @@ const EsqueciSenhaRoute = EsqueciSenhaRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CondominiosRoute = CondominiosRouteImport.update({
@@ -81,11 +93,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
   '/condominios': typeof CondominiosRoute
+  '/configuracoes': typeof ConfiguracoesRoute
   '/dashboard': typeof DashboardRoute
   '/esqueci-senha': typeof EsqueciSenhaRoute
   '/historico': typeof HistoricoRoute
   '/login': typeof LoginRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
+  '/usuarios': typeof UsuariosRoute
   '/prestacoes/nova': typeof PrestacoesNovaRoute
   '/prestacoes/': typeof PrestacoesIndexRoute
   '/prestacoes/$id/editar': typeof PrestacoesIdEditarRoute
@@ -94,11 +108,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
   '/condominios': typeof CondominiosRoute
+  '/configuracoes': typeof ConfiguracoesRoute
   '/dashboard': typeof DashboardRoute
   '/esqueci-senha': typeof EsqueciSenhaRoute
   '/historico': typeof HistoricoRoute
   '/login': typeof LoginRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
+  '/usuarios': typeof UsuariosRoute
   '/prestacoes/nova': typeof PrestacoesNovaRoute
   '/prestacoes': typeof PrestacoesIndexRoute
   '/prestacoes/$id/editar': typeof PrestacoesIdEditarRoute
@@ -108,11 +124,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
   '/condominios': typeof CondominiosRoute
+  '/configuracoes': typeof ConfiguracoesRoute
   '/dashboard': typeof DashboardRoute
   '/esqueci-senha': typeof EsqueciSenhaRoute
   '/historico': typeof HistoricoRoute
   '/login': typeof LoginRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
+  '/usuarios': typeof UsuariosRoute
   '/prestacoes/nova': typeof PrestacoesNovaRoute
   '/prestacoes/': typeof PrestacoesIndexRoute
   '/prestacoes/$id/editar': typeof PrestacoesIdEditarRoute
@@ -123,11 +141,13 @@ export interface FileRouteTypes {
     | '/'
     | '/cadastro'
     | '/condominios'
+    | '/configuracoes'
     | '/dashboard'
     | '/esqueci-senha'
     | '/historico'
     | '/login'
     | '/redefinir-senha'
+    | '/usuarios'
     | '/prestacoes/nova'
     | '/prestacoes/'
     | '/prestacoes/$id/editar'
@@ -136,11 +156,13 @@ export interface FileRouteTypes {
     | '/'
     | '/cadastro'
     | '/condominios'
+    | '/configuracoes'
     | '/dashboard'
     | '/esqueci-senha'
     | '/historico'
     | '/login'
     | '/redefinir-senha'
+    | '/usuarios'
     | '/prestacoes/nova'
     | '/prestacoes'
     | '/prestacoes/$id/editar'
@@ -149,11 +171,13 @@ export interface FileRouteTypes {
     | '/'
     | '/cadastro'
     | '/condominios'
+    | '/configuracoes'
     | '/dashboard'
     | '/esqueci-senha'
     | '/historico'
     | '/login'
     | '/redefinir-senha'
+    | '/usuarios'
     | '/prestacoes/nova'
     | '/prestacoes/'
     | '/prestacoes/$id/editar'
@@ -163,11 +187,13 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CadastroRoute: typeof CadastroRoute
   CondominiosRoute: typeof CondominiosRoute
+  ConfiguracoesRoute: typeof ConfiguracoesRoute
   DashboardRoute: typeof DashboardRoute
   EsqueciSenhaRoute: typeof EsqueciSenhaRoute
   HistoricoRoute: typeof HistoricoRoute
   LoginRoute: typeof LoginRoute
   RedefinirSenhaRoute: typeof RedefinirSenhaRoute
+  UsuariosRoute: typeof UsuariosRoute
   PrestacoesNovaRoute: typeof PrestacoesNovaRoute
   PrestacoesIndexRoute: typeof PrestacoesIndexRoute
   PrestacoesIdEditarRoute: typeof PrestacoesIdEditarRoute
@@ -175,6 +201,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/usuarios': {
+      id: '/usuarios'
+      path: '/usuarios'
+      fullPath: '/usuarios'
+      preLoaderRoute: typeof UsuariosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/redefinir-senha': {
       id: '/redefinir-senha'
       path: '/redefinir-senha'
@@ -208,6 +241,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/configuracoes': {
+      id: '/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/configuracoes'
+      preLoaderRoute: typeof ConfiguracoesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/condominios': {
@@ -259,11 +299,13 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CadastroRoute: CadastroRoute,
   CondominiosRoute: CondominiosRoute,
+  ConfiguracoesRoute: ConfiguracoesRoute,
   DashboardRoute: DashboardRoute,
   EsqueciSenhaRoute: EsqueciSenhaRoute,
   HistoricoRoute: HistoricoRoute,
   LoginRoute: LoginRoute,
   RedefinirSenhaRoute: RedefinirSenhaRoute,
+  UsuariosRoute: UsuariosRoute,
   PrestacoesNovaRoute: PrestacoesNovaRoute,
   PrestacoesIndexRoute: PrestacoesIndexRoute,
   PrestacoesIdEditarRoute: PrestacoesIdEditarRoute,
