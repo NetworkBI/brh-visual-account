@@ -1,37 +1,79 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, useMemo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { AppShell } from "@/components/app-shell";
 import { usePrestacoes, useCondominios } from "@/lib/queries";
+import { useAuth, useUserRole } from "@/lib/auth";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Building2, CalendarClock, ListChecks } from "lucide-react";
-import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { FileText, Building2, CalendarClock, ListChecks, Pencil, EyeOff, Eye, Plus, Sparkles } from "lucide-react";
 import { PROCESSOS } from "@/lib/schemas";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — BR Hunter" }] }),
-  component: () => <AppShell><Dashboard /></AppShell>,
+  head: () => ({ meta: [{ title: "Prestação de Contas — BR Hunter" }] }),
+  component: () => <AppShell><Pagina /></AppShell>,
 });
 
-function Dashboard() {
+// Meta esperada por processo por ciclo do mês (ajuste conforme regra de negócio).
+// Usada para calcular a % de conclusão na barra horizontal de cada processo.
+const META_POR_PROCESSO = 10;
+
+function Pagina() {
+  const qc = useQueryClient();
+  const { user } = useAuth();
+  const { data: role } = useUserRole();
   const { data: prestacoes = [], isLoading } = usePrestacoes();
   const { data: condominios = [] } = useCondominios();
 
   const mesAtual = new Date().toISOString().slice(0, 7);
-  const doMes = prestacoes.filter((p) => (p.mes || "").startsWith(mesAtual));
-  const porProcesso = PROCESSOS.map((proc) => ({
-    proc,
-    count: prestacoes.filter((p) => p.processo === proc).length,
-  }));
+  const doMes = useMemo(() => prestacoes.filter((p) => (p.mes || "").startsWith(mesAtual) && (p as any).ativo !== false), [prestacoes, mesAtual]);
+
+  const porProcesso = PROCESSOS.map((proc) => {
+    const count = doMes.filter((p) => p.processo === proc).length;
+    const pct = Math.min(100, Math.round((count / META_POR_PROCESSO) * 100));
+    return { proc, count, pct };
+  });
+
+  // Top 5 últimos lançamentos do ciclo do mês (com animação ao surgir)
+  const top5 = useMemo(
+    () => [...doMes].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 5),
+    [doMes],
+  );
+
+  const inativar = async (id: string, ativo: boolean) => {
+    const { error } = await supabase.from("prestacoes").update({ ativo: !ativo } as any).eq("id", id);
+    if (error) { toast.error(error.message); return; }
+    toast.success(ativo ? "Lançamento inativado" : "Lançamento reativado");
+    qc.invalidateQueries({ queryKey: ["prestacoes"] });
+  };
+
+  // ----- Filtros da lista (substitui aba antiga "Prestações") -----
+  const [q, setQ] = useState("");
+  const [proc, setProc] = useState<string>("todos");
+  const [mostrarInativos, setMostrarInativos] = useState(false);
+  const filtered = useMemo(() => {
+    const ql = q.toLowerCase();
+    return prestacoes.filter((p) =>
+      (mostrarInativos || (p as any).ativo !== false) &&
+      (proc === "todos" || p.processo === proc) &&
+      (!ql || p.condominios?.nome?.toLowerCase().includes(ql) || p.mes?.toLowerCase().includes(ql)),
+    );
+  }, [prestacoes, q, proc, mostrarInativos]);
 
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="font-display text-3xl font-bold">Dashboard</h1>
-          <p className="text-sm text-muted-foreground">Visão geral das prestações de contas</p>
+          <h1 className="font-display text-3xl font-bold">Prestação de Contas</h1>
+          <p className="text-sm text-muted-foreground">Painel operacional · ciclo {new Date().toLocaleDateString("pt-BR", { month: "long", year: "numeric" })}</p>
         </div>
-        <Button asChild>
-          <Link to="/prestacoes/nova">+ Nova prestação</Link>
+        <Button asChild className="shadow-elegant">
+          <Link to="/prestacoes/nova"><Plus className="mr-1 h-4 w-4" /> Novo Lançamento</Link>
         </Button>
       </div>
 
@@ -39,40 +81,67 @@ function Dashboard() {
         <StatCard icon={FileText} label="Total prestações" value={prestacoes.length} />
         <StatCard icon={CalendarClock} label="Mês atual" value={doMes.length} />
         <StatCard icon={Building2} label="Condomínios" value={condominios.length} />
-        <StatCard icon={ListChecks} label="Em fechamento" value={prestacoes.filter(p => p.processo === "Data Fechamento").length} />
+        <StatCard icon={ListChecks} label="Em fechamento" value={doMes.filter((p) => p.processo === "Data Fechamento").length} />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
+        {/* Por processo — barras com tooltip */}
         <Card>
-          <CardHeader><CardTitle>Por processo</CardTitle></CardHeader>
-          <CardContent className="space-y-2">
-            {porProcesso.map((r) => (
-              <div key={r.proc} className="flex items-center gap-3">
-                <span className="w-44 text-sm">{r.proc}</span>
-                <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
-                  <div className="h-full bg-primary" style={{ width: `${prestacoes.length ? (r.count / prestacoes.length) * 100 : 0}%` }} />
+          <CardHeader>
+            <CardTitle>Por processo</CardTitle>
+            <p className="text-xs text-muted-foreground">% concluído do ciclo · meta de {META_POR_PROCESSO} por processo</p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <TooltipProvider delayDuration={100}>
+              {porProcesso.map((r) => (
+                <div key={r.proc} className="flex items-center gap-3">
+                  <span className="w-40 shrink-0 text-sm font-medium">{r.proc}</span>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="group relative h-3 flex-1 cursor-help overflow-hidden rounded-full bg-muted ring-1 ring-border">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-primary via-primary-glow to-primary transition-[width] duration-700 ease-out"
+                          style={{ width: `${r.pct}%` }}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                      <p className="text-xs"><b>{r.pct}%</b> realizado · {r.count} de {META_POR_PROCESSO} esperados</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <span className="w-12 text-right text-sm font-semibold tabular-nums">{r.pct}%</span>
                 </div>
-                <span className="w-8 text-right text-sm font-semibold">{r.count}</span>
-              </div>
-            ))}
+              ))}
+            </TooltipProvider>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader><CardTitle>Últimas prestações</CardTitle></CardHeader>
+
+        {/* Últimas prestações — Top 5 animado */}
+        <Card className="overflow-hidden">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Sparkles className="h-4 w-4 text-primary" /> Últimas Prestações</CardTitle>
+            <p className="text-xs text-muted-foreground">Top 5 do ciclo atual</p>
+          </CardHeader>
           <CardContent>
             {isLoading ? (
               <p className="text-sm text-muted-foreground">Carregando…</p>
-            ) : prestacoes.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Nenhuma prestação cadastrada ainda.</p>
+            ) : top5.length === 0 ? (
+              <p className="text-sm text-muted-foreground">Sem lançamentos neste ciclo.</p>
             ) : (
-              <ul className="divide-y">
-                {prestacoes.slice(0, 6).map((p) => (
-                  <li key={p.id} className="flex items-center justify-between py-2 text-sm">
-                    <div>
-                      <p className="font-medium">{p.condominios?.nome ?? "—"}</p>
-                      <p className="text-xs text-muted-foreground">{p.mes} · {p.processo}</p>
+              <ul className="space-y-2">
+                {top5.map((p, i) => (
+                  <li
+                    key={p.id}
+                    className="animate-fade-in rounded-lg border border-border/60 bg-gradient-to-r from-card to-muted/30 p-3 transition hover:border-primary/40 hover:shadow-md"
+                    style={{ animationDelay: `${i * 80}ms`, animationFillMode: "backwards" }}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-medium">{p.condominios?.nome ?? "—"}</p>
+                        <p className="text-xs text-muted-foreground">{p.mes} · {p.processo}</p>
+                      </div>
+                      <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">#{i + 1}</span>
                     </div>
-                    <span className="text-xs text-muted-foreground">{new Date(p.data_evento).toLocaleDateString("pt-BR")}</span>
                   </li>
                 ))}
               </ul>
@@ -80,15 +149,91 @@ function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Lista completa (mesclada da antiga aba Prestações) */}
+      <Card>
+        <CardHeader className="flex flex-row flex-wrap items-end justify-between gap-3 space-y-0">
+          <div>
+            <CardTitle>Todos os lançamentos</CardTitle>
+            <p className="text-xs text-muted-foreground">Busque, filtre e edite as prestações cadastradas</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Input placeholder="Buscar condomínio ou mês…" value={q} onChange={(e) => setQ(e.target.value)} className="max-w-xs" />
+            <Select value={proc} onValueChange={setProc}>
+              <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos os processos</SelectItem>
+                {PROCESSOS.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Button variant="outline" size="sm" onClick={() => setMostrarInativos((v) => !v)}>
+              {mostrarInativos ? <Eye className="mr-1 h-3.5 w-3.5" /> : <EyeOff className="mr-1 h-3.5 w-3.5" />}
+              {mostrarInativos ? "Ocultar inativos" : "Mostrar inativos"}
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground">
+                <tr>
+                  <th className="px-4 py-3 text-left">Mês</th>
+                  <th className="px-4 py-3 text-left">Condomínio</th>
+                  <th className="px-4 py-3 text-left">Processo</th>
+                  <th className="px-4 py-3 text-left">Data Evento</th>
+                  <th className="px-4 py-3 text-left">Status</th>
+                  <th className="px-4 py-3" />
+                </tr>
+              </thead>
+              <tbody className="divide-y">
+                {isLoading ? (
+                  <tr><td colSpan={6} className="p-6 text-center text-muted-foreground">Carregando…</td></tr>
+                ) : filtered.length === 0 ? (
+                  <tr><td colSpan={6} className="p-6 text-center text-muted-foreground">Nenhum lançamento encontrado.</td></tr>
+                ) : (
+                  filtered.map((p) => {
+                    const ativo = (p as any).ativo !== false;
+                    return (
+                      <tr key={p.id} className={`hover:bg-muted/30 ${!ativo ? "opacity-50" : ""}`}>
+                        <td className="px-4 py-3 font-medium">{p.mes}</td>
+                        <td className="px-4 py-3">{p.condominios?.nome ?? "—"}</td>
+                        <td className="px-4 py-3"><span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">{p.processo}</span></td>
+                        <td className="px-4 py-3">{new Date(p.data_evento).toLocaleDateString("pt-BR")}</td>
+                        <td className="px-4 py-3">
+                          <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${ativo ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400" : "bg-muted text-muted-foreground"}`}>
+                            {ativo ? "Ativo" : "Inativo"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <div className="flex justify-end gap-1">
+                            <Button asChild variant="ghost" size="sm">
+                              <Link to="/prestacoes/$id/editar" params={{ id: p.id }}><Pencil className="h-4 w-4" /></Link>
+                            </Button>
+                            {(role === "padrao" || role === "adm" || p.usuario === user?.id) && (
+                              <Button variant="ghost" size="sm" onClick={() => inativar(p.id, ativo)} title={ativo ? "Inativar" : "Reativar"}>
+                                {ativo ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              </Button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
 
 function StatCard({ icon: Icon, label, value }: { icon: any; label: string; value: number }) {
   return (
-    <Card>
+    <Card className="overflow-hidden">
       <CardContent className="flex items-center gap-4 p-5">
-        <div className="rounded-lg bg-primary/10 p-2.5 text-primary">
+        <div className="rounded-lg bg-gradient-to-br from-primary/15 to-primary/5 p-2.5 text-primary ring-1 ring-primary/20">
           <Icon className="h-5 w-5" />
         </div>
         <div>

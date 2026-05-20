@@ -51,7 +51,7 @@ export function PrestacaoForm({ initial, mode }: Props) {
     setSubmitting(false);
     if (error) { toast.error(error.message); return; }
     toast.success(mode === "criar" ? "Prestação criada" : "Prestação atualizada");
-    navigate({ to: "/prestacoes" });
+    navigate({ to: "/dashboard" });
   };
 
   return (
@@ -104,7 +104,7 @@ export function PrestacaoForm({ initial, mode }: Props) {
         </div>
         <div className="sm:col-span-2 flex gap-3">
           <Button type="submit" disabled={submitting}>{submitting ? "Salvando…" : "Salvar"}</Button>
-          <Button type="button" variant="outline" onClick={() => navigate({ to: "/prestacoes" })}>Cancelar</Button>
+          <Button type="button" variant="outline" onClick={() => navigate({ to: "/dashboard" })}>Cancelar</Button>
         </div>
       </form>
     </Card>
