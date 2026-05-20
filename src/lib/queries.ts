@@ -1,8 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+const STALE = 60_000;
+
 export function useCondominios() {
   return useQuery({
+    staleTime: STALE,
     queryKey: ["condominios"],
     queryFn: async () => {
       const { data, error } = await supabase.from("condominios").select("*").order("nome");
@@ -14,6 +17,7 @@ export function useCondominios() {
 
 export function useProfiles() {
   return useQuery({
+    staleTime: STALE,
     queryKey: ["profiles"],
     queryFn: async () => {
       const { data, error } = await supabase.from("profiles").select("id, primeiro_nome, segundo_nome, email");
@@ -25,6 +29,7 @@ export function useProfiles() {
 
 export function usePrestacoes() {
   return useQuery({
+    staleTime: STALE,
     queryKey: ["prestacoes"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -39,6 +44,7 @@ export function usePrestacoes() {
 
 export function useEventos() {
   return useQuery({
+    staleTime: STALE,
     queryKey: ["eventos"],
     queryFn: async () => {
       const { data, error } = await supabase
