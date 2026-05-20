@@ -33,10 +33,9 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r border-sidebar-border shadow-[8px_0_24px_-12px_rgba(0,0,0,0.35)]">
       <SidebarHeader className="border-b border-sidebar-border bg-gradient-to-b from-[#7a1418] to-[#3a0a0c] p-4">
         <Link to="/home" className="flex items-center gap-3">
-          <img src={logo} alt="BR Hunter" className="h-9 w-9 shrink-0 rounded-md bg-white/95 p-1 shadow-md" />
+          <img src={logo} alt="BR Hunter" className="h-9 w-9 shrink-0 rounded-md bg-white/95 p-1 shadow-md object-contain" />
           <div className="flex flex-col leading-tight group-data-[collapsible=icon]:hidden">
             <span className="font-display text-sm font-bold text-white tracking-wide">BR HUNTER</span>
-            <span className="text-[10px] uppercase tracking-wider text-white/70">Prestação de Contas</span>
           </div>
         </Link>
       </SidebarHeader>
