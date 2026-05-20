@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { FileText, Building2, CalendarClock, ListChecks, Pencil, EyeOff, Eye, Plus, Sparkles } from "lucide-react";
+import { FileText, Building2, CalendarClock, ListChecks, Pencil, EyeOff, Eye, Plus, Sparkles, History } from "lucide-react";
 import { PROCESSOS } from "@/lib/schemas";
 import { toast } from "sonner";
 
