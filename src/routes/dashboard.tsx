@@ -72,16 +72,18 @@ function Pagina() {
           <h1 className="font-display text-3xl font-bold">Prestação de Contas</h1>
           <p className="text-sm text-muted-foreground">Painel operacional · ciclo {new Date().toLocaleDateString("pt-BR", { month: "long", year: "numeric" })}</p>
         </div>
-        <Button asChild className="shadow-elegant">
-          <Link to="/prestacoes/nova"><Plus className="mr-1 h-4 w-4" /> Novo Lançamento</Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button asChild variant="outline">
+            <Link to="/historico"><History className="mr-1 h-4 w-4" /> Histórico</Link>
+          </Button>
+          <Button asChild className="shadow-elegant">
+            <Link to="/prestacoes/nova"><Plus className="mr-1 h-4 w-4" /> Novo Lançamento</Link>
+          </Button>
+        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard icon={FileText} label="Total prestações" value={prestacoes.length} />
-        <StatCard icon={CalendarClock} label="Mês atual" value={doMes.length} />
-        <StatCard icon={Building2} label="Condomínios" value={condominios.length} />
-        <StatCard icon={ListChecks} label="Em fechamento" value={doMes.filter((p) => p.processo === "Data Fechamento").length} />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
