@@ -1,5 +1,5 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { FileText, Users, Building2, Settings, LogOut, Moon, Sun } from "lucide-react";
+import { Home, FileText, Users, Building2, Settings, LogOut, Moon, Sun } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -17,6 +17,7 @@ import { useTheme } from "@/lib/theme";
 import { Button } from "@/components/ui/button";
 
 const NAV = [
+  { to: "/home", label: "Início", icon: Home },
   { to: "/dashboard", label: "Prestação de Contas", icon: FileText },
   { to: "/usuarios", label: "Usuário", icon: Users },
   { to: "/condominios", label: "Condomínios", icon: Building2 },
@@ -31,7 +32,7 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border shadow-[8px_0_24px_-12px_rgba(0,0,0,0.35)]">
       <SidebarHeader className="border-b border-sidebar-border bg-gradient-to-b from-[#7a1418] to-[#3a0a0c] p-4">
-        <Link to="/dashboard" className="flex items-center gap-3">
+        <Link to="/home" className="flex items-center gap-3">
           <img src={logo} alt="BR Hunter" className="h-9 w-9 shrink-0 rounded-md bg-white/95 p-1 shadow-md" />
           <div className="flex flex-col leading-tight group-data-[collapsible=icon]:hidden">
             <span className="font-display text-sm font-bold text-white tracking-wide">BR HUNTER</span>
