@@ -1,6 +1,9 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+
+export type AppRole = "adm" | "padrao";
 
 interface AuthCtx {
   user: User | null;
@@ -44,3 +47,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 }
 
 export const useAuth = () => useContext(Ctx);
+
+export function useUserRole() {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["user-role", user?.id],
+    enabled: !!user,
+    queryFn: async (): Promise<AppRole> => {
+      const { data, error } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user!.id)
+        .order("role", { ascending: true });
+      if (error) throw error;
+      if (data?.some((r) => r.role === "adm")) return "adm";
+      return "padrao";
+    },
+  });
+}
