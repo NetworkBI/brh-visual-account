@@ -91,8 +91,8 @@ export function PrestacaoForm({ initial, mode }: Props) {
           <Select value={watch("usuario_responsavel")} onValueChange={(v) => setValue("usuario_responsavel", v, { shouldValidate: true })}>
             <SelectTrigger><SelectValue placeholder="Selecione…" /></SelectTrigger>
             <SelectContent>
-              {profiles.map((p) => (
-                <SelectItem key={p.id} value={p.id}>{p.primeiro_nome} {p.segundo_nome} ({p.email})</SelectItem>
+              {profiles.filter((p) => p.id).map((p) => (
+                <SelectItem key={p.id!} value={p.id!}>{p.primeiro_nome} {p.segundo_nome} ({p.email})</SelectItem>
               ))}
             </SelectContent>
           </Select>

@@ -19,7 +19,6 @@ import { Route as EsqueciSenhaRouteImport } from './routes/esqueci-senha'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as CondominiosRouteImport } from './routes/condominios'
-import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PrestacoesIndexRouteImport } from './routes/prestacoes.index'
 import { Route as PrestacoesNovaRouteImport } from './routes/prestacoes.nova'
@@ -75,11 +74,6 @@ const CondominiosRoute = CondominiosRouteImport.update({
   path: '/condominios',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CadastroRoute = CadastroRouteImport.update({
-  id: '/cadastro',
-  path: '/cadastro',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -103,7 +97,6 @@ const PrestacoesIdEditarRoute = PrestacoesIdEditarRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/cadastro': typeof CadastroRoute
   '/condominios': typeof CondominiosRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/dashboard': typeof DashboardRoute
@@ -120,7 +113,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/cadastro': typeof CadastroRoute
   '/condominios': typeof CondominiosRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/dashboard': typeof DashboardRoute
@@ -138,7 +130,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/cadastro': typeof CadastroRoute
   '/condominios': typeof CondominiosRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/dashboard': typeof DashboardRoute
@@ -157,7 +148,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/cadastro'
     | '/condominios'
     | '/configuracoes'
     | '/dashboard'
@@ -174,7 +164,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/cadastro'
     | '/condominios'
     | '/configuracoes'
     | '/dashboard'
@@ -191,7 +180,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/cadastro'
     | '/condominios'
     | '/configuracoes'
     | '/dashboard'
@@ -209,7 +197,6 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CadastroRoute: typeof CadastroRoute
   CondominiosRoute: typeof CondominiosRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
   DashboardRoute: typeof DashboardRoute
@@ -297,13 +284,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CondominiosRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/cadastro': {
-      id: '/cadastro'
-      path: '/cadastro'
-      fullPath: '/cadastro'
-      preLoaderRoute: typeof CadastroRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -337,7 +317,6 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CadastroRoute: CadastroRoute,
   CondominiosRoute: CondominiosRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
   DashboardRoute: DashboardRoute,
