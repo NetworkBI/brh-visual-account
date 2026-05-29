@@ -9,8 +9,14 @@ import { Moon, Sun, History, Bell, Download, Database, Palette } from "lucide-re
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { pageMeta } from "@/lib/seo";
+
 export const Route = createFileRoute("/configuracoes")({
-  head: () => ({ meta: [{ title: "Configurações — BR Hunter" }] }),
+  head: () => pageMeta({
+    path: "/configuracoes",
+    title: "Configurações — Grupo BR Hunter",
+    description: "Ajuste preferências do sistema, tema, notificações e exporte dados do Grupo BR Hunter.",
+  }),
   component: () => <AppShell><Pagina /></AppShell>,
 });
 

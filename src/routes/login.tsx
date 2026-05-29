@@ -11,9 +11,14 @@ import { toast } from "sonner";
 import { User, KeyRound, ArrowRight } from "lucide-react";
 import logo from "@/assets/logo.png";
 import loginBg from "@/assets/login-bg.jpg";
+import { pageMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({ meta: [{ title: "Login — BR Hunter Prestação de Contas" }] }),
+  head: () => pageMeta({
+    path: "/login",
+    title: "Entrar — Grupo BR Hunter",
+    description: "Acesse o sistema de controle de prestação de contas do Grupo BR Hunter com seu e-mail e senha.",
+  }),
   component: LoginPage,
 });
 

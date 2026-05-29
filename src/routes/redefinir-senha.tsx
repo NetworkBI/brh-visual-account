@@ -23,8 +23,14 @@ const schema = z
   });
 type FormInput = z.infer<typeof schema>;
 
+import { pageMeta } from "@/lib/seo";
+
 export const Route = createFileRoute("/redefinir-senha")({
-  head: () => ({ meta: [{ title: "Redefinir senha — BR Hunter" }] }),
+  head: () => pageMeta({
+    path: "/redefinir-senha",
+    title: "Definir nova senha — Grupo BR Hunter",
+    description: "Defina uma nova senha de acesso ao sistema de prestação de contas do Grupo BR Hunter.",
+  }),
   component: RedefinirSenhaPage,
 });
 
