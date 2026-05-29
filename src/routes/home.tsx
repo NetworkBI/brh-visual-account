@@ -56,7 +56,7 @@ function HomePage() {
           </div>
           <div className="relative justify-self-center lg:justify-self-end">
             <div aria-hidden="true" className="absolute inset-0 -m-6 rounded-full bg-gradient-radial from-[#c0282e]/30 via-transparent to-transparent blur-2xl" />
-            <img src={mascot} alt="Mascote BR Hunter" className="relative h-56 w-56 object-contain drop-shadow-[0_20px_35px_rgba(192,40,46,0.45)] sm:h-64 sm:w-64" />
+            <img src={mascot} alt="Mascote BR Hunter" width={1024} height={1024} className="relative h-56 w-56 object-contain drop-shadow-[0_20px_35px_rgba(192,40,46,0.45)] sm:h-64 sm:w-64" />
           </div>
         </div>
 
