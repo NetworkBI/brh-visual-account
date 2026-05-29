@@ -52,7 +52,7 @@ function EsqueciSenhaPage() {
   return (
     <div className="grid min-h-screen md:grid-cols-2">
       <div className="relative hidden md:block">
-        <img src={bg} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        <img src={bg} alt="" width={640} height={640} className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-primary/40 to-secondary/70" />
         <div className="relative z-10 flex h-full flex-col justify-end p-12 text-primary-foreground">
           <h2 className="font-display text-4xl font-bold leading-tight">
