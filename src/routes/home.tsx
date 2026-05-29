@@ -30,7 +30,7 @@ function HomePage() {
   return (
     <div className="relative -m-6 lg:-m-8 min-h-[calc(100vh-3.5rem)] overflow-hidden">
       {/* Fundo com textura */}
-      <img src={homeBg} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-30 dark:opacity-40" />
+      <img src={homeBg} alt="" aria-hidden="true" width={1920} height={1280} className="absolute inset-0 h-full w-full object-cover opacity-30 dark:opacity-40" />
       <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-br from-background/85 via-background/70 to-[#7a1418]/20" />
       <div
         aria-hidden="true"
