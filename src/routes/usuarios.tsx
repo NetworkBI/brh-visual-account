@@ -14,8 +14,14 @@ import { Shield, ShieldCheck, KeyRound, Save } from "lucide-react";
 import { toast } from "sonner";
 import { senhaSchema } from "@/lib/schemas";
 
+import { pageMeta } from "@/lib/seo";
+
 export const Route = createFileRoute("/usuarios")({
-  head: () => ({ meta: [{ title: "Usuários — BR Hunter" }] }),
+  head: () => pageMeta({
+    path: "/usuarios",
+    title: "Usuários — Grupo BR Hunter",
+    description: "Gerencie operadores, papéis e redefinição de senhas no sistema do Grupo BR Hunter.",
+  }),
   component: () => <AppShell><Pagina /></AppShell>,
 });
 

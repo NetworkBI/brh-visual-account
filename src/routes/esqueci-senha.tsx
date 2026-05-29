@@ -16,8 +16,14 @@ const schema = z.object({
 });
 type FormInput = z.infer<typeof schema>;
 
+import { pageMeta } from "@/lib/seo";
+
 export const Route = createFileRoute("/esqueci-senha")({
-  head: () => ({ meta: [{ title: "Recuperar senha — BR Hunter" }] }),
+  head: () => pageMeta({
+    path: "/esqueci-senha",
+    title: "Recuperar senha — Grupo BR Hunter",
+    description: "Receba um link por e-mail para redefinir a senha de acesso ao sistema do Grupo BR Hunter.",
+  }),
   component: EsqueciSenhaPage,
 });
 

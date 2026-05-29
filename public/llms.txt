@@ -1,0 +1,11 @@
+# Grupo BR Hunter — Controle de Prestação de Contas
+
+> Sistema interno do Grupo BR Hunter para controle e prestação de contas operacionais em condomínios atendidos.
+
+O sistema concentra lançamentos de prestações por processo, cadastro de condomínios, gestão de usuários e histórico de eventos. O acesso é restrito a operadores autorizados.
+
+## Pages
+
+- [Entrar](/login): Acesso ao sistema para operadores cadastrados.
+- [Cadastro](/cadastro): Criação de nova conta de operador.
+- [Recuperar senha](/esqueci-senha): Envio de link para redefinição de senha.

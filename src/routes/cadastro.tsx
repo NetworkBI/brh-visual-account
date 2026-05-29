@@ -9,9 +9,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import logo from "@/assets/logo.png";
+import { pageMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/cadastro")({
-  head: () => ({ meta: [{ title: "Cadastro — BR Hunter Prestação de Contas" }] }),
+  head: () => pageMeta({
+    path: "/cadastro",
+    title: "Criar conta — Grupo BR Hunter",
+    description: "Cadastre-se para acessar o sistema de prestação de contas do Grupo BR Hunter. Acesso restrito a operadores autorizados.",
+  }),
   component: CadastroPage,
 });
 

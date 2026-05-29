@@ -4,8 +4,14 @@ import { AppShell } from "@/components/app-shell";
 import { PrestacaoForm } from "@/components/prestacao-form";
 import { supabase } from "@/integrations/supabase/client";
 
+import { pageMeta } from "@/lib/seo";
+
 export const Route = createFileRoute("/prestacoes/$id/editar")({
-  head: () => ({ meta: [{ title: "Editar prestação — BR Hunter" }] }),
+  head: ({ params }) => pageMeta({
+    path: `/prestacoes/${params.id}/editar`,
+    title: "Editar prestação — Grupo BR Hunter",
+    description: "Edite os dados de um lançamento de prestação de contas existente no sistema do Grupo BR Hunter.",
+  }),
   component: EditarPage,
 });
 

@@ -12,8 +12,14 @@ import { Card } from "@/components/ui/card";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
+import { pageMeta } from "@/lib/seo";
+
 export const Route = createFileRoute("/condominios")({
-  head: () => ({ meta: [{ title: "Condomínios — BR Hunter" }] }),
+  head: () => pageMeta({
+    path: "/condominios",
+    title: "Condomínios — Grupo BR Hunter",
+    description: "Cadastre, edite e remova os condomínios atendidos pelas prestações de contas do Grupo BR Hunter.",
+  }),
   component: () => <AppShell><Pagina /></AppShell>,
 });
 
@@ -69,7 +75,7 @@ function Pagina() {
                 <td className="px-4 py-3 font-medium">{c.nome}</td>
                 <td className="px-4 py-3 text-right">
                   {c.created_by === user?.id && (
-                    <Button variant="ghost" size="sm" onClick={() => remover(c.id)}>
+                    <Button variant="ghost" size="sm" onClick={() => remover(c.id)} aria-label={`Remover condomínio ${c.nome}`}>
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
                   )}

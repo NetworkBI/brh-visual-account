@@ -5,8 +5,14 @@ import { useEventos, useProfiles } from "@/lib/queries";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
+import { pageMeta } from "@/lib/seo";
+
 export const Route = createFileRoute("/historico")({
-  head: () => ({ meta: [{ title: "Histórico — BR Hunter" }] }),
+  head: () => pageMeta({
+    path: "/historico",
+    title: "Histórico — Grupo BR Hunter",
+    description: "Consulte o histórico completo de eventos e movimentações realizadas no sistema do Grupo BR Hunter.",
+  }),
   component: () => <AppShell><Pagina /></AppShell>,
 });
 

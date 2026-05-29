@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UsuariosRouteImport } from './routes/usuarios'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RedefinirSenhaRouteImport } from './routes/redefinir-senha'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HomeRouteImport } from './routes/home'
@@ -27,6 +28,11 @@ import { Route as PrestacoesIdEditarRouteImport } from './routes/prestacoes.$id.
 const UsuariosRoute = UsuariosRouteImport.update({
   id: '/usuarios',
   path: '/usuarios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RedefinirSenhaRoute = RedefinirSenhaRouteImport.update({
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/usuarios': typeof UsuariosRoute
   '/prestacoes/nova': typeof PrestacoesNovaRoute
   '/prestacoes/': typeof PrestacoesIndexRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/usuarios': typeof UsuariosRoute
   '/prestacoes/nova': typeof PrestacoesNovaRoute
   '/prestacoes': typeof PrestacoesIndexRoute
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/usuarios': typeof UsuariosRoute
   '/prestacoes/nova': typeof PrestacoesNovaRoute
   '/prestacoes/': typeof PrestacoesIndexRoute
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/login'
     | '/redefinir-senha'
+    | '/sitemap.xml'
     | '/usuarios'
     | '/prestacoes/nova'
     | '/prestacoes/'
@@ -173,6 +183,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/login'
     | '/redefinir-senha'
+    | '/sitemap.xml'
     | '/usuarios'
     | '/prestacoes/nova'
     | '/prestacoes'
@@ -189,6 +200,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/login'
     | '/redefinir-senha'
+    | '/sitemap.xml'
     | '/usuarios'
     | '/prestacoes/nova'
     | '/prestacoes/'
@@ -206,6 +218,7 @@ export interface RootRouteChildren {
   HomeRoute: typeof HomeRoute
   LoginRoute: typeof LoginRoute
   RedefinirSenhaRoute: typeof RedefinirSenhaRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   UsuariosRoute: typeof UsuariosRoute
   PrestacoesNovaRoute: typeof PrestacoesNovaRoute
   PrestacoesIndexRoute: typeof PrestacoesIndexRoute
@@ -219,6 +232,13 @@ declare module '@tanstack/react-router' {
       path: '/usuarios'
       fullPath: '/usuarios'
       preLoaderRoute: typeof UsuariosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/redefinir-senha': {
@@ -326,6 +346,7 @@ const rootRouteChildren: RootRouteChildren = {
   HomeRoute: HomeRoute,
   LoginRoute: LoginRoute,
   RedefinirSenhaRoute: RedefinirSenhaRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   UsuariosRoute: UsuariosRoute,
   PrestacoesNovaRoute: PrestacoesNovaRoute,
   PrestacoesIndexRoute: PrestacoesIndexRoute,

@@ -9,8 +9,14 @@ import { Pencil } from "lucide-react";
 import { PROCESSOS } from "@/lib/schemas";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+import { pageMeta } from "@/lib/seo";
+
 export const Route = createFileRoute("/prestacoes/")({
-  head: () => ({ meta: [{ title: "Prestações — BR Hunter" }] }),
+  head: () => pageMeta({
+    path: "/prestacoes",
+    title: "Prestações — Grupo BR Hunter",
+    description: "Lista completa de prestações de contas cadastradas, com busca e filtro por processo.",
+  }),
   component: () => <AppShell><Lista /></AppShell>,
 });
 
