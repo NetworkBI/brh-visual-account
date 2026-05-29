@@ -30,7 +30,7 @@ function HomePage() {
   return (
     <div className="relative -m-6 lg:-m-8 min-h-[calc(100vh-3.5rem)] overflow-hidden">
       {/* Fundo com textura */}
-      <img src={homeBg} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-30 dark:opacity-40" />
+      <img src={homeBg} alt="" aria-hidden="true" width={1920} height={1280} className="absolute inset-0 h-full w-full object-cover opacity-30 dark:opacity-40" />
       <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-br from-background/85 via-background/70 to-[#7a1418]/20" />
       <div
         aria-hidden="true"
@@ -56,7 +56,7 @@ function HomePage() {
           </div>
           <div className="relative justify-self-center lg:justify-self-end">
             <div aria-hidden="true" className="absolute inset-0 -m-6 rounded-full bg-gradient-radial from-[#c0282e]/30 via-transparent to-transparent blur-2xl" />
-            <img src={mascot} alt="Mascote BR Hunter" className="relative h-56 w-56 object-contain drop-shadow-[0_20px_35px_rgba(192,40,46,0.45)] sm:h-64 sm:w-64" />
+            <img src={mascot} alt="Mascote BR Hunter" width={1024} height={1024} className="relative h-56 w-56 object-contain drop-shadow-[0_20px_35px_rgba(192,40,46,0.45)] sm:h-64 sm:w-64" />
           </div>
         </div>
 

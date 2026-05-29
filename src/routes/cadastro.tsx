@@ -52,7 +52,7 @@ function CadastroPage() {
     <div className="flex min-h-screen items-center justify-center bg-muted/40 px-4 py-10">
       <div className="w-full max-w-lg rounded-xl border bg-card p-8 shadow-elegant">
         <div className="mb-6 flex flex-col items-center text-center">
-          <img src={logo} alt="" className="h-16 w-auto" />
+          <img src={logo} alt="" width={640} height={640} className="h-16 w-auto" />
           <h1 className="mt-3 font-display text-2xl font-bold">Criar acesso</h1>
           <p className="mt-1 text-sm text-muted-foreground">Cadastre-se para acessar o sistema</p>
         </div>

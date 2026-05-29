@@ -55,7 +55,7 @@ function LoginPage() {
 
       <div className="relative z-10 w-full max-w-md overflow-hidden rounded-2xl bg-white/95 shadow-[0_25px_80px_-15px_rgba(140,20,25,0.6)] ring-1 ring-white/20 backdrop-blur-xl">
         <div className="flex justify-center bg-gradient-to-r from-[#7a1418] via-[#a01c22] to-[#c0282e] px-8 py-5">
-          <img src={logo} alt="BR Hunter" className="h-12 w-12 rounded-md bg-white/95 p-1 shadow-lg object-fill" />
+          <img src={logo} alt="BR Hunter" width={640} height={640} className="h-12 w-12 rounded-md bg-white/95 p-1 shadow-lg object-fill" />
         </div>
         <div className="bg-gradient-to-r from-[#7a1418] via-[#a01c22] to-[#c0282e] px-8 pb-5 text-center -mt-2">
           <h2 className="font-display text-xl font-bold text-white tracking-wide drop-shadow-sm">
