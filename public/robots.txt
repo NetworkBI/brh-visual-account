@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://brh-visual-account.lovable.app/sitemap.xml
