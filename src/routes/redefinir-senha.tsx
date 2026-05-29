@@ -83,7 +83,7 @@ function RedefinirSenhaPage() {
       <div className="flex items-center justify-center bg-background p-6">
         <div className="w-full max-w-sm">
           <div className="mb-8 flex flex-col items-center text-center">
-            <img src={logo} alt="Grupo BR Hunter" className="h-20 w-auto" />
+            <img src={logo} alt="Grupo BR Hunter" width={640} height={640} className="h-20 w-auto" />
             <h1 className="mt-4 font-display text-2xl font-bold">Redefinir senha</h1>
             <p className="mt-1 text-sm text-muted-foreground">Escolha sua nova senha de acesso</p>
           </div>
