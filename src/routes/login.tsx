@@ -114,8 +114,7 @@ function LoginPage() {
                 Esqueci minha senha
               </Link>
               <p className="text-muted-foreground">
-                Não tem cadastro?{" "}
-                <Link to="/cadastro" className="font-semibold text-primary hover:underline">Cadastre-se</Link>
+                Acesso restrito. Solicite uma conta ao administrador.
               </p>
             </div>
           </form>
