@@ -14,8 +14,14 @@ import { FileText, Building2, CalendarClock, ListChecks, Pencil, EyeOff, Eye, Pl
 import { PROCESSOS } from "@/lib/schemas";
 import { toast } from "sonner";
 
+import { pageMeta } from "@/lib/seo";
+
 export const Route = createFileRoute("/dashboard")({
-  head: () => ({ meta: [{ title: "Prestação de Contas — BR Hunter" }] }),
+  head: () => pageMeta({
+    path: "/dashboard",
+    title: "Prestação de Contas — Grupo BR Hunter",
+    description: "Painel operacional com indicadores por processo, últimas prestações e lista completa de lançamentos do ciclo.",
+  }),
   component: () => <AppShell><Pagina /></AppShell>,
 });
 
@@ -90,7 +96,7 @@ function Pagina() {
         {/* Por processo — barras com tooltip */}
         <Card>
           <CardHeader>
-            <CardTitle>Por processo</CardTitle>
+            <CardTitle asChild><h2>Por processo</h2></CardTitle>
             <p className="text-xs text-muted-foreground">% concluído do ciclo · meta de {META_POR_PROCESSO} por processo</p>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -121,7 +127,7 @@ function Pagina() {
         {/* Últimas prestações — Top 5 animado */}
         <Card className="overflow-hidden">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2"><Sparkles className="h-4 w-4 text-primary" /> Últimas Prestações</CardTitle>
+            <CardTitle asChild><h2 className="flex items-center gap-2"><Sparkles className="h-4 w-4 text-primary" /> Últimas Prestações</h2></CardTitle>
             <p className="text-xs text-muted-foreground">Top 5 do ciclo atual</p>
           </CardHeader>
           <CardContent>
@@ -156,7 +162,7 @@ function Pagina() {
       <Card>
         <CardHeader className="flex flex-row flex-wrap items-end justify-between gap-3 space-y-0">
           <div>
-            <CardTitle>Todos os lançamentos</CardTitle>
+            <CardTitle asChild><h2>Todos os lançamentos</h2></CardTitle>
             <p className="text-xs text-muted-foreground">Busque, filtre e edite as prestações cadastradas</p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -208,11 +214,11 @@ function Pagina() {
                         </td>
                         <td className="px-4 py-3 text-right">
                           <div className="flex justify-end gap-1">
-                            <Button asChild variant="ghost" size="sm">
+                            <Button asChild variant="ghost" size="sm" aria-label="Editar lançamento">
                               <Link to="/prestacoes/$id/editar" params={{ id: p.id }}><Pencil className="h-4 w-4" /></Link>
                             </Button>
                             {(role === "padrao" || role === "adm" || p.usuario === user?.id) && (
-                              <Button variant="ghost" size="sm" onClick={() => inativar(p.id, ativo)} title={ativo ? "Inativar" : "Reativar"}>
+                              <Button variant="ghost" size="sm" onClick={() => inativar(p.id, ativo)} title={ativo ? "Inativar" : "Reativar"} aria-label={ativo ? "Inativar lançamento" : "Reativar lançamento"}>
                                 {ativo ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                               </Button>
                             )}
