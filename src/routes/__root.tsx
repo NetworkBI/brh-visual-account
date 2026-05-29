@@ -64,6 +64,27 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              name: "Grupo BR Hunter",
+              url: "https://brh-visual-account.lovable.app",
+              logo: "https://brh-visual-account.lovable.app/favicon.ico",
+            },
+            {
+              "@type": "WebSite",
+              name: "Grupo BR Hunter — Controle de Prestação de Contas",
+              url: "https://brh-visual-account.lovable.app",
+            },
+          ],
+        }),
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,

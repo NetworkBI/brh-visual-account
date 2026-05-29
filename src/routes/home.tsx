@@ -5,8 +5,14 @@ import { FileText, Users, Building2, Settings, ArrowRight } from "lucide-react";
 import mascot from "@/assets/mascot.png";
 import homeBg from "@/assets/home-bg.jpg";
 
+import { pageMeta } from "@/lib/seo";
+
 export const Route = createFileRoute("/home")({
-  head: () => ({ meta: [{ title: "Início — BR Hunter" }] }),
+  head: () => pageMeta({
+    path: "/home",
+    title: "Início — Grupo BR Hunter",
+    description: "Central de controle operacional do Grupo BR Hunter: acesse prestações, usuários, condomínios e configurações.",
+  }),
   component: () => <AppShell><HomePage /></AppShell>,
 });
 
@@ -65,7 +71,7 @@ function HomePage() {
               <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[#a01c22] to-[#7a1418] text-white shadow">
                 <s.icon className="h-5 w-5" />
               </div>
-              <h3 className="font-display text-base font-bold">{s.label}</h3>
+              <h2 className="font-display text-base font-bold">{s.label}</h2>
               <p className="mt-1 text-xs text-muted-foreground">{s.desc}</p>
               <ArrowRight className="absolute right-4 top-5 h-4 w-4 text-[#a01c22] opacity-0 transition group-hover:translate-x-1 group-hover:opacity-100" />
             </Link>
