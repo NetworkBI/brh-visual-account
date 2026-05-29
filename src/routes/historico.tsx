@@ -1,7 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { useEventos, useProfiles } from "@/lib/queries";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/historico")({
   head: () => ({ meta: [{ title: "Histórico — BR Hunter" }] }),
@@ -11,13 +13,25 @@ export const Route = createFileRoute("/historico")({
 function Pagina() {
   const { data = [], isLoading } = useEventos();
   const { data: profiles = [] } = useProfiles();
+  const navigate = useNavigate();
   const nomeDe = (id: string) => {
     const p = profiles.find((p) => p.id === id);
     return p ? `${p.primeiro_nome} ${p.segundo_nome}` : id.slice(0, 8);
   };
 
+  const handleVoltar = () => {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      window.history.back();
+    } else {
+      navigate({ to: "/home" });
+    }
+  };
+
   return (
     <div className="space-y-6">
+      <Button variant="ghost" size="sm" onClick={handleVoltar} className="-ml-2">
+        <ArrowLeft /> Voltar
+      </Button>
       <div>
         <h1 className="font-display text-3xl font-bold">Histórico</h1>
         <p className="text-sm text-muted-foreground">Auditoria de criações e edições</p>
