@@ -96,7 +96,7 @@ function Pagina() {
         {/* Por processo — barras com tooltip */}
         <Card>
           <CardHeader>
-            <CardTitle asChild><h2>Por processo</h2></CardTitle>
+            <h2 className="font-semibold leading-none tracking-tight">Por processo</h2>
             <p className="text-xs text-muted-foreground">% concluído do ciclo · meta de {META_POR_PROCESSO} por processo</p>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -127,7 +127,7 @@ function Pagina() {
         {/* Últimas prestações — Top 5 animado */}
         <Card className="overflow-hidden">
           <CardHeader>
-            <CardTitle asChild><h2 className="flex items-center gap-2"><Sparkles className="h-4 w-4 text-primary" /> Últimas Prestações</h2></CardTitle>
+            <h2 className="flex items-center gap-2 font-semibold leading-none tracking-tight"><Sparkles className="h-4 w-4 text-primary" /> Últimas Prestações</h2>
             <p className="text-xs text-muted-foreground">Top 5 do ciclo atual</p>
           </CardHeader>
           <CardContent>
@@ -162,7 +162,7 @@ function Pagina() {
       <Card>
         <CardHeader className="flex flex-row flex-wrap items-end justify-between gap-3 space-y-0">
           <div>
-            <CardTitle asChild><h2>Todos os lançamentos</h2></CardTitle>
+            <h2 className="font-semibold leading-none tracking-tight">Todos os lançamentos</h2>
             <p className="text-xs text-muted-foreground">Busque, filtre e edite as prestações cadastradas</p>
           </div>
           <div className="flex flex-wrap gap-2">
