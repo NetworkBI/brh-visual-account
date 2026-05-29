@@ -20,7 +20,7 @@ export function useProfiles() {
     staleTime: STALE,
     queryKey: ["profiles"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("profiles").select("id, primeiro_nome, segundo_nome, email");
+      const { data, error } = await supabase.from("public_profiles").select("id, primeiro_nome, segundo_nome, email");
       if (error) throw error;
       return data;
     },
