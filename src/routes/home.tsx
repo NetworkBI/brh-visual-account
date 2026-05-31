@@ -87,7 +87,10 @@ function HomePage() {
         {SHORTCUTS.map((s) => {
           const inner = (
             <>
-              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary-glow text-primary-foreground shadow">
+              <div
+                className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg text-primary-foreground"
+                style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-glow)" }}
+              >
                 <s.icon className="h-5 w-5" />
               </div>
               <h2 className="font-display text-base font-bold">{s.label}</h2>
