@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { AppShell } from "@/components/app-shell";
+import { SiteShell } from "@/components/site-shell";
 import { useAuth, useUserRole } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/usuarios")({
     title: "Usuários — Grupo BR Hunter",
     description: "Gerencie operadores, papéis e redefinição de senhas no sistema do Grupo BR Hunter.",
   }),
-  component: () => <AppShell><Pagina /></AppShell>,
+  component: () => <SiteShell><Pagina /></SiteShell>,
 });
 
 function useUsuarios() {

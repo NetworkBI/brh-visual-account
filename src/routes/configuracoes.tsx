@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AppShell } from "@/components/app-shell";
+import { SiteShell } from "@/components/site-shell";
 import { useTheme } from "@/lib/theme";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/configuracoes")({
     title: "Configurações — Grupo BR Hunter",
     description: "Ajuste preferências do sistema, tema, notificações e exporte dados do Grupo BR Hunter.",
   }),
-  component: () => <AppShell><Pagina /></AppShell>,
+  component: () => <SiteShell><Pagina /></SiteShell>,
 });
 
 function Pagina() {

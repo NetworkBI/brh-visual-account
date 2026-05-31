@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { AppShell } from "@/components/app-shell";
+import { SiteShell } from "@/components/site-shell";
 import { usePrestacoes, useCondominios } from "@/lib/queries";
 import { useAuth, useUserRole } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/dashboard")({
     title: "Prestação de Contas — Grupo BR Hunter",
     description: "Painel operacional com indicadores por processo, últimas prestações e lista completa de lançamentos do ciclo.",
   }),
-  component: () => <AppShell><Pagina /></AppShell>,
+  component: () => <SiteShell><Pagina /></SiteShell>,
 });
 
 // Meta esperada por processo por ciclo do mês (ajuste conforme regra de negócio).

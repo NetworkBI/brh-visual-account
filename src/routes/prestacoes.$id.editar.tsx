@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { AppShell } from "@/components/app-shell";
+import { SiteShell } from "@/components/site-shell";
 import { PrestacaoForm } from "@/components/prestacao-form";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -27,7 +27,7 @@ function EditarPage() {
   });
 
   return (
-    <AppShell>
+    <SiteShell>
       <div className="space-y-6">
         <h1 className="font-display text-3xl font-bold">Editar prestação</h1>
         {isLoading || !data ? (
@@ -47,6 +47,6 @@ function EditarPage() {
           />
         )}
       </div>
-    </AppShell>
+    </SiteShell>
   );
 }
