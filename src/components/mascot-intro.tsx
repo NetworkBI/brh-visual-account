@@ -11,12 +11,24 @@ export function MascotIntro({ className }: { className?: string }) {
 
   return (
     <div className={"relative " + (className ?? "")}>
-      {/* glow radial atrás */}
+      {/* halo radial difuso — duas camadas para profundidade suave */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -m-10 rounded-full opacity-70 blur-3xl"
-        style={{ background: "radial-gradient(closest-side, color-mix(in oklab, var(--primary) 45%, transparent), transparent 70%)" }}
+        className="pointer-events-none absolute inset-0 -m-16 rounded-full opacity-60 blur-3xl"
+        style={{
+          background:
+            "radial-gradient(closest-side, color-mix(in oklab, var(--primary) 38%, transparent) 0%, color-mix(in oklab, var(--primary) 14%, transparent) 45%, transparent 75%)",
+        }}
       />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -m-6 rounded-full opacity-50 blur-2xl"
+        style={{
+          background:
+            "radial-gradient(closest-side, color-mix(in oklab, var(--foreground) 10%, transparent), transparent 70%)",
+        }}
+      />
+
       {!ended && (
         <video
           ref={videoRef}
