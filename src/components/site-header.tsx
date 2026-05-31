@@ -4,7 +4,6 @@ import logo from "@/assets/logo.png";
 const NAV = [
   { to: "/dashboard", label: "Prestação de Contas" },
   { to: "/usuarios", label: "Usuários" },
-  { to: "/condominios", label: "Condomínios" },
 ] as const;
 
 export function SiteHeader({ showLinks = true }: { showLinks?: boolean }) {

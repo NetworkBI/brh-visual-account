@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site-shell";
 import { MascotIntro } from "@/components/mascot-intro";
 import { useAuth } from "@/lib/auth";
-import { FileText, Users, Building2, Settings, ArrowRight } from "lucide-react";
+import { FileText, Users, Settings, ArrowRight } from "lucide-react";
 
 import { pageMeta } from "@/lib/seo";
 
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/home")({
 });
 
 type Shortcut = {
-  to?: "/dashboard" | "/usuarios" | "/condominios";
+  to?: "/dashboard" | "/usuarios";
   label: string;
   desc: string;
   icon: typeof FileText;
@@ -32,7 +32,6 @@ type Shortcut = {
 const SHORTCUTS: Shortcut[] = [
   { to: "/dashboard", label: "Prestação de Contas", desc: "Acompanhe lançamentos, processos e indicadores do mês.", icon: FileText },
   { to: "/usuarios", label: "Usuários", desc: "Gerencie acessos, papéis e redefinição de senhas.", icon: Users },
-  { to: "/condominios", label: "Condomínios", desc: "Cadastre e edite os condomínios atendidos.", icon: Building2 },
   { label: "Configurações", desc: "Tema, paleta alternativa e encerrar sessão.", icon: Settings, action: "settings" },
 ];
 
