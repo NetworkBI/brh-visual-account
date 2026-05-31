@@ -40,7 +40,7 @@ export function MascotIntro({ className }: { className?: string }) {
           preload="auto"
           onEnded={() => setEnded(true)}
           aria-label="Animação de boas-vindas do mascote BR Hunter"
-          className="relative h-full w-full object-contain mix-blend-screen"
+          className="relative h-full w-full object-contain mix-blend-multiply dark:mix-blend-screen drop-shadow-[0_18px_28px_rgba(200,16,46,0.18)]"
         />
       )}
       {ended && (
