@@ -49,7 +49,7 @@ export function MascotIntro({ className }: { className?: string }) {
           alt="Mascote BR Hunter"
           width={1920}
           height={1080}
-          className="relative h-full w-full object-contain mix-blend-screen"
+          className="relative h-full w-full object-contain mix-blend-multiply dark:mix-blend-screen drop-shadow-[0_18px_28px_rgba(200,16,46,0.18)]"
         />
       )}
     </div>
