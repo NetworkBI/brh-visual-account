@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site-shell";
 import { MascotIntro } from "@/components/mascot-intro";
 import { useAuth } from "@/lib/auth";
-import { FileText, Users, Settings, ArrowRight } from "lucide-react";
+import { FileText, Users, ArrowRight } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 import { pageMeta } from "@/lib/seo";
 
@@ -12,7 +13,7 @@ export const Route = createFileRoute("/home")({
       path: "/home",
       title: "Início — Grupo BR Hunter",
       description:
-        "Central de controle operacional do Grupo BR Hunter: acesse prestações, usuários, condomínios e configurações.",
+        "Central de controle operacional do Grupo BR Hunter: acesse prestações, usuários e condomínios.",
     }),
   component: () => (
     <SiteShell showHeaderLinks={false}>
@@ -22,17 +23,15 @@ export const Route = createFileRoute("/home")({
 });
 
 type Shortcut = {
-  to?: "/dashboard" | "/usuarios";
+  to: "/dashboard" | "/usuarios";
   label: string;
   desc: string;
   icon: typeof FileText;
-  action?: "settings";
 };
 
 const SHORTCUTS: Shortcut[] = [
   { to: "/dashboard", label: "Prestação de Contas", desc: "Acompanhe lançamentos, processos e indicadores do mês.", icon: FileText },
   { to: "/usuarios", label: "Usuários", desc: "Gerencie acessos, papéis e redefinição de senhas.", icon: Users },
-  { label: "Configurações", desc: "Tema, paleta alternativa e encerrar sessão.", icon: Settings, action: "settings" },
 ];
 
 function HomePage() {
