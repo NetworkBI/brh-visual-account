@@ -2,8 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site-shell";
 import { MascotIntro } from "@/components/mascot-intro";
 import { useAuth } from "@/lib/auth";
-import { FileText, Users, ArrowRight } from "lucide-react";
-import logo from "@/assets/logo.png";
+import { FileText, Users, Settings, ArrowRight } from "lucide-react";
 
 import { pageMeta } from "@/lib/seo";
 
@@ -13,7 +12,7 @@ export const Route = createFileRoute("/home")({
       path: "/home",
       title: "Início — Grupo BR Hunter",
       description:
-        "Central de controle operacional do Grupo BR Hunter: acesse prestações, usuários e condomínios.",
+        "Central de controle operacional do Grupo BR Hunter: acesse prestações, usuários, condomínios e configurações.",
     }),
   component: () => (
     <SiteShell showHeaderLinks={false}>
@@ -23,15 +22,17 @@ export const Route = createFileRoute("/home")({
 });
 
 type Shortcut = {
-  to: "/dashboard" | "/usuarios";
+  to?: "/dashboard" | "/usuarios";
   label: string;
   desc: string;
   icon: typeof FileText;
+  action?: "settings";
 };
 
 const SHORTCUTS: Shortcut[] = [
   { to: "/dashboard", label: "Prestação de Contas", desc: "Acompanhe lançamentos, processos e indicadores do mês.", icon: FileText },
   { to: "/usuarios", label: "Usuários", desc: "Gerencie acessos, papéis e redefinição de senhas.", icon: Users },
+  { label: "Configurações", desc: "Tema, paleta alternativa e encerrar sessão.", icon: Settings, action: "settings" },
 ];
 
 function HomePage() {
@@ -81,35 +82,42 @@ function HomePage() {
 
 
       {/* Atalhos */}
-      <div className="mt-8 grid gap-5 sm:grid-cols-2">
-        {SHORTCUTS.map((s) => (
-          <Link
-            key={s.to}
-            to={s.to}
-            className="group relative flex items-center gap-5 overflow-hidden rounded-2xl border border-border/60 bg-card/80 p-6 text-left shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:border-primary/60 hover:shadow-lg sm:p-7"
-          >
-            <div
-              className="relative flex h-20 w-20 shrink-0 items-center justify-center rounded-xl border border-border/50 bg-white shadow-sm sm:h-24 sm:w-24"
-            >
-              <img
-                src={logo}
-                alt="Grupo BR Hunter"
-                width={640}
-                height={640}
-                className="h-14 w-14 object-contain sm:h-16 sm:w-16"
-              />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary/80">
-                <s.icon className="h-3.5 w-3.5" />
-                Módulo
+      <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {SHORTCUTS.map((s) => {
+          const inner = (
+            <>
+              <div
+                className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg text-primary-foreground"
+                style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-glow)" }}
+              >
+                <s.icon className="h-5 w-5" />
               </div>
-              <h2 className="mt-1 font-display text-xl font-bold sm:text-2xl">{s.label}</h2>
-              <p className="mt-1.5 text-sm text-muted-foreground">{s.desc}</p>
-            </div>
-            <ArrowRight className="absolute right-5 top-5 h-4 w-4 text-primary opacity-0 transition group-hover:translate-x-1 group-hover:opacity-100" />
-          </Link>
-        ))}
+              <h2 className="font-display text-base font-bold">{s.label}</h2>
+              <p className="mt-1 text-xs text-muted-foreground">{s.desc}</p>
+              <ArrowRight className="absolute right-4 top-5 h-4 w-4 text-primary opacity-0 transition group-hover:translate-x-1 group-hover:opacity-100" />
+            </>
+          );
+          const className =
+            "group relative overflow-hidden rounded-xl border border-border/60 bg-card/80 p-5 text-left shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:border-primary/60 hover:shadow-lg";
+
+          if (s.action === "settings") {
+            return (
+              <button
+                key={s.label}
+                type="button"
+                onClick={() => window.dispatchEvent(new CustomEvent("open-settings"))}
+                className={className}
+              >
+                {inner}
+              </button>
+            );
+          }
+          return (
+            <Link key={s.to} to={s.to!} className={className}>
+              {inner}
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
