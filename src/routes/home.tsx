@@ -66,7 +66,7 @@ function HomePage() {
           </p>
         </div>
         <div className="relative justify-self-center lg:justify-self-end">
-          <MascotIntro className="h-80 w-80 sm:h-96 sm:w-96 lg:h-[28rem] lg:w-[28rem]" />
+          <MascotIntro className="h-72 w-72 sm:h-80 sm:w-80 lg:h-96 lg:w-96" />
         </div>
       </div>
 
