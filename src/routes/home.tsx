@@ -53,15 +53,16 @@ function HomePage() {
       />
 
       {/* Hero card */}
-      <section className="relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-br from-muted/70 via-background to-background p-6 shadow-[0_12px_40px_-20px_rgba(0,0,0,0.18)] sm:p-10">
+      <section
+        className="relative overflow-hidden rounded-2xl border border-border/60 p-6 sm:p-10"
+        style={{ background: "var(--gradient-hero)", boxShadow: "var(--shadow-soft)" }}
+      >
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full opacity-40 blur-3xl"
-          style={{
-            background:
-              "radial-gradient(closest-side, color-mix(in oklab, var(--primary) 28%, transparent), transparent 70%)",
-          }}
+          className="pointer-events-none absolute inset-x-0 top-0 h-px"
+          style={{ background: "var(--gradient-border)" }}
         />
+
         <div className="relative grid items-center gap-8 lg:grid-cols-[1.1fr_1fr]">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
@@ -86,7 +87,10 @@ function HomePage() {
         {SHORTCUTS.map((s) => {
           const inner = (
             <>
-              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary-glow text-primary-foreground shadow">
+              <div
+                className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg text-primary-foreground"
+                style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-glow)" }}
+              >
                 <s.icon className="h-5 w-5" />
               </div>
               <h2 className="font-display text-base font-bold">{s.label}</h2>

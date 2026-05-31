@@ -58,10 +58,16 @@ export function SettingsFab() {
         >
           <PaletteIcon className="h-4 w-4" />
           <span className="flex-1 text-left">Cor alternativa</span>
+          <span
+            aria-hidden="true"
+            className="h-4 w-7 rounded-full ring-1 ring-border/70"
+            style={{ background: "var(--gradient-primary)" }}
+          />
           <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
             {palette === "brasa" ? "Brasa" : "Carvão"}
           </span>
         </button>
+
         <div className="my-1 h-px bg-border/60" />
         <button
           type="button"
