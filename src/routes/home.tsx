@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site-shell";
 import { MascotIntro } from "@/components/mascot-intro";
 import { useAuth } from "@/lib/auth";
-import { FileText, Users, Building2, Settings, ArrowRight } from "lucide-react";
+import { FileText, Users, Settings, ArrowRight } from "lucide-react";
 
 import { pageMeta } from "@/lib/seo";
 
