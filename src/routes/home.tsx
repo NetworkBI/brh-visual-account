@@ -52,23 +52,34 @@ function HomePage() {
         }}
       />
 
-      {/* Hero */}
-      <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_1fr]">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-            Grupo BR Hunter
-          </p>
-          <h1 className="mt-2 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
-            Bem-vindo, <span className="text-primary">{nome}</span>.
-          </h1>
-          <p className="mt-3 max-w-xl text-base text-muted-foreground">
-            Sua central de controle operacional. Escolha um módulo abaixo para iniciar os fluxos do sistema.
-          </p>
+      {/* Hero card */}
+      <section className="relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-br from-muted/70 via-background to-background p-6 shadow-[0_12px_40px_-20px_rgba(0,0,0,0.18)] sm:p-10">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full opacity-40 blur-3xl"
+          style={{
+            background:
+              "radial-gradient(closest-side, color-mix(in oklab, var(--primary) 28%, transparent), transparent 70%)",
+          }}
+        />
+        <div className="relative grid items-center gap-8 lg:grid-cols-[1.1fr_1fr]">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+              Grupo BR Hunter
+            </p>
+            <h1 className="mt-2 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
+              Bem-vindo, <span className="text-primary">{nome}</span>.
+            </h1>
+            <p className="mt-3 max-w-xl text-base text-muted-foreground">
+              Sua central de controle operacional. Escolha um módulo abaixo para iniciar os fluxos do sistema.
+            </p>
+          </div>
+          <div className="relative justify-self-center lg:justify-self-end">
+            <MascotIntro className="h-72 w-72 sm:h-80 sm:w-80 lg:h-96 lg:w-96" />
+          </div>
         </div>
-        <div className="relative justify-self-center lg:justify-self-end">
-          <MascotIntro className="h-72 w-72 sm:h-80 sm:w-80 lg:h-96 lg:w-96" />
-        </div>
-      </div>
+      </section>
+
 
       {/* Atalhos */}
       <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

@@ -11,12 +11,24 @@ export function MascotIntro({ className }: { className?: string }) {
 
   return (
     <div className={"relative " + (className ?? "")}>
-      {/* glow radial atrás */}
+      {/* halo radial difuso — duas camadas para profundidade suave */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -m-10 rounded-full opacity-70 blur-3xl"
-        style={{ background: "radial-gradient(closest-side, color-mix(in oklab, var(--primary) 45%, transparent), transparent 70%)" }}
+        className="pointer-events-none absolute inset-0 -m-16 rounded-full opacity-60 blur-3xl"
+        style={{
+          background:
+            "radial-gradient(closest-side, color-mix(in oklab, var(--primary) 38%, transparent) 0%, color-mix(in oklab, var(--primary) 14%, transparent) 45%, transparent 75%)",
+        }}
       />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -m-6 rounded-full opacity-50 blur-2xl"
+        style={{
+          background:
+            "radial-gradient(closest-side, color-mix(in oklab, var(--foreground) 10%, transparent), transparent 70%)",
+        }}
+      />
+
       {!ended && (
         <video
           ref={videoRef}
@@ -28,7 +40,7 @@ export function MascotIntro({ className }: { className?: string }) {
           preload="auto"
           onEnded={() => setEnded(true)}
           aria-label="Animação de boas-vindas do mascote BR Hunter"
-          className="relative h-full w-full object-contain mix-blend-screen"
+          className="relative h-full w-full object-contain mix-blend-multiply dark:mix-blend-screen drop-shadow-[0_18px_28px_rgba(200,16,46,0.18)]"
         />
       )}
       {ended && (
@@ -37,7 +49,7 @@ export function MascotIntro({ className }: { className?: string }) {
           alt="Mascote BR Hunter"
           width={1920}
           height={1080}
-          className="relative h-full w-full object-contain mix-blend-screen"
+          className="relative h-full w-full object-contain mix-blend-multiply dark:mix-blend-screen drop-shadow-[0_18px_28px_rgba(200,16,46,0.18)]"
         />
       )}
     </div>
