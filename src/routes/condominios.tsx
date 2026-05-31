@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { AppShell } from "@/components/app-shell";
+import { SiteShell } from "@/components/site-shell";
 import { useCondominios } from "@/lib/queries";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/condominios")({
     title: "Condomínios — Grupo BR Hunter",
     description: "Cadastre, edite e remova os condomínios atendidos pelas prestações de contas do Grupo BR Hunter.",
   }),
-  component: () => <AppShell><Pagina /></AppShell>,
+  component: () => <SiteShell><Pagina /></SiteShell>,
 });
 
 function Pagina() {
