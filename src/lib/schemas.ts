@@ -23,7 +23,7 @@ export const loginSchema = z.object({
 });
 export type LoginInput = z.infer<typeof loginSchema>;
 
-export const PROCESSOS = ["Doc/Recebimento", "Lançamento", "Montagem", "Data Fechamento"] as const;
+export const PROCESSOS = ["Documentação Recebida", "Lançamento Contábeis", "Montagem Balancete", "Data da Entrega"] as const;
 
 export const prestacaoSchema = z.object({
   mes: z.string().min(1, "Obrigatório"),
