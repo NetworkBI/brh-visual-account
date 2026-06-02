@@ -60,21 +60,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="hidden text-xs text-muted-foreground sm:block">
             {new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" })}
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              if (typeof window !== "undefined" && window.history.length > 1) {
-                window.history.back();
-              } else {
-                navigate({ to: "/home" });
-              }
-            }}
-            className="gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            <span className="hidden sm:inline">Voltar</span>
-          </Button>
+          {pathname !== "/home" && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                if (typeof window !== "undefined" && window.history.length > 1) {
+                  window.history.back();
+                } else {
+                  navigate({ to: "/home" });
+                }
+              }}
+              className="gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              <span className="hidden sm:inline">Voltar</span>
+            </Button>
+          )}
           <Button
             variant="outline"
             size="sm"
