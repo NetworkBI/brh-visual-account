@@ -52,7 +52,6 @@ export const Route = createFileRoute("/usuarios")({
         "Gerencie operadores, papéis e redefinição de senhas no sistema do Grupo BR Hunter.",
     }),
   component: () => (
-  component: () => (
     <AppShell>
       <SidebarProvider>
         <div className="flex w-full">
