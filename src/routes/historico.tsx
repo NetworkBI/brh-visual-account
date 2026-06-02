@@ -18,7 +18,7 @@ export const Route = createFileRoute("/historico")({
 
 function Pagina() {
   const { data = [], isLoading } = useEventos();
-  const { data: profiles = [] } = useProfiles();
+  const { data: profiles = [] } = useAllProfiles();
   const navigate = useNavigate();
   const nomeDe = (id: string) => {
     const p = profiles.find((p) => p.id === id);
