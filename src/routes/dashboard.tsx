@@ -102,7 +102,7 @@ function Pagina() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard icon={FileText} label="Total prestações" value={prestacoes.length} />
+        <StatCard icon={FileText} label="Quantidade de Lançamento Realizados" value={prestacoes.length} />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
