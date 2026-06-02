@@ -15,6 +15,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { theme, toggle } = useTheme();
   const { next: nextPalette, label: paletteLabel } = usePalette();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [fabOpen, setFabOpen] = useState(false);
 
   useEffect(() => {
