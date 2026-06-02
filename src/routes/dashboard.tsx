@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { AppShell } from "@/components/app-shell";
-import { usePrestacoes, useCondominios } from "@/lib/queries";
+import { usePrestacoes, useCondominios, useProfiles } from "@/lib/queries";
 import { useAuth, useUserRole } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -35,6 +35,13 @@ function Pagina() {
   const { data: role } = useUserRole();
   const { data: prestacoes = [], isLoading } = usePrestacoes();
   const { data: condominios = [] } = useCondominios();
+  const { data: profiles = [] } = useProfiles();
+
+  const nomeUsuario = (id?: string | null) => {
+    if (!id) return "—";
+    const p = profiles.find((p) => p.id === id);
+    return p ? `${p.primeiro_nome ?? ""} ${p.segundo_nome ?? ""}`.trim() || "—" : "—";
+  };
 
   const mesAtual = new Date().toISOString().slice(0, 7);
   const [mesSelecionado, setMesSelecionado] = useState(mesAtual);
@@ -59,18 +66,16 @@ function Pagina() {
     qc.invalidateQueries({ queryKey: ["prestacoes"] });
   };
 
-  // ----- Filtros da lista (substitui aba antiga "Prestações") -----
+  // ----- Filtros da lista (apenas busca por condomínio + mês do topo) -----
   const [q, setQ] = useState("");
-  const [proc, setProc] = useState<string>("todos");
-  const [mostrarInativos, setMostrarInativos] = useState(false);
   const filtered = useMemo(() => {
     const ql = q.toLowerCase();
     return prestacoes.filter((p) =>
-      (mostrarInativos || (p as any).ativo !== false) &&
-      (proc === "todos" || p.processo === proc) &&
-      (!ql || p.condominios?.nome?.toLowerCase().includes(ql) || p.mes?.toLowerCase().includes(ql)),
+      (p as any).ativo !== false &&
+      (p.mes || "").startsWith(mesSelecionado) &&
+      (!ql || p.condominios?.nome?.toLowerCase().includes(ql)),
     );
-  }, [prestacoes, q, proc, mostrarInativos]);
+  }, [prestacoes, q, mesSelecionado]);
 
   return (
     <div className="space-y-6">
@@ -175,63 +180,62 @@ function Pagina() {
         <CardHeader className="flex flex-row flex-wrap items-end justify-between gap-3 space-y-0 pt-8">
           <div>
             <h2 className="font-display text-2xl font-bold tracking-tight">HISTÓRICO</h2>
-            <p className="text-xs text-muted-foreground">Busque, filtre e edite as prestações cadastradas</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Input placeholder="Buscar condomínio" value={q} onChange={(e) => setQ(e.target.value)} className="max-w-xs" />
-            <Select value={proc} onValueChange={setProc}>
-              <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="todos">Todos os processos</SelectItem>
-                {PROCESSOS.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
-              </SelectContent>
-            </Select>
-            <Button variant="outline" size="sm" onClick={() => setMostrarInativos((v) => !v)}>
-              {mostrarInativos ? <Eye className="mr-1 h-3.5 w-3.5" /> : <EyeOff className="mr-1 h-3.5 w-3.5" />}
-              {mostrarInativos ? "Ocultar inativos" : "Mostrar inativos"}
-            </Button>
           </div>
         </CardHeader>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground">
+              <thead className="bg-muted/50 text-xs tracking-wider text-muted-foreground">
                 <tr>
-                  <th className="px-4 py-3 text-left">Mês</th>
-                  <th className="px-4 py-3 text-left">Condomínio</th>
-                  <th className="px-4 py-3 text-left">Processo</th>
-                  <th className="px-4 py-3 text-left">Data Evento</th>
-                  <th className="px-4 py-3 text-left">Status</th>
+                  <th className="px-4 py-3 text-left font-medium">Mês</th>
+                  <th className="px-4 py-3 text-left font-medium">Condomínio</th>
+                  <th className="px-4 py-3 text-left font-medium">Data Ocorrido</th>
+                  <th className="px-4 py-3 text-left font-medium">Processo</th>
+                  <th className="px-4 py-3 text-left font-medium">Responsável</th>
+                  <th className="px-4 py-3 text-left font-medium">Usuário de Criação</th>
                   <th className="px-4 py-3" />
                 </tr>
               </thead>
               <tbody className="divide-y">
                 {isLoading ? (
-                  <tr><td colSpan={6} className="p-6 text-center text-muted-foreground">Carregando…</td></tr>
+                  <tr><td colSpan={7} className="p-6 text-center text-muted-foreground">Carregando…</td></tr>
                 ) : filtered.length === 0 ? (
-                  <tr><td colSpan={6} className="p-6 text-center text-muted-foreground">Nenhum lançamento encontrado.</td></tr>
+                  <tr><td colSpan={7} className="p-6 text-center text-muted-foreground">Nenhum lançamento encontrado.</td></tr>
                 ) : (
                   filtered.map((p) => {
                     const ativo = (p as any).ativo !== false;
                     return (
-                      <tr key={p.id} className={`hover:bg-muted/30 ${!ativo ? "opacity-50" : ""}`}>
+                      <tr key={p.id} className="hover:bg-muted/30">
                         <td className="px-4 py-3 font-medium">{p.mes}</td>
                         <td className="px-4 py-3">{p.condominios?.nome ?? "—"}</td>
-                        <td className="px-4 py-3"><span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">{p.processo}</span></td>
                         <td className="px-4 py-3">{new Date(p.data_evento).toLocaleDateString("pt-BR")}</td>
+                        <td className="px-4 py-3"><span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">{p.processo}</span></td>
                         <td className="px-4 py-3">
-                          <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${ativo ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400" : "bg-muted text-muted-foreground"}`}>
-                            {ativo ? "Ativo" : "Inativo"}
-                          </span>
+                          <Select value={(p as any).usuario_responsavel ?? ""} disabled>
+                            <SelectTrigger className="h-8 w-48">
+                              <SelectValue placeholder={nomeUsuario((p as any).usuario_responsavel)}>
+                                {nomeUsuario((p as any).usuario_responsavel)}
+                              </SelectValue>
+                            </SelectTrigger>
+                            <SelectContent>
+                              {profiles.filter((u) => u.id).map((u) => (
+                                <SelectItem key={u.id!} value={u.id!}>{u.primeiro_nome ?? ""} {u.segundo_nome ?? ""}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </td>
+                        <td className="px-4 py-3">{nomeUsuario((p as any).usuario)}</td>
                         <td className="px-4 py-3 text-right">
                           <div className="flex justify-end gap-1">
                             <Button asChild variant="ghost" size="sm" aria-label="Editar lançamento">
                               <Link to="/prestacoes/$id/editar" params={{ id: p.id }}><Pencil className="h-4 w-4" /></Link>
                             </Button>
                             {(role === "padrao" || role === "adm" || p.usuario === user?.id) && (
-                              <Button variant="ghost" size="sm" onClick={() => inativar(p.id, ativo)} title={ativo ? "Inativar" : "Reativar"} aria-label={ativo ? "Inativar lançamento" : "Reativar lançamento"}>
-                                {ativo ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              <Button variant="ghost" size="sm" onClick={() => inativar(p.id, ativo)} title="Inativar" aria-label="Inativar lançamento">
+                                <EyeOff className="h-4 w-4" />
                               </Button>
                             )}
                           </div>
