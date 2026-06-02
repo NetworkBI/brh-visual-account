@@ -1,46 +1,38 @@
-## Objetivo
+## Plano
 
-1. Trocar o rótulo do botão de paleta de "Identidade BR Hunter" para **"Cores Alternativas"** (aplicado a todas as 3 paletas do ciclo, mantendo o sufixo descritivo de cada uma).
-2. Reforçar a diferença visual entre as paletas — hoje "Brasa" e "Grafite" são sutis demais — mantendo sempre boa legibilidade de texto (contraste AA em light e dark).
+Renderizar a sidebar **somente** na rota `/dashboard` (Prestação de Contas), sem afetar as demais telas.
 
-## Alterações
+### Alterações
 
-### `src/lib/palette.tsx`
-Atualizar o mapa `LABELS`:
-- `padrao` → "Cores Alternativas — Padrão"
-- `brasa`  → "Cores Alternativas — Brasa"
-- `grafite`→ "Cores Alternativas — Grafite"
+**1. `src/routes/dashboard.tsx`**
+- Importar `SidebarProvider`, `SidebarTrigger` de `@/components/ui/sidebar` e `AppSidebar` de `@/components/app-sidebar`.
+- Trocar o `component` da rota para envolver `<Pagina />` com a sidebar:
+  ```tsx
+  component: () => (
+    <AppShell>
+      <SidebarProvider>
+        <div className="flex w-full">
+          <AppSidebar />
+          <div className="flex-1 min-w-0">
+            <div className="mb-4 flex items-center gap-2">
+              <SidebarTrigger />
+              <span className="text-xs text-muted-foreground">Menu</span>
+            </div>
+            <Pagina />
+          </div>
+        </div>
+      </SidebarProvider>
+    </AppShell>
+  ),
+  ```
+- O `SidebarTrigger` fica acima do conteúdo da página para permitir colapsar/expandir (a sidebar usa `collapsible="icon"`).
 
-(Mantém o nome único "Cores Alternativas" como pedido, com um sufixo curto pra o usuário saber em qual variação está.)
+**2. `src/components/app-sidebar.tsx` (nenhuma alteração necessária)**
+- Já contém apenas os itens "Início" e "Usuários" (este último só visível para ADM/MASTER), conforme estado atual.
 
-### `src/styles.css` — refinar tokens das paletas alternativas
+### O que NÃO mudar
+- `src/components/app-shell.tsx` permanece intacto — sem sidebar global.
+- Demais rotas (`/home`, `/usuarios`, `/condominios`, `/historico`, etc.) continuam sem sidebar.
 
-Objetivo: cada paleta deve ter uma **personalidade visual clara** (background, cards, primary, accent) já no primeiro clique, sem sacrificar contraste de texto.
-
-**Padrão (`:root`)** — sem mudanças (já é a identidade base).
-
-**Brasa** (vermelho dominante, quente):
-- Light: background levemente avermelhado/cremoso, cards brancos, primary vermelho mais saturado e escuro (melhor contraste em botões), accent rosé visível em badges/hover.
-- Dark: background marrom-avermelhado escuro (não preto puro), cards um tom acima, primary vermelho-coral luminoso.
-- Garantir `foreground` sempre ≥ AA contra `background` e `card`.
-
-**Grafite** (cinza dominante, vermelho só como acento):
-- Light: background cinza-claro perceptível (não branco), cards brancos para destacar, primary cinza-grafite escuro, `secondary` vermelho como acento pontual.
-- Dark: background quase-preto azulado, cards cinza-escuro, primary cinza-claro luminoso, accent vermelho ainda visível em hovers e foco.
-- Ajustar `muted-foreground` para manter texto secundário legível.
-
-Também revisar/garantir nas três paletas (light e dark):
-- `--foreground` com contraste ≥ 7:1 contra `--background`
-- `--muted-foreground` ≥ 4.5:1 contra `--background` e `--card`
-- `--primary-foreground` ≥ 4.5:1 contra `--primary`
-- `--border` perceptível mas suave (não invisível em light, não estourado em dark)
-
-### Validação
-Após a mudança, percorrer mentalmente Home/Dashboard/Usuários nas 3 paletas × 2 temas (6 combinações) confirmando:
-- Cor de fundo claramente diferente entre as 3 paletas
-- Botões primários com identidade própria em cada paleta
-- Nenhum texto cinza-em-cinza ou vermelho-em-vermelho ilegível
-
-## Fora de escopo
-- Não mexer em componentes (botões, cards, sidebar) — só design tokens + label.
-- Não adicionar novas paletas.
+### Resultado
+Apenas em `/dashboard` aparecerá a sidebar à esquerda com os botões Início e Usuários, podendo ser recolhida pelo trigger.
