@@ -316,11 +316,9 @@ function Pagina() {
             <Shield className="h-4 w-4" /> Usuários cadastrados
           </CardTitle>
           <p className="text-xs text-muted-foreground">
-            {podeGerenciar
-              ? podeMaster
-                ? "Como MASTER, você pode gerenciar todos os usuários."
-                : "Como ADM, você gerencia PADRÃO e ADM (sem mexer em MASTER)."
-              : "Somente ADM ou MASTER podem gerenciar usuários."}
+            {podeMaster
+              ? "Como MASTER, você pode gerenciar todos os usuários."
+              : "Somente usuários ADM podem alterar papéis e criar novos usuários"}
           </p>
         </CardHeader>
         <CardContent className="p-0">
