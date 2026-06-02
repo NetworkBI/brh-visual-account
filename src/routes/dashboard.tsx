@@ -40,7 +40,7 @@ function Pagina() {
   const nomeUsuario = (id?: string | null) => {
     if (!id) return "—";
     const p = profiles.find((p) => p.id === id);
-    return p ? `${p.primeiro_nome} ${p.segundo_nome}` : "—";
+    return p ? `${p.primeiro_nome ?? ""} ${p.segundo_nome ?? ""}`.trim() || "—" : "—";
   };
 
   const mesAtual = new Date().toISOString().slice(0, 7);
