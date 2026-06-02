@@ -37,7 +37,8 @@ function Pagina() {
   const { data: condominios = [] } = useCondominios();
 
   const mesAtual = new Date().toISOString().slice(0, 7);
-  const doMes = useMemo(() => prestacoes.filter((p) => (p.mes || "").startsWith(mesAtual) && (p as any).ativo !== false), [prestacoes, mesAtual]);
+  const [mesSelecionado, setMesSelecionado] = useState(mesAtual);
+  const doMes = useMemo(() => prestacoes.filter((p) => (p.mes || "").startsWith(mesSelecionado) && (p as any).ativo !== false), [prestacoes, mesSelecionado]);
 
   const porProcesso = PROCESSOS.map((proc) => {
     const count = doMes.filter((p) => p.processo === proc).length;
