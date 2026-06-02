@@ -193,6 +193,14 @@ export type Database = {
       }
     }
     Functions: {
+      get_usuarios_padrao: {
+        Args: never
+        Returns: {
+          id: string
+          primeiro_nome: string
+          segundo_nome: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

@@ -1,36 +1,27 @@
-## Objetivo
-Importar usuários fictícios da planilha (aba `gid=2136183962`) para o sistema, em execução única, sem mexer na UI.
+## Problema
 
-## Fonte de dados
-- URL CSV: `https://docs.google.com/spreadsheets/d/1PlX_X3vS5MsWcwBXUpDSV6ZXWhYo_xasiu5819VxYcc/export?format=csv&gid=2136183962`
-- Colunas: `Primeiro/Segundo, Data de nascimento, E-mail, Matrícula, Senha`
-- Parsing: `Primeiro/Segundo` será dividido no primeiro espaço → `primeiro_nome` + `segundo_nome` (sobrenome composto vai inteiro no segundo).
+O campo "Usuário Responsável" está vazio porque as políticas de RLS impedem que um usuário comum (`padrao`) enxergue as linhas dos outros usuários em `user_roles` e em `profiles`. A consulta feita no cliente retorna apenas o próprio usuário (ou vazio).
 
-## Estratégia
-Criar **um único server function admin** (`src/lib/seed-usuarios.functions.ts`) que:
-1. Baixa o CSV ao vivo.
-2. Para cada linha:
-   - Se o e-mail **não existe** em `auth.users` → cria via `supabaseAdmin.auth.admin.createUser` com `email_confirm: true`, `password` da planilha e `user_metadata` (primeiro_nome, segundo_nome, data_nascimento, matrícula). O trigger `handle_new_user` popula `profiles`, e `handle_new_user_role` aplica papel `padrao`.
-   - Se o e-mail **já existe** → faz `UPDATE` em `profiles` (primeiro_nome, segundo_nome, data_nascimento, matrícula). Senha e papel não são tocados.
-3. Retorna um resumo `{ criados, atualizados, erros: [{email, motivo}] }`.
+## Solução
 
-Para garantir que só ADM execute, o handler valida o caller via `requireSupabaseAuth` + `has_role(userId, 'adm')` antes de fazer qualquer coisa. O `supabaseAdmin` (service role) é importado dinamicamente dentro do handler.
+Criar uma função no banco com `SECURITY DEFINER` que devolve apenas os campos necessários (id, primeiro nome, segundo nome) de **todos** os usuários com papel `padrao`. A função roda com privilégios elevados, ignorando o RLS, mas expõe somente dados não sensíveis (nada de e-mail, matrícula, data de nascimento). Acesso liberado para qualquer usuário autenticado.
 
-## Como rodar (única vez)
-Como você escolheu "script único sem UI", a execução vai ser feita via ferramenta de invocação de server function logada como ADM. Após confirmar o sucesso e ver o resumo no log, **o arquivo `seed-usuarios.functions.ts` é deletado** para não ficar resíduo no projeto.
+## Passos
 
-Alternativa, se preferir: posso deixar o arquivo no repo comentado/desabilitado para você reusar quando quiser regenerar a base de teste — me diga na hora de implementar.
+1. **Migração no banco**
+   - Criar `public.get_usuarios_padrao()` retornando `(id uuid, primeiro_nome text, segundo_nome text)`.
+   - `LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public`.
+   - Faz `JOIN` entre `profiles` e `user_roles` filtrando `role = 'padrao'` e ordena por nome.
+   - `GRANT EXECUTE` para `authenticated`.
+
+2. **Atualizar `src/lib/queries.ts`**
+   - Substituir o `useProfiles()` atual (duas queries em sequência) por uma única chamada `supabase.rpc("get_usuarios_padrao")`.
+
+3. **`src/components/prestacao-form.tsx`**
+   - Nenhuma mudança visual; já exibe apenas `primeiro_nome segundo_nome`.
 
 ## Detalhes técnicos
-- Parse CSV reaproveita a função já existente em `src/lib/sheet.functions.ts` (mesmo padrão de aspas/escape).
-- Header detectado dinamicamente (ignora linhas vazias do topo da planilha).
-- Validação: pula linhas sem e-mail válido ou sem senha (registra em `erros`).
-- Senha: usada como está na planilha. As senhas atuais (ex: `joao123`, `maria456`) já passam no `senhaSchema` (≥6 chars, letras+números, ao menos 1 número).
-- Sem RLS: `supabaseAdmin` ignora; usado só dentro do handler verificado.
 
-## Arquivos
-- **Criar**: `src/lib/seed-usuarios.functions.ts`
-- **Deletar após sucesso**: o mesmo arquivo (a menos que você peça para manter).
-
-## Nada muda
-- Schemas, triggers, RLS, UI, rotas — intocados.
+- A função é `STABLE`, então o Postgres pode otimizar e cachear durante a transação.
+- Mantemos o tipo do retorno enxuto para evitar vazamento de PII (e-mail/matrícula continuam protegidos pelo RLS atual).
+- A view `public_profiles` continua existindo e útil para outros casos (perfil próprio, área administrativa).
