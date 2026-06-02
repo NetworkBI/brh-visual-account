@@ -12,14 +12,14 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import logo from "@/assets/logo.png";
-import { useAuth } from "@/lib/auth";
+import { useAuth, useUserRole, canManageUsers } from "@/lib/auth";
 import { useTheme } from "@/lib/theme";
 import { Button } from "@/components/ui/button";
 
-const NAV = [
+const NAV_BASE = [
   { to: "/home", label: "Início", icon: Home },
   { to: "/dashboard", label: "Prestação de Contas", icon: FileText },
-  { to: "/usuarios", label: "Usuário", icon: Users },
+  { to: "/usuarios", label: "Usuários", icon: Users, requiresManage: true },
   { to: "/condominios", label: "Condomínios", icon: Building2 },
 ] as const;
 
