@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
-import { useEventos, useProfiles } from "@/lib/queries";
+import { useEventos, useAllProfiles } from "@/lib/queries";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/historico")({
 
 function Pagina() {
   const { data = [], isLoading } = useEventos();
-  const { data: profiles = [] } = useProfiles();
+  const { data: profiles = [] } = useAllProfiles();
   const navigate = useNavigate();
   const nomeDe = (id: string) => {
     const p = profiles.find((p) => p.id === id);

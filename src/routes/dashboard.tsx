@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { AppShell } from "@/components/app-shell";
-import { usePrestacoes, useCondominios, useProfiles } from "@/lib/queries";
+import { usePrestacoes, useCondominios, useProfiles, useAllProfiles } from "@/lib/queries";
 import { useAuth, useUserRole } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,10 +36,11 @@ function Pagina() {
   const { data: prestacoes = [], isLoading } = usePrestacoes();
   const { data: condominios = [] } = useCondominios();
   const { data: profiles = [] } = useProfiles();
+  const { data: allProfiles = [] } = useAllProfiles();
 
   const nomeUsuario = (id?: string | null) => {
     if (!id) return "—";
-    const p = profiles.find((p) => p.id === id);
+    const p = allProfiles.find((p) => p.id === id);
     return p ? `${p.primeiro_nome ?? ""} ${p.segundo_nome ?? ""}`.trim() || "—" : "—";
   };
 
