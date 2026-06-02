@@ -27,6 +27,18 @@ export function useProfiles() {
   });
 }
 
+export function useAllProfiles() {
+  return useQuery({
+    staleTime: STALE,
+    queryKey: ["profiles", "todos"],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("get_usuarios_todos");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
+
 export function usePrestacoes() {
   return useQuery({
     staleTime: STALE,
