@@ -95,18 +95,14 @@ export function PrestacaoForm({ initial, mode }: Props) {
 
   return (
     <Card className="p-6">
-      <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-1.5">
+      <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 sm:grid-cols-4">
+        {/* Linha 1: Mês + Condomínio */}
+        <div className="space-y-1.5 sm:col-span-1">
           <Label>Mês *</Label>
           <Input type="month" {...register("mes")} />
           {errors.mes && <p className="text-xs text-destructive">{errors.mes.message}</p>}
         </div>
-        <div className="space-y-1.5">
-          <Label>Data do Evento *</Label>
-          <Input type="date" {...register("data_evento")} />
-          {errors.data_evento && <p className="text-xs text-destructive">{errors.data_evento.message}</p>}
-        </div>
-        <div className="space-y-1.5">
+        <div className="space-y-1.5 sm:col-span-3">
           <Label>Condomínio *</Label>
           <Select value={nomeSelecionado} onValueChange={selecionarCondominioPorNome}>
             <SelectTrigger>
@@ -123,7 +119,14 @@ export function PrestacaoForm({ initial, mode }: Props) {
           )}
           {errors.condominio_id && <p className="text-xs text-destructive">{errors.condominio_id.message}</p>}
         </div>
-        <div className="space-y-1.5">
+
+        {/* Linha 2: Data Ocorrido + Processo + Usuário Responsável */}
+        <div className="space-y-1.5 sm:col-span-1">
+          <Label>Data Ocorrido *</Label>
+          <Input type="date" {...register("data_evento")} />
+          {errors.data_evento && <p className="text-xs text-destructive">{errors.data_evento.message}</p>}
+        </div>
+        <div className="space-y-1.5 sm:col-span-2">
           <Label>Processo *</Label>
           <Select value={watch("processo")} onValueChange={(v) => setValue("processo", v as any, { shouldValidate: true })}>
             <SelectTrigger><SelectValue /></SelectTrigger>
@@ -132,7 +135,7 @@ export function PrestacaoForm({ initial, mode }: Props) {
             </SelectContent>
           </Select>
         </div>
-        <div className="space-y-1.5 sm:col-span-2">
+        <div className="space-y-1.5 sm:col-span-1">
           <Label>Usuário Responsável *</Label>
           <Select value={watch("usuario_responsavel")} onValueChange={(v) => setValue("usuario_responsavel", v, { shouldValidate: true })}>
             <SelectTrigger><SelectValue placeholder="Selecione…" /></SelectTrigger>
@@ -144,11 +147,15 @@ export function PrestacaoForm({ initial, mode }: Props) {
           </Select>
           {errors.usuario_responsavel && <p className="text-xs text-destructive">{errors.usuario_responsavel.message}</p>}
         </div>
-        <div className="space-y-1.5 sm:col-span-2">
+
+        {/* Linha 3: Observações */}
+        <div className="space-y-1.5 sm:col-span-4">
           <Label>Observações</Label>
           <Textarea rows={3} {...register("observacoes")} />
         </div>
-        <div className="sm:col-span-2 flex gap-3">
+
+        {/* Linha 4: Botões */}
+        <div className="sm:col-span-4 flex gap-3">
           <Button type="submit" disabled={submitting}>{submitting ? "Salvando…" : "Salvar"}</Button>
           <Button type="button" variant="outline" onClick={() => navigate({ to: "/dashboard" })}>Cancelar</Button>
         </div>
