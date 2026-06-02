@@ -1,8 +1,10 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Users } from "lucide-react";
+import { useState } from "react";
+import { Home, Users, Settings, Moon, Sun, Palette as PaletteIcon } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -12,6 +14,9 @@ import {
 } from "@/components/ui/sidebar";
 import logo from "@/assets/logo.png";
 import { useUserRole, canManageUsers } from "@/lib/auth";
+import { useTheme } from "@/lib/theme";
+import { usePalette } from "@/lib/palette";
+import { cn } from "@/lib/utils";
 
 const NAV_BASE = [
   { to: "/home", label: "Início", icon: Home },
@@ -21,10 +26,12 @@ const NAV_BASE = [
 export function AppSidebar() {
   const currentPath = useRouterState({ select: (r) => r.location.pathname });
   const { data: role } = useUserRole();
+  const { theme, toggle } = useTheme();
+  const { next: nextPalette, label: paletteLabel } = usePalette();
+  const [open, setOpen] = useState(false);
   const NAV = NAV_BASE.filter(
     (i) => !("requiresManage" in i && i.requiresManage) || canManageUsers(role),
   );
-
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border shadow-[8px_0_24px_-12px_rgba(0,0,0,0.35)]">
@@ -59,6 +66,42 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
+      <SidebarFooter className="border-t border-sidebar-border bg-sidebar/80 p-2">
+        <SidebarMenu>
+          {open && (
+            <>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  onClick={nextPalette}
+                  tooltip={paletteLabel}
+                >
+                  <PaletteIcon className="h-4 w-4" />
+                  <span className="truncate">{paletteLabel}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  onClick={toggle}
+                  tooltip={theme === "dark" ? "Modo claro" : "Modo escuro"}
+                >
+                  {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                  <span>{theme === "dark" ? "Modo claro" : "Modo escuro"}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </>
+          )}
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={() => setOpen((v) => !v)}
+              tooltip="Configurações rápidas"
+              aria-expanded={open}
+            >
+              <Settings className={cn("h-4 w-4 transition-transform", open && "rotate-90")} />
+              <span>Configurações rápidas</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }

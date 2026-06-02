@@ -91,7 +91,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <main className="flex-1 p-6 lg:p-8">{children ?? <Outlet />}</main>
 
-      {/* Speed-dial FAB */}
+      {/* Speed-dial FAB — escondido em rotas que já possuem sidebar */}
+      {pathname !== "/dashboard" && (
       <div className="fixed bottom-6 right-6 z-30 flex flex-col items-end gap-3">
         {/* Sub-actions */}
         <div
@@ -146,6 +147,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <Settings className="h-6 w-6" />
         </Button>
       </div>
+      )}
     </div>
   );
 }
