@@ -23,6 +23,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as PrestacoesIndexRouteImport } from './routes/prestacoes.index'
 import { Route as PrestacoesNovaRouteImport } from './routes/prestacoes.nova'
 import { Route as PrestacoesIdEditarRouteImport } from './routes/prestacoes.$id.editar'
+import { Route as ApiPublicSeedUsuariosRouteImport } from './routes/api/public/seed-usuarios'
 
 const UsuariosRoute = UsuariosRouteImport.update({
   id: '/usuarios',
@@ -94,6 +95,11 @@ const PrestacoesIdEditarRoute = PrestacoesIdEditarRouteImport.update({
   path: '/prestacoes/$id/editar',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicSeedUsuariosRoute = ApiPublicSeedUsuariosRouteImport.update({
+  id: '/api/public/seed-usuarios',
+  path: '/api/public/seed-usuarios',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/usuarios': typeof UsuariosRoute
   '/prestacoes/nova': typeof PrestacoesNovaRoute
   '/prestacoes/': typeof PrestacoesIndexRoute
+  '/api/public/seed-usuarios': typeof ApiPublicSeedUsuariosRoute
   '/prestacoes/$id/editar': typeof PrestacoesIdEditarRoute
 }
 export interface FileRoutesByTo {
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/usuarios': typeof UsuariosRoute
   '/prestacoes/nova': typeof PrestacoesNovaRoute
   '/prestacoes': typeof PrestacoesIndexRoute
+  '/api/public/seed-usuarios': typeof ApiPublicSeedUsuariosRoute
   '/prestacoes/$id/editar': typeof PrestacoesIdEditarRoute
 }
 export interface FileRoutesById {
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/usuarios': typeof UsuariosRoute
   '/prestacoes/nova': typeof PrestacoesNovaRoute
   '/prestacoes/': typeof PrestacoesIndexRoute
+  '/api/public/seed-usuarios': typeof ApiPublicSeedUsuariosRoute
   '/prestacoes/$id/editar': typeof PrestacoesIdEditarRoute
 }
 export interface FileRouteTypes {
@@ -160,6 +169,7 @@ export interface FileRouteTypes {
     | '/usuarios'
     | '/prestacoes/nova'
     | '/prestacoes/'
+    | '/api/public/seed-usuarios'
     | '/prestacoes/$id/editar'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/usuarios'
     | '/prestacoes/nova'
     | '/prestacoes'
+    | '/api/public/seed-usuarios'
     | '/prestacoes/$id/editar'
   id:
     | '__root__'
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '/usuarios'
     | '/prestacoes/nova'
     | '/prestacoes/'
+    | '/api/public/seed-usuarios'
     | '/prestacoes/$id/editar'
   fileRoutesById: FileRoutesById
 }
@@ -209,6 +221,7 @@ export interface RootRouteChildren {
   UsuariosRoute: typeof UsuariosRoute
   PrestacoesNovaRoute: typeof PrestacoesNovaRoute
   PrestacoesIndexRoute: typeof PrestacoesIndexRoute
+  ApiPublicSeedUsuariosRoute: typeof ApiPublicSeedUsuariosRoute
   PrestacoesIdEditarRoute: typeof PrestacoesIdEditarRoute
 }
 
@@ -312,6 +325,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrestacoesIdEditarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/seed-usuarios': {
+      id: '/api/public/seed-usuarios'
+      path: '/api/public/seed-usuarios'
+      fullPath: '/api/public/seed-usuarios'
+      preLoaderRoute: typeof ApiPublicSeedUsuariosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -329,6 +349,7 @@ const rootRouteChildren: RootRouteChildren = {
   UsuariosRoute: UsuariosRoute,
   PrestacoesNovaRoute: PrestacoesNovaRoute,
   PrestacoesIndexRoute: PrestacoesIndexRoute,
+  ApiPublicSeedUsuariosRoute: ApiPublicSeedUsuariosRoute,
   PrestacoesIdEditarRoute: PrestacoesIdEditarRoute,
 }
 export const routeTree = rootRouteImport
