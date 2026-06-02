@@ -3,6 +3,8 @@ import { useState, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { AppShell } from "@/components/app-shell";
+import { AppSidebar } from "@/components/app-sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { usePrestacoes, useCondominios, useProfiles, useAllProfiles } from "@/lib/queries";
 import { useAuth, useUserRole } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,7 +26,22 @@ export const Route = createFileRoute("/dashboard")({
     title: "Prestação de Contas — Grupo BR Hunter",
     description: "Painel operacional com indicadores por processo, últimas prestações e lista completa de lançamentos do ciclo.",
   }),
-  component: () => <AppShell><Pagina /></AppShell>,
+  component: () => (
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full">
+        <AppSidebar />
+        <div className="flex-1 min-w-0">
+          <AppShell>
+            <div className="mb-3 flex items-center gap-2">
+              <SidebarTrigger />
+              <span className="text-xs text-muted-foreground">Menu</span>
+            </div>
+            <Pagina />
+          </AppShell>
+        </div>
+      </div>
+    </SidebarProvider>
+  ),
 });
 
 // Meta esperada por processo por ciclo do mês (ajuste conforme regra de negócio).
