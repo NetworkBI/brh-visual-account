@@ -92,9 +92,6 @@ function Pagina() {
           </div>
         </div>
         <div className="flex gap-2">
-          <Button asChild variant="outline">
-            <Link to="/historico"><History className="mr-1 h-4 w-4" /> Histórico</Link>
-          </Button>
           <Button asChild className="shadow-elegant">
             <Link to="/prestacoes/nova"><Plus className="mr-1 h-4 w-4" /> Novo Lançamento</Link>
           </Button>
