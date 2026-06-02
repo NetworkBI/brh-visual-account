@@ -31,7 +31,7 @@ export function PrestacaoForm({ initial, mode }: Props) {
     defaultValues: {
       mes: initial?.mes ?? new Date().toISOString().slice(0, 7),
       condominio_id: initial?.condominio_id ?? "",
-      processo: (initial?.processo as any) ?? "Doc/Recebimento",
+      processo: (initial?.processo as any) ?? "Documentação Recebida",
       data_evento: initial?.data_evento ?? new Date().toISOString().slice(0, 10),
       usuario_responsavel: initial?.usuario_responsavel ?? user?.id ?? "",
       observacoes: initial?.observacoes ?? "",
