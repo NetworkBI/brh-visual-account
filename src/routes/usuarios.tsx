@@ -207,7 +207,7 @@ function Pagina() {
             <Label>Papel atual</Label>
             <div>{myRole && <RoleBadge role={myRole} />}</div>
           </div>
-          <div className="space-y-1.5 sm:col-span-2">
+          <div className="space-y-1.5">
             <Label>Nova senha</Label>
             <div className="flex gap-2">
               <Input
