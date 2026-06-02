@@ -35,6 +35,13 @@ function Pagina() {
   const { data: role } = useUserRole();
   const { data: prestacoes = [], isLoading } = usePrestacoes();
   const { data: condominios = [] } = useCondominios();
+  const { data: profiles = [] } = useProfiles();
+
+  const nomeUsuario = (id?: string | null) => {
+    if (!id) return "—";
+    const p = profiles.find((p) => p.id === id);
+    return p ? `${p.primeiro_nome} ${p.segundo_nome}` : "—";
+  };
 
   const mesAtual = new Date().toISOString().slice(0, 7);
   const [mesSelecionado, setMesSelecionado] = useState(mesAtual);
@@ -59,18 +66,16 @@ function Pagina() {
     qc.invalidateQueries({ queryKey: ["prestacoes"] });
   };
 
-  // ----- Filtros da lista (substitui aba antiga "Prestações") -----
+  // ----- Filtros da lista (apenas busca por condomínio + mês do topo) -----
   const [q, setQ] = useState("");
-  const [proc, setProc] = useState<string>("todos");
-  const [mostrarInativos, setMostrarInativos] = useState(false);
   const filtered = useMemo(() => {
     const ql = q.toLowerCase();
     return prestacoes.filter((p) =>
-      (mostrarInativos || (p as any).ativo !== false) &&
-      (proc === "todos" || p.processo === proc) &&
-      (!ql || p.condominios?.nome?.toLowerCase().includes(ql) || p.mes?.toLowerCase().includes(ql)),
+      (p as any).ativo !== false &&
+      (p.mes || "").startsWith(mesSelecionado) &&
+      (!ql || p.condominios?.nome?.toLowerCase().includes(ql)),
     );
-  }, [prestacoes, q, proc, mostrarInativos]);
+  }, [prestacoes, q, mesSelecionado]);
 
   return (
     <div className="space-y-6">
