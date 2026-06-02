@@ -142,8 +142,8 @@ function Pagina() {
         {/* Últimas prestações — Top 5 animado */}
         <Card className="overflow-hidden">
           <CardHeader>
-            <h2 className="flex items-center gap-2 font-semibold leading-none tracking-tight"><Sparkles className="h-4 w-4 text-primary" /> Últimas Prestações</h2>
-            <p className="text-xs text-muted-foreground">Top 5 do ciclo atual</p>
+            <h2 className="flex items-center gap-2 font-semibold leading-none tracking-tight"><Sparkles className="h-4 w-4 text-primary" /> Últimos Lançamentos de Prestações</h2>
+            <p className="text-xs text-muted-foreground">Top 5 da Competência selecionada ({mesSelecionado})</p>
           </CardHeader>
           <CardContent>
             {isLoading ? (
