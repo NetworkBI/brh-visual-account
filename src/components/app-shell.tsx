@@ -80,7 +80,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           )}
         >
           <div className="flex items-center gap-2">
-            <span className="rounded-md bg-background/90 px-2 py-1 text-xs font-medium text-foreground shadow-sm ring-1 ring-border/60 backdrop-blur">
+            <span className="rounded-md bg-foreground/90 px-2.5 py-1 text-xs font-medium text-background shadow-sm backdrop-blur">
               {paletteLabel}
             </span>
             <Button
@@ -95,7 +95,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </Button>
           </div>
           <div className="flex items-center gap-2">
-            <span className="rounded-md bg-background/90 px-2 py-1 text-xs font-medium text-foreground shadow-sm ring-1 ring-border/60 backdrop-blur">
+            <span className="rounded-md bg-foreground/90 px-2.5 py-1 text-xs font-medium text-background shadow-sm backdrop-blur">
               {theme === "dark" ? "Modo claro" : "Modo escuro"}
             </span>
             <Button
