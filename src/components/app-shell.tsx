@@ -39,15 +39,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br from-background via-background to-muted/40" />
 
       <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-border/60 bg-background/80 px-4 backdrop-blur lg:px-8">
-        <Link to="/home" className="flex items-center gap-3">
+        <Link
+          to="/home"
+          className="flex items-center gap-3 rounded-lg bg-gradient-to-br from-[#7a1418] to-[#3a0a0c] px-3 py-1.5 shadow-md ring-1 ring-black/10"
+        >
           <img
             src={logo}
             alt="BR Hunter"
             width={640}
             height={640}
-            className="h-10 w-10 shrink-0 rounded-md bg-white/95 p-1 shadow-md object-contain"
+            className="h-9 w-9 shrink-0 rounded-md bg-white/95 p-1 object-contain"
           />
-          <span className="font-display text-sm font-bold tracking-wide text-primary hidden sm:inline">
+          <span className="font-display text-sm font-bold tracking-wide text-white hidden sm:inline">
             BR HUNTER
           </span>
         </Link>
@@ -80,7 +83,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           )}
         >
           <div className="flex items-center gap-2">
-            <span className="rounded-md bg-background/90 px-2 py-1 text-xs font-medium text-foreground shadow-sm ring-1 ring-border/60 backdrop-blur">
+            <span className="rounded-md bg-foreground/90 px-2.5 py-1 text-xs font-medium text-background shadow-sm backdrop-blur">
               {paletteLabel}
             </span>
             <Button
@@ -95,7 +98,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </Button>
           </div>
           <div className="flex items-center gap-2">
-            <span className="rounded-md bg-background/90 px-2 py-1 text-xs font-medium text-foreground shadow-sm ring-1 ring-border/60 backdrop-blur">
+            <span className="rounded-md bg-foreground/90 px-2.5 py-1 text-xs font-medium text-background shadow-sm backdrop-blur">
               {theme === "dark" ? "Modo claro" : "Modo escuro"}
             </span>
             <Button
