@@ -171,10 +171,10 @@ function Pagina() {
       </div>
 
       {/* Lista completa (mesclada da antiga aba Prestações) */}
-      <Card>
-        <CardHeader className="flex flex-row flex-wrap items-end justify-between gap-3 space-y-0">
+      <Card className="mt-10">
+        <CardHeader className="flex flex-row flex-wrap items-end justify-between gap-3 space-y-0 pt-8">
           <div>
-            <h2 className="font-semibold leading-none tracking-tight">Todos os lançamentos</h2>
+            <h2 className="font-display text-2xl font-bold tracking-tight">HISTÓRICO</h2>
             <p className="text-xs text-muted-foreground">Busque, filtre e edite as prestações cadastradas</p>
           </div>
           <div className="flex flex-wrap gap-2">
