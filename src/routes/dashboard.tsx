@@ -77,7 +77,19 @@ function Pagina() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-display text-3xl font-bold">Prestação de Contas</h1>
-          <p className="text-sm text-muted-foreground">Painel operacional · ciclo {new Date().toLocaleDateString("pt-BR", { month: "long", year: "numeric" })}</p>
+          <p className="text-sm text-muted-foreground">Resumo Operacional</p>
+          <div className="mt-3 flex items-center gap-2">
+            <label htmlFor="filtro-mes" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              Mês
+            </label>
+            <Input
+              id="filtro-mes"
+              type="month"
+              value={mesSelecionado}
+              onChange={(e) => setMesSelecionado(e.target.value || mesAtual)}
+              className="h-8 w-44"
+            />
+          </div>
         </div>
         <div className="flex gap-2">
           <Button asChild variant="outline">
