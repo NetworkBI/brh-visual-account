@@ -68,6 +68,3 @@ export function AppSidebar() {
     </Sidebar>
   );
 }
-    </Sidebar>
-  );
-}
