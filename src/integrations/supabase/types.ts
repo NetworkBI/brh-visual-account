@@ -205,10 +205,10 @@ export type Database = {
       app_role: "adm" | "padrao"
       evento_tipo: "criação" | "edição"
       processo_tipo:
-        | "Doc/Recebimento"
-        | "Lançamento"
-        | "Montagem"
-        | "Data Fechamento"
+        | "Documentação Recebida"
+        | "Lançamento Contábeis"
+        | "Montagem Balancete"
+        | "Data da Entrega"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -339,10 +339,10 @@ export const Constants = {
       app_role: ["adm", "padrao"],
       evento_tipo: ["criação", "edição"],
       processo_tipo: [
-        "Doc/Recebimento",
-        "Lançamento",
-        "Montagem",
-        "Data Fechamento",
+        "Documentação Recebida",
+        "Lançamento Contábeis",
+        "Montagem Balancete",
+        "Data da Entrega",
       ],
     },
   },
