@@ -138,7 +138,7 @@ export function PrestacaoForm({ initial, mode }: Props) {
             <SelectTrigger><SelectValue placeholder="Selecione…" /></SelectTrigger>
             <SelectContent>
               {profiles.filter((p) => p.id).map((p) => (
-                <SelectItem key={p.id!} value={p.id!}>{p.primeiro_nome} {p.segundo_nome} ({p.email})</SelectItem>
+                <SelectItem key={p.id!} value={p.id!}>{p.primeiro_nome} {p.segundo_nome}</SelectItem>
               ))}
             </SelectContent>
           </Select>
