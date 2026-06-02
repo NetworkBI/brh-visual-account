@@ -201,6 +201,14 @@ export type Database = {
           segundo_nome: string
         }[]
       }
+      get_usuarios_todos: {
+        Args: never
+        Returns: {
+          id: string
+          primeiro_nome: string
+          segundo_nome: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
