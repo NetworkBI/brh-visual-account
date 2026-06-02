@@ -221,8 +221,8 @@ function Pagina() {
                               </SelectValue>
                             </SelectTrigger>
                             <SelectContent>
-                              {profiles.map((u) => (
-                                <SelectItem key={u.id} value={u.id}>{u.primeiro_nome} {u.segundo_nome}</SelectItem>
+                              {profiles.filter((u) => u.id).map((u) => (
+                                <SelectItem key={u.id!} value={u.id!}>{u.primeiro_nome ?? ""} {u.segundo_nome ?? ""}</SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
