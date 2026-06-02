@@ -5,9 +5,9 @@ export type Palette = "padrao" | "brasa" | "grafite";
 const ORDER: Palette[] = ["padrao", "brasa", "grafite"];
 
 const LABELS: Record<Palette, string> = {
-  padrao: "Identidade BR Hunter",
-  brasa: "Brasa — vermelho dominante",
-  grafite: "Grafite — cinza dominante",
+  padrao: "Cores Alternativas — Padrão",
+  brasa: "Cores Alternativas — Brasa",
+  grafite: "Cores Alternativas — Grafite",
 };
 
 interface Ctx {
