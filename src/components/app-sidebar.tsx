@@ -48,7 +48,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {NAV.map((item) => {
-                const active = currentPath === item.to || (item.to === "/dashboard" && currentPath.startsWith("/prestacoes"));
+                const active = currentPath === item.to;
                 return (
                   <SidebarMenuItem key={item.to}>
                     <SidebarMenuButton asChild isActive={active} tooltip={item.label} size="lg">
