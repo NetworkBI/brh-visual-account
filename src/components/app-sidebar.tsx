@@ -26,8 +26,13 @@ const NAV_BASE = [
 export function AppSidebar() {
   const currentPath = useRouterState({ select: (r) => r.location.pathname });
   const { user, signOut } = useAuth();
+  const { data: role } = useUserRole();
   const { theme, toggle } = useTheme();
   const navigate = useNavigate();
+  const NAV = NAV_BASE.filter(
+    (i) => !("requiresManage" in i && i.requiresManage) || canManageUsers(role),
+  );
+
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border shadow-[8px_0_24px_-12px_rgba(0,0,0,0.35)]">
