@@ -36,10 +36,11 @@ function Pagina() {
   const { data: prestacoes = [], isLoading } = usePrestacoes();
   const { data: condominios = [] } = useCondominios();
   const { data: profiles = [] } = useProfiles();
+  const { data: allProfiles = [] } = useAllProfiles();
 
   const nomeUsuario = (id?: string | null) => {
     if (!id) return "—";
-    const p = profiles.find((p) => p.id === id);
+    const p = allProfiles.find((p) => p.id === id);
     return p ? `${p.primeiro_nome ?? ""} ${p.segundo_nome ?? ""}`.trim() || "—" : "—";
   };
 
