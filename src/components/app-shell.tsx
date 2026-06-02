@@ -147,6 +147,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <Settings className="h-6 w-6" />
         </Button>
       </div>
+      )}
     </div>
   );
 }
