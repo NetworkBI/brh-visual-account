@@ -18,9 +18,7 @@ import { Button } from "@/components/ui/button";
 
 const NAV_BASE = [
   { to: "/home", label: "Início", icon: Home },
-  { to: "/dashboard", label: "Prestação de Contas", icon: FileText },
   { to: "/usuarios", label: "Usuários", icon: Users, requiresManage: true },
-  { to: "/condominios", label: "Condomínios", icon: Building2 },
 ] as const;
 
 export function AppSidebar() {
@@ -50,7 +48,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {NAV.map((item) => {
-                const active = currentPath === item.to || (item.to === "/dashboard" && currentPath.startsWith("/prestacoes"));
+                const active = currentPath === item.to;
                 return (
                   <SidebarMenuItem key={item.to}>
                     <SidebarMenuButton asChild isActive={active} tooltip={item.label} size="lg">
