@@ -100,6 +100,62 @@
   --ring: oklch(0.62 0.22 27);
 }
 
+/* === Paleta alternativa: Brasa (vermelho institucional dominante) === */
+[data-palette="brasa"] {
+  --background: oklch(0.98 0.012 25);
+  --foreground: oklch(0.20 0.02 25);
+  --card: oklch(1 0.005 25);
+  --primary: oklch(0.52 0.24 27);
+  --primary-glow: oklch(0.66 0.24 30);
+  --secondary: oklch(0.45 0.05 25);
+  --accent: oklch(0.92 0.06 25);
+  --accent-foreground: oklch(0.30 0.05 25);
+  --muted: oklch(0.94 0.02 25);
+  --ring: oklch(0.52 0.24 27);
+  --sidebar-primary: oklch(0.52 0.24 27);
+}
+[data-palette="brasa"].dark {
+  --background: oklch(0.16 0.02 25);
+  --card: oklch(0.22 0.03 25);
+  --primary: oklch(0.66 0.24 28);
+  --primary-glow: oklch(0.74 0.22 28);
+  --accent: oklch(0.32 0.10 25);
+  --muted: oklch(0.26 0.03 25);
+  --ring: oklch(0.66 0.24 28);
+}
+
+/* === Paleta alternativa: Grafite (cinza escuro dominante, vermelho como acento) === */
+[data-palette="grafite"] {
+  --background: oklch(0.96 0.003 0);
+  --foreground: oklch(0.18 0.005 0);
+  --card: oklch(0.99 0 0);
+  --primary: oklch(0.30 0.01 0);
+  --primary-foreground: oklch(0.99 0 0);
+  --primary-glow: oklch(0.42 0.02 0);
+  --secondary: oklch(0.55 0.18 25);
+  --secondary-foreground: oklch(0.99 0 0);
+  --accent: oklch(0.90 0.04 25);
+  --accent-foreground: oklch(0.30 0.01 0);
+  --muted: oklch(0.92 0.005 0);
+  --border: oklch(0.85 0.005 0);
+  --ring: oklch(0.30 0.01 0);
+  --sidebar-primary: oklch(0.30 0.01 0);
+}
+[data-palette="grafite"].dark {
+  --background: oklch(0.14 0.005 0);
+  --card: oklch(0.20 0.005 0);
+  --primary: oklch(0.85 0.01 0);
+  --primary-foreground: oklch(0.15 0.005 0);
+  --primary-glow: oklch(0.92 0.01 0);
+  --secondary: oklch(0.62 0.22 27);
+  --accent: oklch(0.28 0.04 25);
+  --muted: oklch(0.24 0.005 0);
+  --ring: oklch(0.85 0.01 0);
+}
+
+
+
+
 @layer base {
   * { border-color: var(--color-border); }
   body {
