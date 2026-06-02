@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/app-shell";
 import { useAuth } from "@/lib/auth";
-import { FileText, Users, Building2, Settings, ArrowRight } from "lucide-react";
+import { FileText, Users, ArrowRight } from "lucide-react";
 import mascot from "@/assets/mascot.png";
 import homeBg from "@/assets/home-bg.jpg";
 
@@ -19,8 +19,6 @@ export const Route = createFileRoute("/home")({
 const SHORTCUTS = [
   { to: "/dashboard", label: "Prestação de Contas", desc: "Acompanhe lançamentos, processos e indicadores do mês.", icon: FileText },
   { to: "/usuarios", label: "Usuários", desc: "Gerencie acessos, papéis e redefinição de senhas.", icon: Users },
-  { to: "/condominios", label: "Condomínios", desc: "Cadastre e edite os condomínios atendidos.", icon: Building2 },
-  { to: "/configuracoes", label: "Configurações", desc: "Preferências do sistema, tema e histórico.", icon: Settings },
 ] as const;
 
 function HomePage() {
@@ -51,7 +49,7 @@ function HomePage() {
               Bem-vindo, <span className="text-[#a01c22]">{nome}</span>.
             </h1>
             <p className="mt-3 max-w-xl text-base text-muted-foreground">
-              Sua central de controle operacional. Escolha um módulo abaixo ou utilize o menu lateral para iniciar os fluxos do sistema.
+              Sua central de controle operacional. Escolha um módulo abaixo para iniciar os fluxos do sistema.
             </p>
           </div>
           <div className="relative justify-self-center lg:justify-self-end">
@@ -61,7 +59,7 @@ function HomePage() {
         </div>
 
         {/* Shortcuts */}
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10 grid gap-4 sm:grid-cols-2">
           {SHORTCUTS.map((s) => (
             <Link
               key={s.to}
