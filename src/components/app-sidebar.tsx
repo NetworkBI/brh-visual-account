@@ -20,10 +20,7 @@ const NAV_BASE = [
 
 export function AppSidebar() {
   const currentPath = useRouterState({ select: (r) => r.location.pathname });
-  const { user, signOut } = useAuth();
   const { data: role } = useUserRole();
-  const { theme, toggle } = useTheme();
-  const navigate = useNavigate();
   const NAV = NAV_BASE.filter(
     (i) => !("requiresManage" in i && i.requiresManage) || canManageUsers(role),
   );
