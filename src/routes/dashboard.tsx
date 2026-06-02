@@ -39,6 +39,13 @@ function Pagina() {
   const { data: condominios = [] } = useCondominios();
   const { data: profiles = [] } = useProfiles();
   const { data: allProfiles = [] } = useAllProfiles();
+  const fetchSheetCondos = useServerFn(getCondominiosFromSheet);
+  const { data: sheetCondos } = useQuery({
+    queryKey: ["sheet-condominios"],
+    queryFn: () => fetchSheetCondos(),
+    staleTime: 5 * 60_000,
+  });
+  const totalCondominiosPlanilha = sheetCondos?.nomes?.length ?? 0;
 
   const nomeUsuario = (id?: string | null) => {
     if (!id) return "—";
