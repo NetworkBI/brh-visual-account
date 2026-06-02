@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { AppShell } from "@/components/app-shell";
+import { AppSidebar } from "@/components/app-sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import {
   useAuth,
   useUserRole,
@@ -51,7 +53,18 @@ export const Route = createFileRoute("/usuarios")({
     }),
   component: () => (
     <AppShell>
-      <Pagina />
+      <SidebarProvider>
+        <div className="flex w-full">
+          <AppSidebar />
+          <div className="flex-1 min-w-0">
+            <div className="mb-4 flex items-center gap-2">
+              <SidebarTrigger />
+              <span className="text-xs text-muted-foreground">Menu</span>
+            </div>
+            <Pagina />
+          </div>
+        </div>
+      </SidebarProvider>
     </AppShell>
   ),
 });
