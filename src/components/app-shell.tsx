@@ -5,7 +5,7 @@ import { useTheme } from "@/lib/theme";
 import { usePalette } from "@/lib/palette";
 import { Button } from "@/components/ui/button";
 
-import { LogOut, Moon, Sun, Settings, Palette as PaletteIcon } from "lucide-react";
+import { ArrowLeft, LogOut, Moon, Sun, Settings, Palette as PaletteIcon } from "lucide-react";
 import logo from "@/assets/logo.png";
 import homeBg from "@/assets/home-bg.jpg";
 import { cn } from "@/lib/utils";
