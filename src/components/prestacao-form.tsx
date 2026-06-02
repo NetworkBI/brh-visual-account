@@ -29,6 +29,14 @@ export function PrestacaoForm({ initial, mode }: Props) {
   const { data: profiles = [] } = useProfiles();
   const [submitting, setSubmitting] = useState(false);
 
+  const fetchSheet = useServerFn(getCondominiosFromSheet);
+  const { data: sheetData, isLoading: sheetLoading } = useQuery({
+    queryKey: ["condominios-sheet"],
+    queryFn: () => fetchSheet(),
+    staleTime: 60_000,
+  });
+  const nomesSheet = sheetData?.nomes ?? [];
+
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<PrestacaoInput>({
     resolver: zodResolver(prestacaoSchema),
     defaultValues: {
@@ -40,6 +48,34 @@ export function PrestacaoForm({ initial, mode }: Props) {
       observacoes: initial?.observacoes ?? "",
     },
   });
+
+  // Lista exibida: nomes da planilha + nomes já no banco (sem duplicar)
+  const nomesUnificados = (() => {
+    const set = new Set<string>();
+    nomesSheet.forEach((n) => set.add(n));
+    condominios.forEach((c) => set.add(c.nome));
+    return Array.from(set).sort((a, b) => a.localeCompare(b, "pt-BR"));
+  })();
+
+  const condominioIdAtual = watch("condominio_id");
+  const nomeSelecionado =
+    condominios.find((c) => c.id === condominioIdAtual)?.nome ?? "";
+
+  async function selecionarCondominioPorNome(nome: string) {
+    const existente = condominios.find((c) => c.nome === nome);
+    if (existente) {
+      setValue("condominio_id", existente.id, { shouldValidate: true });
+      return;
+    }
+    if (!user) return;
+    const { data, error } = await supabase
+      .from("condominios")
+      .insert({ nome, created_by: user.id })
+      .select("id")
+      .single();
+    if (error || !data) { toast.error(error?.message ?? "Falha ao cadastrar condomínio"); return; }
+    setValue("condominio_id", data.id, { shouldValidate: true });
+  }
 
   const onSubmit = async (v: PrestacaoInput) => {
     if (!user) return;
@@ -72,12 +108,19 @@ export function PrestacaoForm({ initial, mode }: Props) {
         </div>
         <div className="space-y-1.5">
           <Label>Condomínio *</Label>
-          <Select value={watch("condominio_id")} onValueChange={(v) => setValue("condominio_id", v, { shouldValidate: true })}>
-            <SelectTrigger><SelectValue placeholder="Selecione…" /></SelectTrigger>
+          <Select value={nomeSelecionado} onValueChange={selecionarCondominioPorNome}>
+            <SelectTrigger>
+              <SelectValue placeholder={sheetLoading ? "Carregando planilha…" : "Selecione…"} />
+            </SelectTrigger>
             <SelectContent>
-              {condominios.map((c) => <SelectItem key={c.id} value={c.id}>{c.nome}</SelectItem>)}
+              {nomesUnificados.map((nome) => (
+                <SelectItem key={nome} value={nome}>{nome}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
+          {sheetData?.error && (
+            <p className="text-xs text-destructive">Planilha: {sheetData.error}</p>
+          )}
           {errors.condominio_id && <p className="text-xs text-destructive">{errors.condominio_id.message}</p>}
         </div>
         <div className="space-y-1.5">
