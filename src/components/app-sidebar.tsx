@@ -1,9 +1,8 @@
-import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { Home, FileText, Users, Building2, Settings, LogOut, Moon, Sun } from "lucide-react";
+import { Link, useRouterState } from "@tanstack/react-router";
+import { Home, Users } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -12,9 +11,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import logo from "@/assets/logo.png";
-import { useAuth, useUserRole, canManageUsers } from "@/lib/auth";
-import { useTheme } from "@/lib/theme";
-import { Button } from "@/components/ui/button";
+import { useUserRole, canManageUsers } from "@/lib/auth";
 
 const NAV_BASE = [
   { to: "/home", label: "Início", icon: Home },
