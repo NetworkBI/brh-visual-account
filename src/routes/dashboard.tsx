@@ -178,7 +178,7 @@ function Pagina() {
             <p className="text-xs text-muted-foreground">Busque, filtre e edite as prestações cadastradas</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Input placeholder="Buscar condomínio ou mês…" value={q} onChange={(e) => setQ(e.target.value)} className="max-w-xs" />
+            <Input placeholder="Buscar condomínio" value={q} onChange={(e) => setQ(e.target.value)} className="max-w-xs" />
             <Select value={proc} onValueChange={setProc}>
               <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
               <SelectContent>
