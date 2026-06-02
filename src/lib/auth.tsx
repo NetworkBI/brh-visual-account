@@ -3,7 +3,7 @@ import type { Session, User } from "@supabase/supabase-js";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-export type AppRole = "adm" | "padrao";
+export type AppRole = "master" | "adm" | "padrao";
 
 interface AuthCtx {
   user: User | null;
@@ -57,11 +57,21 @@ export function useUserRole() {
       const { data, error } = await supabase
         .from("user_roles")
         .select("role")
-        .eq("user_id", user!.id)
-        .order("role", { ascending: true });
+        .eq("user_id", user!.id);
       if (error) throw error;
-      if (data?.some((r) => r.role === "adm")) return "adm";
+      const roles = (data ?? []).map((r) => r.role);
+      if (roles.includes("master")) return "master";
+      if (roles.includes("adm")) return "adm";
       return "padrao";
     },
   });
+}
+
+export const isMaster = (r?: AppRole | null) => r === "master";
+export const canManageUsers = (r?: AppRole | null) => r === "master" || r === "adm";
+export const canEditAnyPrestacao = (r?: AppRole | null) => r === "master" || r === "adm";
+export const canPromoteToMaster = (r?: AppRole | null) => r === "master";
+
+export function roleLabel(r: AppRole) {
+  return r === "master" ? "MASTER" : r === "adm" ? "ADM" : "PADRÃO";
 }
