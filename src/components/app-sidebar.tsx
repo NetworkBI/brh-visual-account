@@ -65,41 +65,9 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border bg-sidebar/80 p-2">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={currentPath === "/configuracoes"} tooltip="Configurações">
-              <Link to="/configuracoes" className="flex items-center gap-3">
-                <Settings className="h-4 w-4" />
-                <span>Configurações</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton tooltip={theme === "dark" ? "Modo claro" : "Modo escuro"} onClick={toggle}>
-              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              <span>{theme === "dark" ? "Modo claro" : "Modo escuro"}</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-        <div className="mt-2 flex items-center gap-2 rounded-md border border-sidebar-border bg-card/50 p-2 group-data-[collapsible=icon]:hidden">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-            {user?.email?.[0]?.toUpperCase() ?? "U"}
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-xs font-medium">{user?.email}</p>
-          </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7"
-            onClick={() => { signOut().then(() => navigate({ to: "/login" })); }}
-            title="Sair"
-          >
-            <LogOut className="h-4 w-4" />
-          </Button>
-        </div>
-      </SidebarFooter>
+    </Sidebar>
+  );
+}
     </Sidebar>
   );
 }
