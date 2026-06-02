@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
-import { SiteShell } from "@/components/site-shell";
+import { AppShell } from "@/components/app-shell";
 import { useEventos, useProfiles } from "@/lib/queries";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/historico")({
     title: "Histórico — Grupo BR Hunter",
     description: "Consulte o histórico completo de eventos e movimentações realizadas no sistema do Grupo BR Hunter.",
   }),
-  component: () => <SiteShell><Pagina /></SiteShell>,
+  component: () => <AppShell><Pagina /></AppShell>,
 });
 
 function Pagina() {

@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
-import { SiteShell } from "@/components/site-shell";
+import { AppShell } from "@/components/app-shell";
 import { usePrestacoes } from "@/lib/queries";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/prestacoes/")({
     title: "Prestações — Grupo BR Hunter",
     description: "Lista completa de prestações de contas cadastradas, com busca e filtro por processo.",
   }),
-  component: () => <SiteShell><Lista /></SiteShell>,
+  component: () => <AppShell><Lista /></AppShell>,
 });
 
 function Lista() {
