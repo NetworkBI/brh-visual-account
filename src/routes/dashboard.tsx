@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { AppShell } from "@/components/app-shell";
 import { usePrestacoes, useCondominios, useProfiles, useAllProfiles } from "@/lib/queries";
 import { useAuth, useUserRole } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
+import { getCondominiosFromSheet } from "@/lib/sheet.functions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,6 +39,13 @@ function Pagina() {
   const { data: condominios = [] } = useCondominios();
   const { data: profiles = [] } = useProfiles();
   const { data: allProfiles = [] } = useAllProfiles();
+  const fetchSheetCondos = useServerFn(getCondominiosFromSheet);
+  const { data: sheetCondos } = useQuery({
+    queryKey: ["sheet-condominios"],
+    queryFn: () => fetchSheetCondos(),
+    staleTime: 5 * 60_000,
+  });
+  const totalCondominiosPlanilha = sheetCondos?.nomes?.length ?? 0;
 
   const nomeUsuario = (id?: string | null) => {
     if (!id) return "—";
@@ -105,7 +114,7 @@ function Pagina() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard icon={Building2} label="Quantidades de Condomínios que vão prestar contas" value={new Set(doMes.map((p) => p.condominio_id)).size} />
+        <StatCard icon={Building2} label="Quantidades de Condomínios que vão prestar contas" value={totalCondominiosPlanilha} />
         <StatCard icon={FileText} label="Quantidade de Lançamento Realizados" value={prestacoes.length} />
         <StatCard icon={Building2} label="Quantidade de Condomínios sem nenhum processo" value={Math.max(0, condominios.length - new Set(doMes.map((p) => p.condominio_id)).size)} />
       </div>
