@@ -18,9 +18,20 @@ export function useCondominios() {
 export function useProfiles() {
   return useQuery({
     staleTime: STALE,
-    queryKey: ["profiles"],
+    queryKey: ["profiles", "padrao"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("public_profiles").select("id, primeiro_nome, segundo_nome, email");
+      const { data: roles, error: rolesError } = await supabase
+        .from("user_roles")
+        .select("user_id")
+        .eq("role", "padrao");
+      if (rolesError) throw rolesError;
+      const ids = (roles ?? []).map((r) => r.user_id);
+      if (ids.length === 0) return [];
+      const { data, error } = await supabase
+        .from("public_profiles")
+        .select("id, primeiro_nome, segundo_nome")
+        .in("id", ids)
+        .order("primeiro_nome");
       if (error) throw error;
       return data;
     },
