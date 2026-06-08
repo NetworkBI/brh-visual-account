@@ -50,9 +50,9 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border shadow-[8px_0_24px_-12px_rgba(0,0,0,0.35)]">
-      <SidebarHeader className="border-b border-sidebar-border bg-gradient-to-b from-[#7a1418] to-[#3a0a0c] p-3">
-        <div className="flex items-center gap-2">
-          <Link to="/home" className="flex min-w-0 flex-1 items-center gap-3">
+      <SidebarHeader className="border-b border-sidebar-border bg-gradient-to-b from-[#7a1418] to-[#3a0a0c] p-3 group-data-[collapsible=icon]:p-2">
+        <div className="flex items-center gap-2 group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:gap-2">
+          <Link to="/home" className="flex min-w-0 flex-1 items-center gap-3 group-data-[collapsible=icon]:flex-none">
             <img
               src={logo}
               alt="BR Hunter"
@@ -65,8 +65,8 @@ export function AppSidebar() {
             </span>
           </Link>
           <SidebarTrigger
-            className="h-8 w-8 shrink-0 text-white hover:bg-white/15 hover:text-white group-data-[collapsible=icon]:hidden"
-            aria-label="Recolher menu"
+            className="h-8 w-8 shrink-0 text-white hover:bg-white/15 hover:text-white"
+            aria-label="Alternar menu"
           />
         </div>
       </SidebarHeader>
