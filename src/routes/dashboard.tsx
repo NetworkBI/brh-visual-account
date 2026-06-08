@@ -147,7 +147,7 @@ function Pagina() {
             <TooltipProvider delayDuration={100}>
               {porProcesso.map((r) => (
                 <div key={r.proc} className="flex items-center gap-3">
-                  <span className="w-40 shrink-0 text-sm font-medium">{r.proc}</span>
+                  <span className="w-52 shrink-0 whitespace-nowrap text-sm font-medium">{r.proc}</span>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="group relative h-3 flex-1 cursor-help overflow-hidden rounded-full bg-muted ring-1 ring-border">
