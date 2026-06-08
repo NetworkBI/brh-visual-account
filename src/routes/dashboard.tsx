@@ -282,14 +282,14 @@ function Pagina() {
 
 function StatCard({ icon: Icon, label, value }: { icon: any; label: string; value: number }) {
   return (
-    <Card className="overflow-hidden">
-      <CardContent className="flex items-center gap-4 p-5">
-        <div className="rounded-lg bg-gradient-to-br from-primary/15 to-primary/5 p-2.5 text-primary ring-1 ring-primary/20">
-          <Icon className="h-5 w-5" />
+    <Card className="overflow-hidden min-h-[180px]">
+      <CardContent className="flex h-full min-h-[180px] items-stretch gap-5 p-0">
+        <div className="flex w-16 shrink-0 items-center justify-center bg-gradient-to-b from-primary/15 to-primary/5 text-primary ring-1 ring-primary/20">
+          <Icon className="h-8 w-8" />
         </div>
-        <div>
-          <p className="text-xs normal-case tracking-wider text-muted-foreground">{label}</p>
-          <p className="font-display text-2xl font-bold">{value}</p>
+        <div className="flex flex-1 flex-col items-center justify-center px-4 py-5 text-center">
+          <p className="font-display text-4xl font-bold tabular-nums leading-none">{value}</p>
+          <p className="mt-3 text-sm normal-case tracking-wide text-muted-foreground">{label}</p>
         </div>
       </CardContent>
     </Card>
