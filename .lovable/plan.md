@@ -1,52 +1,48 @@
 ## Objetivo
-Padronizar a navegação: header só na Home; demais páginas autenticadas usam o AppSidebar com todos os controles consolidados; botão flutuante "voltar ao topo" global.
+Promover a paleta **Grafite** a padrão do sistema, manter a atual como alternativa **Clássica**, e garantir que o sidebar fique **branco no modo claro** e **escuro no modo escuro** — com vermelho apenas como acento discreto.
 
 ## Mudanças
 
-### 1. `src/components/app-shell.tsx` — Header só na Home
-- O `<header>` (logo "BR HUNTER", data, Voltar, Sair) passa a renderizar **apenas** quando `pathname === "/home"`.
-- Nas demais rotas, o AppShell renderiza só o background + `<main>` (sem header, sem padding extra), deixando o sidebar como única navegação.
-- Remover o FAB (Settings/tema/paleta) — funções migram para o sidebar. Mantém o `<main>` com `Outlet`/children.
+### 1. `src/lib/palette.tsx` — Ciclo e nomes
+- Renomear o id `"padrao"` para `"classica"` e adicionar `"grafite"` como novo padrão inicial.
+- Manter a ordem atual de ciclo trocando apenas a primeira posição:
+  - `ORDER = ["grafite", "brasa", "classica"]`
+- Labels:
+  - `grafite` → "Cores Alternativas — Grafite"
+  - `brasa` → "Cores Alternativas — Brasa"
+  - `classica` → "Cores Alternativas — Clássica"
+- Estado inicial: `"grafite"`.
+- Migração leve do `localStorage`: se o valor salvo for `"padrao"`, converter para `"classica"` na leitura (sem quebrar usuários existentes).
 
-### 2. `src/components/app-sidebar.tsx` — Sidebar consolidado
-**Header do sidebar (topo):**
-- Logo + "BR HUNTER" à esquerda.
-- `SidebarTrigger` (botão de recolher) à direita do logo, dentro do próprio `SidebarHeader`. Quando colapsado, o trigger continua visível na faixa de ícones.
+### 2. `src/styles.css` — Tokens
+- **`:root` (sem `[data-palette]`)**: passa a representar o Grafite (novo padrão). Ajustar para que o sidebar fique **branco** no modo claro:
+  - `--sidebar: oklch(1 0 0)` (branco puro)
+  - `--sidebar-foreground`: cinza escuro grafite
+  - `--sidebar-primary`: vermelho discreto (acento)
+  - `--sidebar-accent`: cinza muito claro
+  - `--sidebar-border`: cinza claro
+  - `--primary`: grafite escuro; `--secondary`/acentos cinza; vermelho fica reservado para `--destructive` e detalhes pontuais.
+- **`.dark` (default)**: sidebar escuro grafite (`--sidebar` cinza muito escuro, foreground claro, vermelho discreto como acento). Garante a regra "no modo escuro o menu também fica escuro".
+- **`[data-palette="classica"]`** (nova): move para cá os tokens que hoje estão em `:root` (vermelho institucional dominante, sidebar branco no claro / escuro no dark) — exatamente o visual atual.
+- **`[data-palette="brasa"]`**: inalterado.
+- **Remover** o bloco `[data-palette="grafite"]` antigo (vira o novo `:root`).
 
-**Conteúdo (mesmo de hoje):** Início, Usuários (se permissão).
+### 3. `src/components/app-sidebar.tsx` — Topo do sidebar
+Hoje o `SidebarHeader` tem `bg-gradient-to-b from-[#7a1418] to-[#3a0a0c]` hardcoded, o que mantém o topo vermelho mesmo com sidebar branco.
+- Trocar para usar tokens do sidebar: fundo `bg-sidebar`, borda `border-sidebar-border`, texto `text-sidebar-foreground`.
+- Logo continua com o card branco interno; o título "BR HUNTER" passa a usar `text-sidebar-foreground` (cinza grafite no claro, claro no escuro).
+- `SidebarTrigger`: ajustar hover para `hover:bg-sidebar-accent hover:text-sidebar-accent-foreground` (em vez de `hover:bg-white/15`).
+- Resultado: no modo claro o sidebar fica 100% branco; no escuro fica grafite escuro; nas demais paletas (Clássica/Brasa) o topo volta ao gradiente vermelho dessas paletas via tokens.
 
-**Rodapé do sidebar — agrupamento profissional (na ordem):**
-1. Alternar paleta (`PaletteIcon` + label dinâmico)
-2. Alternar tema (Sun/Moon + "Modo claro/escuro")
-3. Separador
-4. Voltar (`ArrowLeft`) — usa `window.history.back()` com fallback para `/home`; **oculto quando `pathname === "/home"`**
-5. Sair (`LogOut`) — chama `signOut()` e navega para `/login`
+> Observação: como o gradiente vermelho some, para preservá-lo nas paletas Clássica/Brasa vamos definir um token novo `--sidebar-header-bg` em `:root` (branco/grafite) e nos blocos `[data-palette="classica"]` e `[data-palette="brasa"]` (gradiente vermelho). O `SidebarHeader` usa `style={{ background: "var(--sidebar-header-bg)" }}`.
 
-Remover o toggle "Configurações rápidas" (open/close) — todos os itens ficam sempre visíveis no rodapé, harmonizados com `SidebarMenuButton` padrão (mesmo tamanho, ícones 4×4, tooltip quando colapsado).
-
-### 3. Adicionar AppSidebar nas páginas que ainda não têm
-Aplicar o mesmo wrapper já usado em `dashboard.tsx`/`usuarios.tsx` em:
-- `src/routes/condominios.tsx`
-- `src/routes/historico.tsx`
-- `src/routes/configuracoes.tsx`
-- `src/routes/prestacoes.index.tsx`
-- `src/routes/prestacoes.nova.tsx`
-- `src/routes/prestacoes.$id.editar.tsx`
-
-`home.tsx` **não recebe sidebar** — fica só com o header da AppShell.
-
-Como o `SidebarTrigger` agora vive dentro do sidebar, remover os `SidebarTrigger` que ficam no topo de cada página (em dashboard/usuarios).
-
-### 4. Botão "Voltar ao topo" — global
-Criar `src/components/back-to-top.tsx`:
-- `position: fixed` no canto inferior direito (`bottom-6 right-6 z-40`).
-- `useEffect` com listener `scroll` na `window`: aparece quando `window.scrollY > 300`, some abaixo disso (transição de opacidade + translate-y suave).
-- `onClick`: `window.scrollTo({ top: 0, behavior: "smooth" })`.
-- Botão circular (`h-12 w-12 rounded-full`) com ícone `ArrowUp` (lucide), variante `default`, sombra suave; `aria-label="Voltar ao topo"`.
-- Montar dentro do `AppShell` (renderiza em todas as páginas autenticadas).
+### 4. Acento "vermelho discreto" no Grafite
+- `--destructive` permanece vermelho (botão Sair, erros).
+- `--primary` no Grafite vira grafite escuro, então CTAs primários ficam em grafite — vermelho aparece só em `destructive` e em hovers/realces críticos. Nenhum botão precisa ser reescrito; basta os tokens.
 
 ## Detalhes técnicos
-- Sem alterações em backend, rotas ou dados.
-- Reuso de `useAuth`, `useTheme`, `usePalette` já existentes — apenas migração de uso para o sidebar.
-- Tooltips do sidebar (`SidebarMenuButton` com `tooltip={label}`) mantêm rótulos legíveis quando recolhido.
-- Sem mudança de tokens de cor; mantém gradiente vermelho atual do header do sidebar.
+- Sem mudanças em rotas, dados ou lógica de negócio.
+- Sem alterar contratos do `usePalette()` — só os ids/labels internos.
+- Migração transparente do `localStorage` (`padrao` → `classica`).
+- Tooltip/label do botão de paleta no rodapé do sidebar continua mostrando o nome dinâmico via `paletteLabel`.
+- Cobertura visual: revisar Home, Dashboard, Usuários, Condomínios, Configurações nas três paletas × dois temas após a mudança.
