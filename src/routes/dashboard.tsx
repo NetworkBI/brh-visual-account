@@ -206,7 +206,8 @@ function Pagina() {
       <Card className="mt-10">
         <CardHeader className="flex flex-row flex-wrap items-end justify-between gap-3 space-y-0 pt-8">
           <div>
-            <h2 className="font-display text-2xl font-bold tracking-tight">HISTÓRICO</h2>
+            <h2 className="font-display text-2xl font-bold tracking-tight">Histórico</h2>
+            <p className="text-xs text-muted-foreground">Competência selecionada ({mesSelecionado})</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Input placeholder="Buscar condomínio" value={q} onChange={(e) => setQ(e.target.value)} className="max-w-xs" />
