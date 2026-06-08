@@ -131,7 +131,7 @@ function Pagina() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard icon={Building2} label="Quantidade de condomínios que vão prestar contas" value={totalCondominiosPlanilha} />
+        <StatCard icon={Building2} label="Quant de condomínios elegíveis" value={totalCondominiosPlanilha} />
         <StatCard icon={FileText} label="Quantidade de lançamentos realizados" value={prestacoes.length} />
         <StatCard icon={Building2} label="Quantidade de condomínios sem nenhum processo" value={Math.max(0, condominios.length - new Set(doMes.map((p) => p.condominio_id)).size)} />
       </div>
@@ -288,7 +288,7 @@ function StatCard({ icon: Icon, label, value }: { icon: any; label: string; valu
           <Icon className="h-5 w-5" />
         </div>
         <div>
-          <p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
+          <p className="text-xs normal-case tracking-wider text-muted-foreground">{label}</p>
           <p className="font-display text-2xl font-bold">{value}</p>
         </div>
       </CardContent>
