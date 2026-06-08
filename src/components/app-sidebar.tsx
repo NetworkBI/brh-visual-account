@@ -50,7 +50,10 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border shadow-[8px_0_24px_-12px_rgba(0,0,0,0.35)]">
-      <SidebarHeader className="border-b border-sidebar-border bg-gradient-to-b from-[#7a1418] to-[#3a0a0c] p-3 group-data-[collapsible=icon]:p-2">
+      <SidebarHeader
+        className="border-b border-sidebar-border p-3 group-data-[collapsible=icon]:p-2"
+        style={{ background: "var(--sidebar-header-bg)" }}
+      >
         <div className="flex items-center gap-2 group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:gap-2">
           <Link to="/home" className="flex min-w-0 flex-1 items-center gap-3 group-data-[collapsible=icon]:flex-none">
             <img
@@ -60,12 +63,16 @@ export function AppSidebar() {
               height={640}
               className="h-9 w-9 shrink-0 rounded-md bg-white/95 p-1 shadow-md object-contain"
             />
-            <span className="font-display text-sm font-bold tracking-wide text-white truncate group-data-[collapsible=icon]:hidden">
+            <span
+              className="font-display text-sm font-bold tracking-wide truncate group-data-[collapsible=icon]:hidden"
+              style={{ color: "var(--sidebar-header-fg)" }}
+            >
               BR HUNTER
             </span>
           </Link>
           <SidebarTrigger
-            className="h-8 w-8 shrink-0 text-white hover:bg-white/15 hover:text-white"
+            className="h-8 w-8 shrink-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            style={{ color: "var(--sidebar-header-fg)" }}
             aria-label="Alternar menu"
           />
         </div>
