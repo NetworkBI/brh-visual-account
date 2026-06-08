@@ -185,11 +185,19 @@ function Pagina() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-3xl font-bold">Usuários</h1>
-        <p className="text-sm text-muted-foreground">
-          Gerenciamento de contas e perfis de acesso
-        </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="font-display text-3xl font-bold">Usuários</h1>
+          <p className="text-sm text-muted-foreground">
+            Gerenciamento de contas e perfis de acesso
+          </p>
+        </div>
+        {podeGerenciar && (
+          <Button onClick={() => setOpenNovo((v) => !v)} className="gap-2">
+            <UserPlus className="h-4 w-4" />
+            {openNovo ? "Cancelar" : "Cadastrar novo usuário"}
+          </Button>
+        )}
       </div>
 
       <Card>
@@ -224,89 +232,84 @@ function Pagina() {
         </CardContent>
       </Card>
 
-      {podeGerenciar && (
+      {podeGerenciar && openNovo && (
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <UserPlus className="h-4 w-4" /> Novo usuário
             </CardTitle>
-            <Button variant="outline" size="sm" onClick={() => setOpenNovo((v) => !v)}>
-              {openNovo ? "Cancelar" : "Cadastrar"}
-            </Button>
           </CardHeader>
-          {openNovo && (
-            <CardContent className="grid gap-3 sm:grid-cols-2">
-              <div className="space-y-1.5">
-                <Label>Primeiro nome *</Label>
-                <Input
-                  value={form.primeiro_nome}
-                  onChange={(e) => setForm({ ...form, primeiro_nome: e.target.value })}
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Sobrenome *</Label>
-                <Input
-                  value={form.segundo_nome}
-                  onChange={(e) => setForm({ ...form, segundo_nome: e.target.value })}
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label>E-mail *</Label>
-                <Input
-                  type="email"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Data de nascimento *</Label>
-                <Input
-                  type="date"
-                  value={form.data_nascimento}
-                  onChange={(e) => setForm({ ...form, data_nascimento: e.target.value })}
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Matrícula</Label>
-                <Input
-                  value={form.matricula}
-                  onChange={(e) => setForm({ ...form, matricula: e.target.value })}
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Senha inicial *</Label>
-                <Input
-                  type="password"
-                  value={form.senha}
-                  onChange={(e) => setForm({ ...form, senha: e.target.value })}
-                  placeholder="mín. 6 caracteres"
-                />
-              </div>
-              <div className="space-y-1.5 sm:col-span-2">
-                <Label>Papel *</Label>
-                <Select
-                  value={form.role}
-                  onValueChange={(v) => setForm({ ...form, role: v as AppRole })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {opcoesPapel.map((r) => (
-                      <SelectItem key={r} value={r}>
-                        {roleLabel(r)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="sm:col-span-2">
-                <Button onClick={criar} disabled={criando}>
-                  {criando ? "Criando…" : "Criar usuário"}
-                </Button>
-              </div>
-            </CardContent>
-          )}
+          <CardContent className="grid gap-3 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label>Primeiro nome *</Label>
+              <Input
+                value={form.primeiro_nome}
+                onChange={(e) => setForm({ ...form, primeiro_nome: e.target.value })}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Sobrenome *</Label>
+              <Input
+                value={form.segundo_nome}
+                onChange={(e) => setForm({ ...form, segundo_nome: e.target.value })}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>E-mail *</Label>
+              <Input
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Data de nascimento *</Label>
+              <Input
+                type="date"
+                value={form.data_nascimento}
+                onChange={(e) => setForm({ ...form, data_nascimento: e.target.value })}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Matrícula</Label>
+              <Input
+                value={form.matricula}
+                onChange={(e) => setForm({ ...form, matricula: e.target.value })}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Senha inicial *</Label>
+              <Input
+                type="password"
+                value={form.senha}
+                onChange={(e) => setForm({ ...form, senha: e.target.value })}
+                placeholder="mín. 6 caracteres"
+              />
+            </div>
+            <div className="space-y-1.5 sm:col-span-2">
+              <Label>Papel *</Label>
+              <Select
+                value={form.role}
+                onValueChange={(v) => setForm({ ...form, role: v as AppRole })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {opcoesPapel.map((r) => (
+                    <SelectItem key={r} value={r}>
+                      {roleLabel(r)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="sm:col-span-2">
+              <Button onClick={criar} disabled={criando}>
+                {criando ? "Criando…" : "Criar usuário"}
+              </Button>
+            </div>
+          </CardContent>
         </Card>
       )}
 
