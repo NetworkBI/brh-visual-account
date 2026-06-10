@@ -21,6 +21,7 @@ import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as CondominiosRouteImport } from './routes/condominios'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PrestacoesIndexRouteImport } from './routes/prestacoes.index'
+import { Route as UsuariosNovoRouteImport } from './routes/usuarios.novo'
 import { Route as PrestacoesNovaRouteImport } from './routes/prestacoes.nova'
 import { Route as PrestacoesIdEditarRouteImport } from './routes/prestacoes.$id.editar'
 
@@ -84,6 +85,11 @@ const PrestacoesIndexRoute = PrestacoesIndexRouteImport.update({
   path: '/prestacoes/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UsuariosNovoRoute = UsuariosNovoRouteImport.update({
+  id: '/novo',
+  path: '/novo',
+  getParentRoute: () => UsuariosRoute,
+} as any)
 const PrestacoesNovaRoute = PrestacoesNovaRouteImport.update({
   id: '/prestacoes/nova',
   path: '/prestacoes/nova',
@@ -106,8 +112,9 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/usuarios': typeof UsuariosRoute
+  '/usuarios': typeof UsuariosRouteWithChildren
   '/prestacoes/nova': typeof PrestacoesNovaRoute
+  '/usuarios/novo': typeof UsuariosNovoRoute
   '/prestacoes/': typeof PrestacoesIndexRoute
   '/prestacoes/$id/editar': typeof PrestacoesIdEditarRoute
 }
@@ -122,8 +129,9 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/usuarios': typeof UsuariosRoute
+  '/usuarios': typeof UsuariosRouteWithChildren
   '/prestacoes/nova': typeof PrestacoesNovaRoute
+  '/usuarios/novo': typeof UsuariosNovoRoute
   '/prestacoes': typeof PrestacoesIndexRoute
   '/prestacoes/$id/editar': typeof PrestacoesIdEditarRoute
 }
@@ -139,8 +147,9 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/usuarios': typeof UsuariosRoute
+  '/usuarios': typeof UsuariosRouteWithChildren
   '/prestacoes/nova': typeof PrestacoesNovaRoute
+  '/usuarios/novo': typeof UsuariosNovoRoute
   '/prestacoes/': typeof PrestacoesIndexRoute
   '/prestacoes/$id/editar': typeof PrestacoesIdEditarRoute
 }
@@ -159,6 +168,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/usuarios'
     | '/prestacoes/nova'
+    | '/usuarios/novo'
     | '/prestacoes/'
     | '/prestacoes/$id/editar'
   fileRoutesByTo: FileRoutesByTo
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/usuarios'
     | '/prestacoes/nova'
+    | '/usuarios/novo'
     | '/prestacoes'
     | '/prestacoes/$id/editar'
   id:
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/usuarios'
     | '/prestacoes/nova'
+    | '/usuarios/novo'
     | '/prestacoes/'
     | '/prestacoes/$id/editar'
   fileRoutesById: FileRoutesById
@@ -206,7 +218,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   RedefinirSenhaRoute: typeof RedefinirSenhaRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  UsuariosRoute: typeof UsuariosRoute
+  UsuariosRoute: typeof UsuariosRouteWithChildren
   PrestacoesNovaRoute: typeof PrestacoesNovaRoute
   PrestacoesIndexRoute: typeof PrestacoesIndexRoute
   PrestacoesIdEditarRoute: typeof PrestacoesIdEditarRoute
@@ -298,6 +310,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrestacoesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/usuarios/novo': {
+      id: '/usuarios/novo'
+      path: '/novo'
+      fullPath: '/usuarios/novo'
+      preLoaderRoute: typeof UsuariosNovoRouteImport
+      parentRoute: typeof UsuariosRoute
+    }
     '/prestacoes/nova': {
       id: '/prestacoes/nova'
       path: '/prestacoes/nova'
@@ -315,6 +334,18 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface UsuariosRouteChildren {
+  UsuariosNovoRoute: typeof UsuariosNovoRoute
+}
+
+const UsuariosRouteChildren: UsuariosRouteChildren = {
+  UsuariosNovoRoute: UsuariosNovoRoute,
+}
+
+const UsuariosRouteWithChildren = UsuariosRoute._addFileChildren(
+  UsuariosRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CondominiosRoute: CondominiosRoute,
@@ -326,7 +357,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   RedefinirSenhaRoute: RedefinirSenhaRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  UsuariosRoute: UsuariosRoute,
+  UsuariosRoute: UsuariosRouteWithChildren,
   PrestacoesNovaRoute: PrestacoesNovaRoute,
   PrestacoesIndexRoute: PrestacoesIndexRoute,
   PrestacoesIdEditarRoute: PrestacoesIdEditarRoute,
