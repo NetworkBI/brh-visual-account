@@ -76,7 +76,7 @@ function LoginPage() {
                   type="email"
                   autoComplete="email"
                   aria-label="NOME"
-                  className="flex-1 rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0"
+                  className="flex-1 rounded-none border-0 bg-transparent text-black placeholder:text-black/60 shadow-none focus-visible:ring-0"
                   {...register("nome")}
                 />
               </div>
@@ -93,7 +93,7 @@ function LoginPage() {
                   type="password"
                   autoComplete="current-password"
                   aria-label="SENHA"
-                  className="flex-1 rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0"
+                  className="flex-1 rounded-none border-0 bg-transparent text-black placeholder:text-black/60 shadow-none focus-visible:ring-0"
                   {...register("senha")}
                 />
               </div>
