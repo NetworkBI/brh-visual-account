@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -38,7 +38,7 @@ import {
 import { Shield, ShieldCheck, Crown, KeyRound, Save, Trash2, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import { senhaSchema } from "@/lib/schemas";
-import { criarUsuario, alterarPapel, excluirUsuario } from "@/lib/usuarios.functions";
+import { alterarPapel, excluirUsuario } from "@/lib/usuarios.functions";
 import { pageMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/usuarios")({
@@ -94,10 +94,15 @@ function Pagina() {
   const { user } = useAuth();
   const { data: myRole } = useUserRole();
   const qc = useQueryClient();
-  const { data: usuarios = [], isLoading } = useUsuarios();
+  const { data: usuariosRaw = [], isLoading } = useUsuarios();
 
   const podeGerenciar = canManageUsers(myRole);
   const podeMaster = canPromoteToMaster(myRole);
+
+  // ADM não enxerga usuários MASTER
+  const usuarios = myRole === "adm"
+    ? usuariosRaw.filter((u) => u.role !== "master")
+    : usuariosRaw;
 
   // Trocar senha
   const [novaSenha, setNovaSenha] = useState("");
@@ -120,8 +125,6 @@ function Pagina() {
     setNovaSenha("");
   };
 
-  // Server fns
-  const fnCriar = useServerFn(criarUsuario);
   const fnAlterar = useServerFn(alterarPapel);
   const fnExcluir = useServerFn(excluirUsuario);
 
@@ -145,42 +148,6 @@ function Pagina() {
     }
   };
 
-  // Form de criação
-  const [openNovo, setOpenNovo] = useState(false);
-  const [form, setForm] = useState({
-    primeiro_nome: "",
-    segundo_nome: "",
-    email: "",
-    data_nascimento: "",
-    matricula: "",
-    senha: "",
-    role: "padrao" as AppRole,
-  });
-  const [criando, setCriando] = useState(false);
-
-  const criar = async () => {
-    setCriando(true);
-    try {
-      await fnCriar({ data: form });
-      toast.success("Usuário criado");
-      setForm({
-        primeiro_nome: "",
-        segundo_nome: "",
-        email: "",
-        data_nascimento: "",
-        matricula: "",
-        senha: "",
-        role: "padrao",
-      });
-      setOpenNovo(false);
-      qc.invalidateQueries({ queryKey: ["usuarios-com-roles"] });
-    } catch (e: any) {
-      toast.error(e?.message ?? "Falha ao criar usuário");
-    } finally {
-      setCriando(false);
-    }
-  };
-
   const opcoesPapel: AppRole[] = podeMaster ? ["padrao", "adm", "master"] : ["padrao", "adm"];
 
   return (
@@ -193,9 +160,11 @@ function Pagina() {
           </p>
         </div>
         {podeGerenciar && (
-          <Button onClick={() => setOpenNovo((v) => !v)} className="gap-2">
-            <UserPlus className="h-4 w-4" />
-            {openNovo ? "Cancelar" : "Cadastrar novo usuário"}
+          <Button asChild className="gap-2">
+            <Link to="/usuarios/novo">
+              <UserPlus className="h-4 w-4" />
+              Cadastrar novo usuário
+            </Link>
           </Button>
         )}
       </div>
@@ -231,87 +200,6 @@ function Pagina() {
           </div>
         </CardContent>
       </Card>
-
-      {podeGerenciar && openNovo && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <UserPlus className="h-4 w-4" /> Novo usuário
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="grid gap-3 sm:grid-cols-2">
-            <div className="space-y-1.5">
-              <Label>Primeiro nome *</Label>
-              <Input
-                value={form.primeiro_nome}
-                onChange={(e) => setForm({ ...form, primeiro_nome: e.target.value })}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Sobrenome *</Label>
-              <Input
-                value={form.segundo_nome}
-                onChange={(e) => setForm({ ...form, segundo_nome: e.target.value })}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>E-mail *</Label>
-              <Input
-                type="email"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Data de nascimento *</Label>
-              <Input
-                type="date"
-                value={form.data_nascimento}
-                onChange={(e) => setForm({ ...form, data_nascimento: e.target.value })}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Matrícula</Label>
-              <Input
-                value={form.matricula}
-                onChange={(e) => setForm({ ...form, matricula: e.target.value })}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Senha inicial *</Label>
-              <Input
-                type="password"
-                value={form.senha}
-                onChange={(e) => setForm({ ...form, senha: e.target.value })}
-                placeholder="mín. 6 caracteres"
-              />
-            </div>
-            <div className="space-y-1.5 sm:col-span-2">
-              <Label>Papel *</Label>
-              <Select
-                value={form.role}
-                onValueChange={(v) => setForm({ ...form, role: v as AppRole })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {opcoesPapel.map((r) => (
-                    <SelectItem key={r} value={r}>
-                      {roleLabel(r)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="sm:col-span-2">
-              <Button onClick={criar} disabled={criando}>
-                {criando ? "Criando…" : "Criar usuário"}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
       <Card>
         <CardHeader>
@@ -353,7 +241,6 @@ function Pagina() {
                   usuarios.map((u) => {
                     const isSelf = u.id === user?.id;
                     const isAlvoMaster = u.role === "master";
-                    // ADM não mexe em MASTER; ninguém mexe em si mesmo
                     const podeEditar =
                       podeGerenciar && !isSelf && (podeMaster || !isAlvoMaster);
                     return (
