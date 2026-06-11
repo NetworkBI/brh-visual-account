@@ -21,9 +21,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft, UserPlus } from "lucide-react";
+import { ArrowLeft, Loader2, UserPlus } from "lucide-react";
 import { toast } from "sonner";
+import { z } from "zod";
 import { criarUsuario } from "@/lib/usuarios.functions";
+import { cadastroSchema } from "@/lib/schemas";
 import { pageMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/usuarios/novo")({
@@ -66,13 +68,20 @@ function Pagina() {
   const opcoesPapel: AppRole[] = podeMaster ? ["padrao", "adm", "master"] : ["padrao", "adm"];
 
   const criar = async () => {
+    const schema = cadastroSchema.extend({ role: z.enum(["padrao", "adm", "master"]) });
+    const parsed = schema.safeParse(form);
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0]?.message ?? "Verifique os campos");
+      return;
+    }
     setCriando(true);
     try {
-      await fnCriar({ data: form });
+      await fnCriar({ data: parsed.data });
       toast.success("Usuário criado");
       qc.invalidateQueries({ queryKey: ["usuarios-com-roles"] });
       navigate({ to: "/usuarios" });
     } catch (e: any) {
+      console.error("criarUsuario falhou:", e);
       toast.error(e?.message ?? "Falha ao criar usuário");
     } finally {
       setCriando(false);
@@ -168,7 +177,7 @@ function Pagina() {
           </div>
           <div className="sm:col-span-2 flex gap-2">
             <Button onClick={criar} disabled={criando}>
-              {criando ? "Criando…" : "Criar usuário"}
+              {criando ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />Criando…</>) : "Criar usuário"}
             </Button>
             <Button asChild variant="ghost">
               <Link to="/usuarios">Cancelar</Link>
