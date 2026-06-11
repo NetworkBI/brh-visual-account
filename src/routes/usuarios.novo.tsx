@@ -21,9 +21,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft, UserPlus } from "lucide-react";
+import { ArrowLeft, Loader2, UserPlus } from "lucide-react";
 import { toast } from "sonner";
+import { z } from "zod";
 import { criarUsuario } from "@/lib/usuarios.functions";
+import { cadastroSchema } from "@/lib/schemas";
 import { pageMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/usuarios/novo")({
