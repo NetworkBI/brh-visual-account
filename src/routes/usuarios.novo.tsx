@@ -177,7 +177,7 @@ function Pagina() {
           </div>
           <div className="sm:col-span-2 flex gap-2">
             <Button onClick={criar} disabled={criando}>
-              {criando ? "Criando…" : "Criar usuário"}
+              {criando ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />Criando…</>) : "Criar usuário"}
             </Button>
             <Button asChild variant="ghost">
               <Link to="/usuarios">Cancelar</Link>
