@@ -68,13 +68,20 @@ function Pagina() {
   const opcoesPapel: AppRole[] = podeMaster ? ["padrao", "adm", "master"] : ["padrao", "adm"];
 
   const criar = async () => {
+    const schema = cadastroSchema.extend({ role: z.enum(["padrao", "adm", "master"]) });
+    const parsed = schema.safeParse(form);
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0]?.message ?? "Verifique os campos");
+      return;
+    }
     setCriando(true);
     try {
-      await fnCriar({ data: form });
+      await fnCriar({ data: parsed.data });
       toast.success("Usuário criado");
       qc.invalidateQueries({ queryKey: ["usuarios-com-roles"] });
       navigate({ to: "/usuarios" });
     } catch (e: any) {
+      console.error("criarUsuario falhou:", e);
       toast.error(e?.message ?? "Falha ao criar usuário");
     } finally {
       setCriando(false);
