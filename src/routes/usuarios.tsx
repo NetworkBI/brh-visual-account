@@ -246,6 +246,66 @@ function Pagina() {
         </CardContent>
       </Card>
 
+      {podeGerenciar && solicitacoes.length > 0 && (
+        <Card className="border-amber-300/60 bg-amber-50/40 dark:border-amber-500/40 dark:bg-amber-500/5">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-amber-700 dark:text-amber-300">
+              <BellRing className="h-4 w-4" /> Solicitações de troca de senha ({solicitacoes.length})
+            </CardTitle>
+            <p className="text-xs text-muted-foreground">
+              Pendências de usuários que solicitaram a redefinição de senha. Aprovadas serão consumidas no próximo login do usuário.
+            </p>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground">
+                  <tr>
+                    <th className="px-4 py-3 text-left">E-mail</th>
+                    <th className="px-4 py-3 text-left">Origem</th>
+                    <th className="px-4 py-3 text-left">Status</th>
+                    <th className="px-4 py-3 text-left">Solicitado em</th>
+                    <th className="px-4 py-3" />
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  {solicitacoes.map((s: any) => (
+                    <tr key={s.id} className="hover:bg-muted/30">
+                      <td className="px-4 py-3 font-medium">{s.email}</td>
+                      <td className="px-4 py-3">
+                        {s.origem === "pre_autorizada" ? "Pré-autorizada" : "Usuário"}
+                      </td>
+                      <td className="px-4 py-3">
+                        <Badge variant={s.status === "aprovada" ? "default" : "secondary"}>
+                          {s.status === "aprovada" ? "Aprovada" : "Pendente"}
+                        </Badge>
+                      </td>
+                      <td className="px-4 py-3 text-xs text-muted-foreground">
+                        {new Date(s.criado_em).toLocaleString("pt-BR")}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        {s.status === "pendente" ? (
+                          <div className="flex justify-end gap-1">
+                            <Button size="sm" variant="default" onClick={() => aprovarSol(s.id)} className="gap-1">
+                              <Check className="h-3.5 w-3.5" /> Aprovar
+                            </Button>
+                            <Button size="sm" variant="ghost" className="gap-1 text-destructive" onClick={() => recusarSol(s.id)}>
+                              <X className="h-3.5 w-3.5" /> Recusar
+                            </Button>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">Aguardando login</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
