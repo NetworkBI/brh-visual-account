@@ -161,7 +161,7 @@ function Pagina() {
         </div>
         {podeGerenciar && (
           <Button asChild className="gap-2">
-            <Link to="/usuarios/novo">
+            <Link to="/usuarios/novo" target="_blank" rel="noopener noreferrer">
               <UserPlus className="h-4 w-4" />
               Cadastrar novo usuário
             </Link>
