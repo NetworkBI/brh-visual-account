@@ -378,28 +378,39 @@ function Pagina() {
                         </td>
                         <td className="px-4 py-3 text-right">
                           {podeEditar && (
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <Button variant="ghost" size="sm" className="text-destructive">
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Excluir usuário?</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    Esta ação é permanente. {u.primeiro_nome} {u.segundo_nome}{" "}
-                                    perderá o acesso e seus dados de perfil serão removidos.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                  <AlertDialogAction onClick={() => excluir(u.id)}>
-                                    Excluir
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
+                            <div className="flex justify-end gap-1">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="gap-1"
+                                onClick={() => preAutorizar(u.id)}
+                                title="Pré-autorizar troca de senha"
+                              >
+                                <KeyRound className="h-4 w-4" />
+                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button variant="ghost" size="sm" className="text-destructive">
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Excluir usuário?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Esta ação é permanente. {u.primeiro_nome} {u.segundo_nome}{" "}
+                                      perderá o acesso e seus dados de perfil serão removidos.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => excluir(u.id)}>
+                                      Excluir
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
                           )}
                         </td>
                       </tr>
