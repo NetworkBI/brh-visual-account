@@ -35,10 +35,16 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Shield, ShieldCheck, Crown, KeyRound, Save, Trash2, UserPlus } from "lucide-react";
+import { Shield, ShieldCheck, Crown, KeyRound, Save, Trash2, UserPlus, BellRing, Check, X } from "lucide-react";
 import { toast } from "sonner";
 import { senhaSchema } from "@/lib/schemas";
 import { alterarPapel, excluirUsuario } from "@/lib/usuarios.functions";
+import {
+  listarSolicitacoesSenha,
+  aprovarSolicitacaoSenha,
+  recusarSolicitacaoSenha,
+  preAutorizarTrocaSenha,
+} from "@/lib/senha.functions";
 import { pageMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/usuarios")({
