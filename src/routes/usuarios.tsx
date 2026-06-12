@@ -35,10 +35,16 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Shield, ShieldCheck, Crown, KeyRound, Save, Trash2, UserPlus } from "lucide-react";
+import { Shield, ShieldCheck, Crown, KeyRound, Save, Trash2, UserPlus, BellRing, Check, X } from "lucide-react";
 import { toast } from "sonner";
 import { senhaSchema } from "@/lib/schemas";
 import { alterarPapel, excluirUsuario } from "@/lib/usuarios.functions";
+import {
+  listarSolicitacoesSenha,
+  aprovarSolicitacaoSenha,
+  recusarSolicitacaoSenha,
+  preAutorizarTrocaSenha,
+} from "@/lib/senha.functions";
 import { pageMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/usuarios")({
@@ -127,6 +133,16 @@ function Pagina() {
 
   const fnAlterar = useServerFn(alterarPapel);
   const fnExcluir = useServerFn(excluirUsuario);
+  const fnListarSol = useServerFn(listarSolicitacoesSenha);
+  const fnAprovarSol = useServerFn(aprovarSolicitacaoSenha);
+  const fnRecusarSol = useServerFn(recusarSolicitacaoSenha);
+  const fnPreAutorizar = useServerFn(preAutorizarTrocaSenha);
+
+  const { data: solicitacoes = [] } = useQuery({
+    queryKey: ["solicitacoes-senha"],
+    queryFn: () => fnListarSol(),
+    enabled: !!podeGerenciar,
+  });
 
   const alterarRole = async (userId: string, role: AppRole) => {
     try {
@@ -148,7 +164,36 @@ function Pagina() {
     }
   };
 
+  const aprovarSol = async (id: string) => {
+    try {
+      await fnAprovarSol({ data: { id } });
+      toast.success("Solicitação aprovada");
+      qc.invalidateQueries({ queryKey: ["solicitacoes-senha"] });
+    } catch (e: any) {
+      toast.error(e?.message ?? "Falha");
+    }
+  };
+  const recusarSol = async (id: string) => {
+    try {
+      await fnRecusarSol({ data: { id } });
+      toast.success("Solicitação recusada");
+      qc.invalidateQueries({ queryKey: ["solicitacoes-senha"] });
+    } catch (e: any) {
+      toast.error(e?.message ?? "Falha");
+    }
+  };
+  const preAutorizar = async (userId: string) => {
+    try {
+      await fnPreAutorizar({ data: { user_id: userId } });
+      toast.success("Pré-autorização criada — usuário trocará a senha ao logar");
+      qc.invalidateQueries({ queryKey: ["solicitacoes-senha"] });
+    } catch (e: any) {
+      toast.error(e?.message ?? "Falha");
+    }
+  };
+
   const opcoesPapel: AppRole[] = podeMaster ? ["padrao", "adm", "master"] : ["padrao", "adm"];
+
 
   return (
     <div className="space-y-6">
@@ -161,7 +206,7 @@ function Pagina() {
         </div>
         {podeGerenciar && (
           <Button asChild className="gap-2">
-            <Link to="/usuarios/novo" target="_blank" rel="noopener noreferrer">
+            <Link to="/usuarios/novo">
               <UserPlus className="h-4 w-4" />
               Cadastrar novo usuário
             </Link>
@@ -200,6 +245,66 @@ function Pagina() {
           </div>
         </CardContent>
       </Card>
+
+      {podeGerenciar && solicitacoes.length > 0 && (
+        <Card className="border-amber-300/60 bg-amber-50/40 dark:border-amber-500/40 dark:bg-amber-500/5">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-amber-700 dark:text-amber-300">
+              <BellRing className="h-4 w-4" /> Solicitações de troca de senha ({solicitacoes.length})
+            </CardTitle>
+            <p className="text-xs text-muted-foreground">
+              Pendências de usuários que solicitaram a redefinição de senha. Aprovadas serão consumidas no próximo login do usuário.
+            </p>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground">
+                  <tr>
+                    <th className="px-4 py-3 text-left">E-mail</th>
+                    <th className="px-4 py-3 text-left">Origem</th>
+                    <th className="px-4 py-3 text-left">Status</th>
+                    <th className="px-4 py-3 text-left">Solicitado em</th>
+                    <th className="px-4 py-3" />
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  {solicitacoes.map((s: any) => (
+                    <tr key={s.id} className="hover:bg-muted/30">
+                      <td className="px-4 py-3 font-medium">{s.email}</td>
+                      <td className="px-4 py-3">
+                        {s.origem === "pre_autorizada" ? "Pré-autorizada" : "Usuário"}
+                      </td>
+                      <td className="px-4 py-3">
+                        <Badge variant={s.status === "aprovada" ? "default" : "secondary"}>
+                          {s.status === "aprovada" ? "Aprovada" : "Pendente"}
+                        </Badge>
+                      </td>
+                      <td className="px-4 py-3 text-xs text-muted-foreground">
+                        {new Date(s.criado_em).toLocaleString("pt-BR")}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        {s.status === "pendente" ? (
+                          <div className="flex justify-end gap-1">
+                            <Button size="sm" variant="default" onClick={() => aprovarSol(s.id)} className="gap-1">
+                              <Check className="h-3.5 w-3.5" /> Aprovar
+                            </Button>
+                            <Button size="sm" variant="ghost" className="gap-1 text-destructive" onClick={() => recusarSol(s.id)}>
+                              <X className="h-3.5 w-3.5" /> Recusar
+                            </Button>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">Aguardando login</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader>
@@ -273,28 +378,39 @@ function Pagina() {
                         </td>
                         <td className="px-4 py-3 text-right">
                           {podeEditar && (
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <Button variant="ghost" size="sm" className="text-destructive">
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Excluir usuário?</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    Esta ação é permanente. {u.primeiro_nome} {u.segundo_nome}{" "}
-                                    perderá o acesso e seus dados de perfil serão removidos.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                  <AlertDialogAction onClick={() => excluir(u.id)}>
-                                    Excluir
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
+                            <div className="flex justify-end gap-1">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="gap-1"
+                                onClick={() => preAutorizar(u.id)}
+                                title="Pré-autorizar troca de senha"
+                              >
+                                <KeyRound className="h-4 w-4" />
+                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button variant="ghost" size="sm" className="text-destructive">
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Excluir usuário?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Esta ação é permanente. {u.primeiro_nome} {u.segundo_nome}{" "}
+                                      perderá o acesso e seus dados de perfil serão removidos.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => excluir(u.id)}>
+                                      Excluir
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
                           )}
                         </td>
                       </tr>

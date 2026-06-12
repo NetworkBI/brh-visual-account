@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { senhaSchema } from "@/lib/schemas";
@@ -11,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import logo from "@/assets/logo.png";
 import bg from "@/assets/hunter-bg.jpg";
+import { concluirSolicitacaoSenha } from "@/lib/senha.functions";
 
 const schema = z
   .object({
@@ -38,14 +40,14 @@ function RedefinirSenhaPage() {
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
   const [ready, setReady] = useState(false);
+  const fnConcluir = useServerFn(concluirSolicitacaoSenha);
   const { register, handleSubmit, formState: { errors } } = useForm<FormInput>({
     resolver: zodResolver(schema),
   });
 
   useEffect(() => {
-    // Quando o usuário chega via link de recuperação, o Supabase dispara PASSWORD_RECOVERY
-    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") setReady(true);
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY" || session) setReady(true);
     });
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) setReady(true);
@@ -56,15 +58,22 @@ function RedefinirSenhaPage() {
   const onSubmit = async (values: FormInput) => {
     setSubmitting(true);
     const { error } = await supabase.auth.updateUser({ password: values.senha });
-    setSubmitting(false);
     if (error) {
+      setSubmitting(false);
       toast.error("Falha ao atualizar senha: " + error.message);
       return;
     }
+    try {
+      await fnConcluir();
+    } catch {
+      // silencioso — pode não haver solicitação (caso PASSWORD_RECOVERY)
+    }
+    setSubmitting(false);
     toast.success("Senha redefinida com sucesso!");
     await supabase.auth.signOut();
     navigate({ to: "/login" });
   };
+
 
   return (
     <div className="grid min-h-screen md:grid-cols-2">

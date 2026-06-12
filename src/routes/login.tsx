@@ -40,11 +40,28 @@ function LoginPage() {
       email: values.nome,
       password: values.senha,
     });
-    setSubmitting(false);
-    if (error) { toast.error("Falha no login: " + error.message); return; }
+    if (error) {
+      setSubmitting(false);
+      toast.error("Falha no login: " + error.message);
+      return;
+    }
+    // Verifica se há solicitação de troca de senha aprovada
+    try {
+      const { minhaSolicitacaoAprovada } = await import("@/lib/senha.functions");
+      const sol = await minhaSolicitacaoAprovada();
+      setSubmitting(false);
+      if (sol) {
+        toast.info("Defina sua nova senha");
+        navigate({ to: "/redefinir-senha" });
+        return;
+      }
+    } catch {
+      setSubmitting(false);
+    }
     toast.success("Bem-vindo!");
     navigate({ to: "/home" });
   };
+
 
   return (
     <div
