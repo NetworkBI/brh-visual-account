@@ -70,14 +70,15 @@ function EsqueciSenhaPage() {
           <div className="mb-8 flex flex-col items-center text-center">
             <img src={logo} alt="Grupo BR Hunter" width={640} height={640} className="h-20 w-auto" />
             <h1 className="mt-4 font-display text-2xl font-bold">Esqueci minha senha</h1>
-            <p className="mt-1 text-sm text-muted-foreground">Enviaremos um link de redefinição</p>
+            <p className="mt-1 text-sm text-muted-foreground">Solicite a redefinição ao administrador</p>
           </div>
 
           {sent ? (
             <div className="space-y-5">
               <div className="rounded-md border border-border bg-muted/50 p-4 text-sm">
-                Se o e-mail informado estiver cadastrado, você receberá em instantes um link para redefinir sua senha. Verifique também a pasta de spam.
+                Sua solicitação foi enviada. Um administrador (ADM ou MASTER) irá analisar e aprovar. Quando aprovado, basta fazer login que você será direcionado automaticamente para definir uma nova senha.
               </div>
+
               <Button type="button" onClick={() => navigate({ to: "/login" })} className="w-full">
                 Voltar ao login
               </Button>
