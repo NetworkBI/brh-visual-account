@@ -2,14 +2,15 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import logo from "@/assets/logo.png";
 import bg from "@/assets/hunter-bg.jpg";
+import { solicitarTrocaSenha } from "@/lib/senha.functions";
 
 const schema = z.object({
   email: z.string().trim().email("E-mail inválido").max(255),
@@ -22,7 +23,7 @@ export const Route = createFileRoute("/esqueci-senha")({
   head: () => pageMeta({
     path: "/esqueci-senha",
     title: "Recuperar senha — Grupo BR Hunter",
-    description: "Receba um link por e-mail para redefinir a senha de acesso ao sistema do Grupo BR Hunter.",
+    description: "Solicite ao administrador a redefinição da sua senha de acesso ao sistema do Grupo BR Hunter.",
   }),
   component: EsqueciSenhaPage,
 });
@@ -31,23 +32,24 @@ function EsqueciSenhaPage() {
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
+  const fnSolicitar = useServerFn(solicitarTrocaSenha);
   const { register, handleSubmit, formState: { errors } } = useForm<FormInput>({
     resolver: zodResolver(schema),
   });
 
   const onSubmit = async (values: FormInput) => {
     setSubmitting(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
-      redirectTo: `${window.location.origin}/redefinir-senha`,
-    });
-    setSubmitting(false);
-    if (error) {
-      toast.error("Não foi possível enviar: " + error.message);
-      return;
+    try {
+      await fnSolicitar({ data: { email: values.email } });
+      setSent(true);
+      toast.success("Solicitação enviada ao administrador");
+    } catch (e: any) {
+      toast.error(e?.message ?? "Falha ao enviar solicitação");
+    } finally {
+      setSubmitting(false);
     }
-    setSent(true);
-    toast.success("E-mail de recuperação enviado!");
   };
+
 
   return (
     <div className="grid min-h-screen md:grid-cols-2">
