@@ -147,6 +147,39 @@ export type Database = {
         }
         Relationships: []
       }
+      solicitacoes_senha: {
+        Row: {
+          criado_em: string
+          decidido_em: string | null
+          decidido_por: string | null
+          email: string
+          id: string
+          origem: Database["public"]["Enums"]["solicitacao_senha_origem"]
+          status: Database["public"]["Enums"]["solicitacao_senha_status"]
+          user_id: string
+        }
+        Insert: {
+          criado_em?: string
+          decidido_em?: string | null
+          decidido_por?: string | null
+          email: string
+          id?: string
+          origem?: Database["public"]["Enums"]["solicitacao_senha_origem"]
+          status?: Database["public"]["Enums"]["solicitacao_senha_status"]
+          user_id: string
+        }
+        Update: {
+          criado_em?: string
+          decidido_em?: string | null
+          decidido_por?: string | null
+          email?: string
+          id?: string
+          origem?: Database["public"]["Enums"]["solicitacao_senha_origem"]
+          status?: Database["public"]["Enums"]["solicitacao_senha_status"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -227,6 +260,12 @@ export type Database = {
         | "Lançamento Contábeis"
         | "Montagem Balancete"
         | "Data da Entrega"
+      solicitacao_senha_origem: "usuario" | "pre_autorizada"
+      solicitacao_senha_status:
+        | "pendente"
+        | "aprovada"
+        | "recusada"
+        | "concluida"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -361,6 +400,13 @@ export const Constants = {
         "Lançamento Contábeis",
         "Montagem Balancete",
         "Data da Entrega",
+      ],
+      solicitacao_senha_origem: ["usuario", "pre_autorizada"],
+      solicitacao_senha_status: [
+        "pendente",
+        "aprovada",
+        "recusada",
+        "concluida",
       ],
     },
   },
