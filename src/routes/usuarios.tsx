@@ -133,6 +133,16 @@ function Pagina() {
 
   const fnAlterar = useServerFn(alterarPapel);
   const fnExcluir = useServerFn(excluirUsuario);
+  const fnListarSol = useServerFn(listarSolicitacoesSenha);
+  const fnAprovarSol = useServerFn(aprovarSolicitacaoSenha);
+  const fnRecusarSol = useServerFn(recusarSolicitacaoSenha);
+  const fnPreAutorizar = useServerFn(preAutorizarTrocaSenha);
+
+  const { data: solicitacoes = [] } = useQuery({
+    queryKey: ["solicitacoes-senha"],
+    queryFn: () => fnListarSol(),
+    enabled: !!podeGerenciar,
+  });
 
   const alterarRole = async (userId: string, role: AppRole) => {
     try {
@@ -154,7 +164,36 @@ function Pagina() {
     }
   };
 
+  const aprovarSol = async (id: string) => {
+    try {
+      await fnAprovarSol({ data: { id } });
+      toast.success("Solicitação aprovada");
+      qc.invalidateQueries({ queryKey: ["solicitacoes-senha"] });
+    } catch (e: any) {
+      toast.error(e?.message ?? "Falha");
+    }
+  };
+  const recusarSol = async (id: string) => {
+    try {
+      await fnRecusarSol({ data: { id } });
+      toast.success("Solicitação recusada");
+      qc.invalidateQueries({ queryKey: ["solicitacoes-senha"] });
+    } catch (e: any) {
+      toast.error(e?.message ?? "Falha");
+    }
+  };
+  const preAutorizar = async (userId: string) => {
+    try {
+      await fnPreAutorizar({ data: { user_id: userId } });
+      toast.success("Pré-autorização criada — usuário trocará a senha ao logar");
+      qc.invalidateQueries({ queryKey: ["solicitacoes-senha"] });
+    } catch (e: any) {
+      toast.error(e?.message ?? "Falha");
+    }
+  };
+
   const opcoesPapel: AppRole[] = podeMaster ? ["padrao", "adm", "master"] : ["padrao", "adm"];
+
 
   return (
     <div className="space-y-6">
