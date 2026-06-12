@@ -91,7 +91,7 @@ function EsqueciSenhaPage() {
                 {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
               </div>
               <Button type="submit" disabled={submitting} className="w-full">
-                {submitting ? "Enviando..." : "Enviar link de recuperação"}
+                {submitting ? "Enviando..." : "Solicitar redefinição"}
               </Button>
               <p className="text-center text-sm text-muted-foreground">
                 Lembrou a senha?{" "}
