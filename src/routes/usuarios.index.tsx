@@ -47,7 +47,7 @@ import {
 } from "@/lib/senha.functions";
 import { pageMeta } from "@/lib/seo";
 
-export const Route = createFileRoute("/usuarios")({
+export const Route = createFileRoute("/usuarios/")({
   head: () =>
     pageMeta({
       path: "/usuarios",

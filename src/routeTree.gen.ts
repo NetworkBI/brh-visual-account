@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as UsuariosRouteImport } from './routes/usuarios'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RedefinirSenhaRouteImport } from './routes/redefinir-senha'
 import { Route as LoginRouteImport } from './routes/login'
@@ -20,16 +19,12 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as CondominiosRouteImport } from './routes/condominios'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as UsuariosIndexRouteImport } from './routes/usuarios.index'
 import { Route as PrestacoesIndexRouteImport } from './routes/prestacoes.index'
 import { Route as UsuariosNovoRouteImport } from './routes/usuarios.novo'
 import { Route as PrestacoesNovaRouteImport } from './routes/prestacoes.nova'
 import { Route as PrestacoesIdEditarRouteImport } from './routes/prestacoes.$id.editar'
 
-const UsuariosRoute = UsuariosRouteImport.update({
-  id: '/usuarios',
-  path: '/usuarios',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -80,6 +75,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UsuariosIndexRoute = UsuariosIndexRouteImport.update({
+  id: '/usuarios/',
+  path: '/usuarios/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrestacoesIndexRoute = PrestacoesIndexRouteImport.update({
   id: '/prestacoes/',
   path: '/prestacoes/',
@@ -112,10 +112,10 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/usuarios': typeof UsuariosRouteWithChildren
   '/prestacoes/nova': typeof PrestacoesNovaRoute
   '/usuarios/novo': typeof UsuariosNovoRoute
   '/prestacoes/': typeof PrestacoesIndexRoute
+  '/usuarios/': typeof UsuariosIndexRoute
   '/prestacoes/$id/editar': typeof PrestacoesIdEditarRoute
 }
 export interface FileRoutesByTo {
@@ -129,10 +129,10 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/usuarios': typeof UsuariosRouteWithChildren
   '/prestacoes/nova': typeof PrestacoesNovaRoute
   '/usuarios/novo': typeof UsuariosNovoRoute
   '/prestacoes': typeof PrestacoesIndexRoute
+  '/usuarios': typeof UsuariosIndexRoute
   '/prestacoes/$id/editar': typeof PrestacoesIdEditarRoute
 }
 export interface FileRoutesById {
@@ -147,10 +147,10 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/usuarios': typeof UsuariosRouteWithChildren
   '/prestacoes/nova': typeof PrestacoesNovaRoute
   '/usuarios/novo': typeof UsuariosNovoRoute
   '/prestacoes/': typeof PrestacoesIndexRoute
+  '/usuarios/': typeof UsuariosIndexRoute
   '/prestacoes/$id/editar': typeof PrestacoesIdEditarRoute
 }
 export interface FileRouteTypes {
@@ -166,10 +166,10 @@ export interface FileRouteTypes {
     | '/login'
     | '/redefinir-senha'
     | '/sitemap.xml'
-    | '/usuarios'
     | '/prestacoes/nova'
     | '/usuarios/novo'
     | '/prestacoes/'
+    | '/usuarios/'
     | '/prestacoes/$id/editar'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -183,10 +183,10 @@ export interface FileRouteTypes {
     | '/login'
     | '/redefinir-senha'
     | '/sitemap.xml'
-    | '/usuarios'
     | '/prestacoes/nova'
     | '/usuarios/novo'
     | '/prestacoes'
+    | '/usuarios'
     | '/prestacoes/$id/editar'
   id:
     | '__root__'
@@ -200,10 +200,10 @@ export interface FileRouteTypes {
     | '/login'
     | '/redefinir-senha'
     | '/sitemap.xml'
-    | '/usuarios'
     | '/prestacoes/nova'
     | '/usuarios/novo'
     | '/prestacoes/'
+    | '/usuarios/'
     | '/prestacoes/$id/editar'
   fileRoutesById: FileRoutesById
 }
@@ -218,21 +218,14 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   RedefinirSenhaRoute: typeof RedefinirSenhaRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  UsuariosRoute: typeof UsuariosRouteWithChildren
   PrestacoesNovaRoute: typeof PrestacoesNovaRoute
   PrestacoesIndexRoute: typeof PrestacoesIndexRoute
+  UsuariosIndexRoute: typeof UsuariosIndexRoute
   PrestacoesIdEditarRoute: typeof PrestacoesIdEditarRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/usuarios': {
-      id: '/usuarios'
-      path: '/usuarios'
-      fullPath: '/usuarios'
-      preLoaderRoute: typeof UsuariosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -303,6 +296,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/usuarios/': {
+      id: '/usuarios/'
+      path: '/usuarios'
+      fullPath: '/usuarios/'
+      preLoaderRoute: typeof UsuariosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/prestacoes/': {
       id: '/prestacoes/'
       path: '/prestacoes'
@@ -334,18 +334,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface UsuariosRouteChildren {
-  UsuariosNovoRoute: typeof UsuariosNovoRoute
-}
-
-const UsuariosRouteChildren: UsuariosRouteChildren = {
-  UsuariosNovoRoute: UsuariosNovoRoute,
-}
-
-const UsuariosRouteWithChildren = UsuariosRoute._addFileChildren(
-  UsuariosRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CondominiosRoute: CondominiosRoute,
@@ -357,9 +345,9 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   RedefinirSenhaRoute: RedefinirSenhaRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  UsuariosRoute: UsuariosRouteWithChildren,
   PrestacoesNovaRoute: PrestacoesNovaRoute,
   PrestacoesIndexRoute: PrestacoesIndexRoute,
+  UsuariosIndexRoute: UsuariosIndexRoute,
   PrestacoesIdEditarRoute: PrestacoesIdEditarRoute,
 }
 export const routeTree = rootRouteImport
