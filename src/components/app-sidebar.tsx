@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Home, Users, Moon, Sun, Palette as PaletteIcon, ArrowLeft, LogOut } from "lucide-react";
+import { Home, Users, FileText, Moon, Sun, Palette as PaletteIcon, ArrowLeft, LogOut } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -95,6 +95,16 @@ export function AppSidebar() {
                   </SidebarMenuItem>
                 );
               })}
+              {(currentPath === "/usuarios" || currentPath === "/usuarios/novo") && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild tooltip="Prestação de contas" size="lg">
+                    <Link to="/prestacoes" className="flex items-center gap-3">
+                      <FileText className="h-5 w-5" />
+                      <span className="font-medium">Prestação de contas</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
