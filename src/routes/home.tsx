@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { AppShell } from "@/components/app-shell";
 import { useAuth } from "@/lib/auth";
+import { supabase } from "@/integrations/supabase/client";
 import { FileText, Users, ArrowRight } from "lucide-react";
 import mascot from "@/assets/mascot.png";
 import homeBg from "@/assets/home-bg.jpg";
@@ -23,7 +25,21 @@ const SHORTCUTS = [
 
 function HomePage() {
   const { user } = useAuth();
-  const nome = user?.email?.split("@")[0] ?? "operador";
+  const { data: perfil } = useQuery({
+    queryKey: ["perfil-home", user?.id],
+    enabled: Boolean(user?.id),
+    queryFn: async () => {
+      if (!user?.id) return null;
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("primeiro_nome")
+        .eq("id", user.id)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+  });
+  const nome = perfil?.primeiro_nome || user?.user_metadata?.primeiro_nome || "operador";
 
   return (
     <div className="relative -m-6 lg:-m-8 min-h-[calc(100vh-3.5rem)] overflow-hidden">
