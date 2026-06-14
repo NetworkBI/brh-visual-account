@@ -20,6 +20,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as CondominiosRouteImport } from './routes/condominios'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as UsuariosIndexRouteImport } from './routes/usuarios.index'
 import { Route as PrestacoesIndexRouteImport } from './routes/prestacoes.index'
 import { Route as UsuariosNovoRouteImport } from './routes/usuarios.novo'
 import { Route as PrestacoesNovaRouteImport } from './routes/prestacoes.nova'
@@ -80,6 +81,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UsuariosIndexRoute = UsuariosIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => UsuariosRoute,
+} as any)
 const PrestacoesIndexRoute = PrestacoesIndexRouteImport.update({
   id: '/prestacoes/',
   path: '/prestacoes/',
@@ -116,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/prestacoes/nova': typeof PrestacoesNovaRoute
   '/usuarios/novo': typeof UsuariosNovoRoute
   '/prestacoes/': typeof PrestacoesIndexRoute
+  '/usuarios/': typeof UsuariosIndexRoute
   '/prestacoes/$id/editar': typeof PrestacoesIdEditarRoute
 }
 export interface FileRoutesByTo {
@@ -129,10 +136,10 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/usuarios': typeof UsuariosRouteWithChildren
   '/prestacoes/nova': typeof PrestacoesNovaRoute
   '/usuarios/novo': typeof UsuariosNovoRoute
   '/prestacoes': typeof PrestacoesIndexRoute
+  '/usuarios': typeof UsuariosIndexRoute
   '/prestacoes/$id/editar': typeof PrestacoesIdEditarRoute
 }
 export interface FileRoutesById {
@@ -151,6 +158,7 @@ export interface FileRoutesById {
   '/prestacoes/nova': typeof PrestacoesNovaRoute
   '/usuarios/novo': typeof UsuariosNovoRoute
   '/prestacoes/': typeof PrestacoesIndexRoute
+  '/usuarios/': typeof UsuariosIndexRoute
   '/prestacoes/$id/editar': typeof PrestacoesIdEditarRoute
 }
 export interface FileRouteTypes {
@@ -170,6 +178,7 @@ export interface FileRouteTypes {
     | '/prestacoes/nova'
     | '/usuarios/novo'
     | '/prestacoes/'
+    | '/usuarios/'
     | '/prestacoes/$id/editar'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -183,10 +192,10 @@ export interface FileRouteTypes {
     | '/login'
     | '/redefinir-senha'
     | '/sitemap.xml'
-    | '/usuarios'
     | '/prestacoes/nova'
     | '/usuarios/novo'
     | '/prestacoes'
+    | '/usuarios'
     | '/prestacoes/$id/editar'
   id:
     | '__root__'
@@ -204,6 +213,7 @@ export interface FileRouteTypes {
     | '/prestacoes/nova'
     | '/usuarios/novo'
     | '/prestacoes/'
+    | '/usuarios/'
     | '/prestacoes/$id/editar'
   fileRoutesById: FileRoutesById
 }
@@ -303,6 +313,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/usuarios/': {
+      id: '/usuarios/'
+      path: '/'
+      fullPath: '/usuarios/'
+      preLoaderRoute: typeof UsuariosIndexRouteImport
+      parentRoute: typeof UsuariosRoute
+    }
     '/prestacoes/': {
       id: '/prestacoes/'
       path: '/prestacoes'
@@ -336,10 +353,12 @@ declare module '@tanstack/react-router' {
 
 interface UsuariosRouteChildren {
   UsuariosNovoRoute: typeof UsuariosNovoRoute
+  UsuariosIndexRoute: typeof UsuariosIndexRoute
 }
 
 const UsuariosRouteChildren: UsuariosRouteChildren = {
   UsuariosNovoRoute: UsuariosNovoRoute,
+  UsuariosIndexRoute: UsuariosIndexRoute,
 }
 
 const UsuariosRouteWithChildren = UsuariosRoute._addFileChildren(
@@ -365,13 +384,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
