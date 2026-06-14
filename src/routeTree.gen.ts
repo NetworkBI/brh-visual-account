@@ -86,9 +86,9 @@ const PrestacoesIndexRoute = PrestacoesIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const UsuariosNovoRoute = UsuariosNovoRouteImport.update({
-  id: '/novo',
-  path: '/novo',
-  getParentRoute: () => UsuariosRoute,
+  id: '/usuarios/novo',
+  path: '/usuarios/novo',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const PrestacoesNovaRoute = PrestacoesNovaRouteImport.update({
   id: '/prestacoes/nova',
@@ -219,6 +219,7 @@ export interface RootRouteChildren {
   RedefinirSenhaRoute: typeof RedefinirSenhaRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   PrestacoesNovaRoute: typeof PrestacoesNovaRoute
+  UsuariosNovoRoute: typeof UsuariosNovoRoute
   PrestacoesIndexRoute: typeof PrestacoesIndexRoute
   UsuariosIndexRoute: typeof UsuariosIndexRoute
   PrestacoesIdEditarRoute: typeof PrestacoesIdEditarRoute
@@ -312,10 +313,10 @@ declare module '@tanstack/react-router' {
     }
     '/usuarios/novo': {
       id: '/usuarios/novo'
-      path: '/novo'
+      path: '/usuarios/novo'
       fullPath: '/usuarios/novo'
       preLoaderRoute: typeof UsuariosNovoRouteImport
-      parentRoute: typeof UsuariosRoute
+      parentRoute: typeof rootRouteImport
     }
     '/prestacoes/nova': {
       id: '/prestacoes/nova'
@@ -346,6 +347,7 @@ const rootRouteChildren: RootRouteChildren = {
   RedefinirSenhaRoute: RedefinirSenhaRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   PrestacoesNovaRoute: PrestacoesNovaRoute,
+  UsuariosNovoRoute: UsuariosNovoRoute,
   PrestacoesIndexRoute: PrestacoesIndexRoute,
   UsuariosIndexRoute: UsuariosIndexRoute,
   PrestacoesIdEditarRoute: PrestacoesIdEditarRoute,
@@ -353,13 +355,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
