@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UsuariosRouteImport } from './routes/usuarios'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RedefinirSenhaRouteImport } from './routes/redefinir-senha'
 import { Route as LoginRouteImport } from './routes/login'
@@ -25,6 +26,11 @@ import { Route as UsuariosNovoRouteImport } from './routes/usuarios.novo'
 import { Route as PrestacoesNovaRouteImport } from './routes/prestacoes.nova'
 import { Route as PrestacoesIdEditarRouteImport } from './routes/prestacoes.$id.editar'
 
+const UsuariosRoute = UsuariosRouteImport.update({
+  id: '/usuarios',
+  path: '/usuarios',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -76,9 +82,9 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const UsuariosIndexRoute = UsuariosIndexRouteImport.update({
-  id: '/usuarios/',
-  path: '/usuarios/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => UsuariosRoute,
 } as any)
 const PrestacoesIndexRoute = PrestacoesIndexRouteImport.update({
   id: '/prestacoes/',
@@ -86,9 +92,9 @@ const PrestacoesIndexRoute = PrestacoesIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const UsuariosNovoRoute = UsuariosNovoRouteImport.update({
-  id: '/usuarios/novo',
-  path: '/usuarios/novo',
-  getParentRoute: () => rootRouteImport,
+  id: '/novo',
+  path: '/novo',
+  getParentRoute: () => UsuariosRoute,
 } as any)
 const PrestacoesNovaRoute = PrestacoesNovaRouteImport.update({
   id: '/prestacoes/nova',
@@ -112,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/usuarios': typeof UsuariosRouteWithChildren
   '/prestacoes/nova': typeof PrestacoesNovaRoute
   '/usuarios/novo': typeof UsuariosNovoRoute
   '/prestacoes/': typeof PrestacoesIndexRoute
@@ -147,6 +154,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/usuarios': typeof UsuariosRouteWithChildren
   '/prestacoes/nova': typeof PrestacoesNovaRoute
   '/usuarios/novo': typeof UsuariosNovoRoute
   '/prestacoes/': typeof PrestacoesIndexRoute
@@ -166,6 +174,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/redefinir-senha'
     | '/sitemap.xml'
+    | '/usuarios'
     | '/prestacoes/nova'
     | '/usuarios/novo'
     | '/prestacoes/'
@@ -200,6 +209,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/redefinir-senha'
     | '/sitemap.xml'
+    | '/usuarios'
     | '/prestacoes/nova'
     | '/usuarios/novo'
     | '/prestacoes/'
@@ -218,15 +228,21 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   RedefinirSenhaRoute: typeof RedefinirSenhaRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  UsuariosRoute: typeof UsuariosRouteWithChildren
   PrestacoesNovaRoute: typeof PrestacoesNovaRoute
-  UsuariosNovoRoute: typeof UsuariosNovoRoute
   PrestacoesIndexRoute: typeof PrestacoesIndexRoute
-  UsuariosIndexRoute: typeof UsuariosIndexRoute
   PrestacoesIdEditarRoute: typeof PrestacoesIdEditarRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/usuarios': {
+      id: '/usuarios'
+      path: '/usuarios'
+      fullPath: '/usuarios'
+      preLoaderRoute: typeof UsuariosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -299,10 +315,10 @@ declare module '@tanstack/react-router' {
     }
     '/usuarios/': {
       id: '/usuarios/'
-      path: '/usuarios'
+      path: '/'
       fullPath: '/usuarios/'
       preLoaderRoute: typeof UsuariosIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof UsuariosRoute
     }
     '/prestacoes/': {
       id: '/prestacoes/'
@@ -313,10 +329,10 @@ declare module '@tanstack/react-router' {
     }
     '/usuarios/novo': {
       id: '/usuarios/novo'
-      path: '/usuarios/novo'
+      path: '/novo'
       fullPath: '/usuarios/novo'
       preLoaderRoute: typeof UsuariosNovoRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof UsuariosRoute
     }
     '/prestacoes/nova': {
       id: '/prestacoes/nova'
@@ -335,6 +351,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface UsuariosRouteChildren {
+  UsuariosNovoRoute: typeof UsuariosNovoRoute
+  UsuariosIndexRoute: typeof UsuariosIndexRoute
+}
+
+const UsuariosRouteChildren: UsuariosRouteChildren = {
+  UsuariosNovoRoute: UsuariosNovoRoute,
+  UsuariosIndexRoute: UsuariosIndexRoute,
+}
+
+const UsuariosRouteWithChildren = UsuariosRoute._addFileChildren(
+  UsuariosRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CondominiosRoute: CondominiosRoute,
@@ -346,12 +376,21 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   RedefinirSenhaRoute: RedefinirSenhaRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  UsuariosRoute: UsuariosRouteWithChildren,
   PrestacoesNovaRoute: PrestacoesNovaRoute,
-  UsuariosNovoRoute: UsuariosNovoRoute,
   PrestacoesIndexRoute: PrestacoesIndexRoute,
-  UsuariosIndexRoute: UsuariosIndexRoute,
   PrestacoesIdEditarRoute: PrestacoesIdEditarRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
