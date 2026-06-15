@@ -108,35 +108,30 @@ function Lista() {
                     </td>
                     <td className="px-4 py-3">{new Date(p.data_evento).toLocaleDateString("pt-BR")}</td>
                     <td className="px-4 py-3 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <Button asChild variant="ghost" size="sm">
-                          <Link to="/prestacoes/$id/editar" params={{ id: p.id }}><Pencil className="h-4 w-4" /></Link>
-                        </Button>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="ghost" size="sm" aria-label="Excluir movimento">
-                              <Trash2 className="h-4 w-4 text-destructive" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Tem certeza que deseja excluir movimento?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Esta ação irá inativar o movimento. Ele deixará de aparecer nas listagens.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Não</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() => inativar.mutate(p.id)}
-                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                              >
-                                Sim, excluir
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </div>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="sm" aria-label="Excluir movimento">
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Tem certeza que deseja excluir movimento?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Esta ação irá inativar o movimento. Ele deixará de aparecer nas listagens.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Não</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => inativar.mutate(p.id)}
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                              Sim, excluir
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </td>
                   </tr>
                 ))
