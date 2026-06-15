@@ -5,9 +5,23 @@ import { usePrestacoes } from "@/lib/queries";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Pencil } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { PROCESSOS } from "@/lib/schemas";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 import { pageMeta } from "@/lib/seo";
 
@@ -24,6 +38,19 @@ function Lista() {
   const { data = [], isLoading } = usePrestacoes();
   const [q, setQ] = useState("");
   const [proc, setProc] = useState<string>("todos");
+  const queryClient = useQueryClient();
+
+  const inativar = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("prestacoes").update({ ativo: false }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Movimento excluído");
+      queryClient.invalidateQueries({ queryKey: ["prestacoes"] });
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Erro ao excluir"),
+  });
 
   const filtered = useMemo(() => {
     const ql = q.toLowerCase();
@@ -81,9 +108,35 @@ function Lista() {
                     </td>
                     <td className="px-4 py-3">{new Date(p.data_evento).toLocaleDateString("pt-BR")}</td>
                     <td className="px-4 py-3 text-right">
-                      <Button asChild variant="ghost" size="sm">
-                        <Link to="/prestacoes/$id/editar" params={{ id: p.id }}><Pencil className="h-4 w-4" /></Link>
-                      </Button>
+                      <div className="flex items-center justify-end gap-1">
+                        <Button asChild variant="ghost" size="sm">
+                          <Link to="/prestacoes/$id/editar" params={{ id: p.id }}><Pencil className="h-4 w-4" /></Link>
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="ghost" size="sm" aria-label="Excluir movimento">
+                              <Trash2 className="h-4 w-4 text-destructive" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Tem certeza que deseja excluir movimento?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Esta ação irá inativar o movimento. Ele deixará de aparecer nas listagens.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Não</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => inativar.mutate(p.id)}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              >
+                                Sim, excluir
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
                     </td>
                   </tr>
                 ))
