@@ -47,6 +47,7 @@ export function usePrestacoes() {
       const { data, error } = await supabase
         .from("prestacoes")
         .select("*, condominios(nome)")
+        .eq("ativo", true)
         .order("data_evento", { ascending: false });
       if (error) throw error;
       return data;
