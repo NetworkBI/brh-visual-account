@@ -9,66 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as UsuariosRouteImport } from './routes/usuarios'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as RedefinirSenhaRouteImport } from './routes/redefinir-senha'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as HomeRouteImport } from './routes/home'
-import { Route as HistoricoRouteImport } from './routes/historico'
-import { Route as EsqueciSenhaRouteImport } from './routes/esqueci-senha'
-import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
-import { Route as CondominiosRouteImport } from './routes/condominios'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as UsuariosIndexRouteImport } from './routes/usuarios.index'
+import { Route as CondominiosRouteImport } from './routes/condominios'
+import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as EsqueciSenhaRouteImport } from './routes/esqueci-senha'
+import { Route as HistoricoRouteImport } from './routes/historico'
+import { Route as HomeRouteImport } from './routes/home'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as RedefinirSenhaRouteImport } from './routes/redefinir-senha'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as UsuariosRouteImport } from './routes/usuarios'
 import { Route as PrestacoesIndexRouteImport } from './routes/prestacoes.index'
-import { Route as UsuariosNovoRouteImport } from './routes/usuarios.novo'
 import { Route as PrestacoesNovaRouteImport } from './routes/prestacoes.nova'
+import { Route as UsuariosIndexRouteImport } from './routes/usuarios.index'
+import { Route as UsuariosNovoRouteImport } from './routes/usuarios.novo'
 import { Route as PrestacoesIdEditarRouteImport } from './routes/prestacoes.$id.editar'
 
-const UsuariosRoute = UsuariosRouteImport.update({
-  id: '/usuarios',
-  path: '/usuarios',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RedefinirSenhaRoute = RedefinirSenhaRouteImport.update({
-  id: '/redefinir-senha',
-  path: '/redefinir-senha',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HomeRoute = HomeRouteImport.update({
-  id: '/home',
-  path: '/home',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HistoricoRoute = HistoricoRouteImport.update({
-  id: '/historico',
-  path: '/historico',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EsqueciSenhaRoute = EsqueciSenhaRouteImport.update({
-  id: '/esqueci-senha',
-  path: '/esqueci-senha',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
-  id: '/configuracoes',
-  path: '/configuracoes',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CondominiosRoute = CondominiosRouteImport.update({
@@ -76,9 +36,59 @@ const CondominiosRoute = CondominiosRouteImport.update({
   path: '/condominios',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EsqueciSenhaRoute = EsqueciSenhaRouteImport.update({
+  id: '/esqueci-senha',
+  path: '/esqueci-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoricoRoute = HistoricoRouteImport.update({
+  id: '/historico',
+  path: '/historico',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeRoute = HomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RedefinirSenhaRoute = RedefinirSenhaRouteImport.update({
+  id: '/redefinir-senha',
+  path: '/redefinir-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UsuariosRoute = UsuariosRouteImport.update({
+  id: '/usuarios',
+  path: '/usuarios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrestacoesIndexRoute = PrestacoesIndexRouteImport.update({
+  id: '/prestacoes/',
+  path: '/prestacoes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrestacoesNovaRoute = PrestacoesNovaRouteImport.update({
+  id: '/prestacoes/nova',
+  path: '/prestacoes/nova',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UsuariosIndexRoute = UsuariosIndexRouteImport.update({
@@ -86,20 +96,10 @@ const UsuariosIndexRoute = UsuariosIndexRouteImport.update({
   path: '/',
   getParentRoute: () => UsuariosRoute,
 } as any)
-const PrestacoesIndexRoute = PrestacoesIndexRouteImport.update({
-  id: '/prestacoes/',
-  path: '/prestacoes/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const UsuariosNovoRoute = UsuariosNovoRouteImport.update({
   id: '/novo',
   path: '/novo',
   getParentRoute: () => UsuariosRoute,
-} as any)
-const PrestacoesNovaRoute = PrestacoesNovaRouteImport.update({
-  id: '/prestacoes/nova',
-  path: '/prestacoes/nova',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const PrestacoesIdEditarRoute = PrestacoesIdEditarRouteImport.update({
   id: '/prestacoes/$id/editar',
@@ -236,67 +236,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/usuarios': {
-      id: '/usuarios'
-      path: '/usuarios'
-      fullPath: '/usuarios'
-      preLoaderRoute: typeof UsuariosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/redefinir-senha': {
-      id: '/redefinir-senha'
-      path: '/redefinir-senha'
-      fullPath: '/redefinir-senha'
-      preLoaderRoute: typeof RedefinirSenhaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/home': {
-      id: '/home'
-      path: '/home'
-      fullPath: '/home'
-      preLoaderRoute: typeof HomeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/historico': {
-      id: '/historico'
-      path: '/historico'
-      fullPath: '/historico'
-      preLoaderRoute: typeof HistoricoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/esqueci-senha': {
-      id: '/esqueci-senha'
-      path: '/esqueci-senha'
-      fullPath: '/esqueci-senha'
-      preLoaderRoute: typeof EsqueciSenhaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/configuracoes': {
-      id: '/configuracoes'
-      path: '/configuracoes'
-      fullPath: '/configuracoes'
-      preLoaderRoute: typeof ConfiguracoesRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/condominios': {
@@ -306,11 +250,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CondominiosRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/configuracoes': {
+      id: '/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/configuracoes'
+      preLoaderRoute: typeof ConfiguracoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/esqueci-senha': {
+      id: '/esqueci-senha'
+      path: '/esqueci-senha'
+      fullPath: '/esqueci-senha'
+      preLoaderRoute: typeof EsqueciSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/historico': {
+      id: '/historico'
+      path: '/historico'
+      fullPath: '/historico'
+      preLoaderRoute: typeof HistoricoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/redefinir-senha': {
+      id: '/redefinir-senha'
+      path: '/redefinir-senha'
+      fullPath: '/redefinir-senha'
+      preLoaderRoute: typeof RedefinirSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/usuarios': {
+      id: '/usuarios'
+      path: '/usuarios'
+      fullPath: '/usuarios'
+      preLoaderRoute: typeof UsuariosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prestacoes/': {
+      id: '/prestacoes/'
+      path: '/prestacoes'
+      fullPath: '/prestacoes/'
+      preLoaderRoute: typeof PrestacoesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prestacoes/nova': {
+      id: '/prestacoes/nova'
+      path: '/prestacoes/nova'
+      fullPath: '/prestacoes/nova'
+      preLoaderRoute: typeof PrestacoesNovaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/usuarios/': {
@@ -320,26 +334,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UsuariosIndexRouteImport
       parentRoute: typeof UsuariosRoute
     }
-    '/prestacoes/': {
-      id: '/prestacoes/'
-      path: '/prestacoes'
-      fullPath: '/prestacoes/'
-      preLoaderRoute: typeof PrestacoesIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/usuarios/novo': {
       id: '/usuarios/novo'
       path: '/novo'
       fullPath: '/usuarios/novo'
       preLoaderRoute: typeof UsuariosNovoRouteImport
       parentRoute: typeof UsuariosRoute
-    }
-    '/prestacoes/nova': {
-      id: '/prestacoes/nova'
-      path: '/prestacoes/nova'
-      fullPath: '/prestacoes/nova'
-      preLoaderRoute: typeof PrestacoesNovaRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/prestacoes/$id/editar': {
       id: '/prestacoes/$id/editar'

@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: brh-visual-account
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOST=0.0.0.0
+      - SUPABASE_PROJECT_ID=cylaeglmydnhaadynsej
+      - SUPABASE_PUBLISHABLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5bGFlZ2xteWRuaGFhZHluc2VqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNjc0NDgsImV4cCI6MjA5Mzg0MzQ0OH0.MdjZ1RuP1yN5lYTWCr6Tbfseutwwzt2WmOLOVJX_cfk
+      - SUPABASE_URL=https://cylaeglmydnhaadynsej.supabase.co
+      - VITE_SUPABASE_PROJECT_ID=cylaeglmydnhaadynsej
+      - VITE_SUPABASE_PUBLISHABLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5bGFlZ2xteWRuaGFhZHluc2VqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNjc0NDgsImV4cCI6MjA5Mzg0MzQ0OH0.MdjZ1RuP1yN5lYTWCr6Tbfseutwwzt2WmOLOVJX_cfk
+      - VITE_SUPABASE_URL=https://cylaeglmydnhaadynsej.supabase.co
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
