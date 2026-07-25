@@ -6,7 +6,11 @@ const { Pool } = pg;
 const connectionString = process.env.DATABASE_URL;
 
 export const pool = new Pool({
-  connectionString,
+  host: process.env.DATABASE_HOST || 'atlas_dw',
+  port: parseInt(process.env.DATABASE_PORT || '5432'),
+  database: process.env.DATABASE_NAME || 'br_hunter',
+  user: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
   max: 10,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000,
