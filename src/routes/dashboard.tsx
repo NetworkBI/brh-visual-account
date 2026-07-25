@@ -75,7 +75,7 @@ function Pagina() {
 
   const inativar = async (id: string, ativo: boolean) => {
     try {
-      await inactivatePrestacao({ id, ativo: !ativo });
+      await inactivatePrestacao({ data: { id, ativo: !ativo } });
     } catch (error: any) {
       toast.error(error.message);
       return;

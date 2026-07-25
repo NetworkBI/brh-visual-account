@@ -69,7 +69,7 @@ export function PrestacaoForm({ initial, mode }: Props) {
     }
     if (!user) return;
     try {
-      const res = await insertCondominio({ nome });
+      const res = await insertCondominio({ data: { nome } });
       if (!res || !res.id) throw new Error("Falha ao cadastrar condomínio");
       setValue("condominio_id", res.id, { shouldValidate: true });
     } catch (error: any) {
@@ -83,16 +83,16 @@ export function PrestacaoForm({ initial, mode }: Props) {
     const payload = { ...v, usuario: user.id };
     try {
       if (mode === "criar") {
-        await createPrestacao({
+        await createPrestacao({ data: {
           mes: v.mes,
           condominio_id: v.condominio_id,
           processo: v.processo as any,
           data_evento: v.data_evento,
           usuario_responsavel: v.usuario_responsavel,
           observacoes: v.observacoes,
-        });
+        }});
       } else {
-        await updatePrestacao({
+        await updatePrestacao({ data: {
           id: initial!.id!,
           mes: v.mes,
           condominio_id: v.condominio_id,
@@ -100,7 +100,7 @@ export function PrestacaoForm({ initial, mode }: Props) {
           data_evento: v.data_evento,
           usuario_responsavel: v.usuario_responsavel,
           observacoes: v.observacoes,
-        });
+        }});
       }
     } catch (err: any) {
       setSubmitting(false);

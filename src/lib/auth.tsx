@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signInWithPassword = async ({ email, password }: { email: string; password: string }) => {
     try {
-      const res = await loginUser({ email, password });
+      const res = await loginUser({ data: { email, password } });
       if (res && res.session) {
         localStorage.setItem("brh_session", JSON.stringify(res.session));
         setSession(res.session);

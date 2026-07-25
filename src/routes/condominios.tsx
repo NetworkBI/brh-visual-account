@@ -32,7 +32,7 @@ function Pagina() {
   const adicionar = async () => {
     if (!nome.trim() || !user) return;
     try {
-      await insertCondominio({ nome: nome.trim() });
+      await insertCondominio({ data: { nome: nome.trim() } });
     } catch (error: any) {
       toast.error(error.message);
       return;
@@ -44,7 +44,7 @@ function Pagina() {
 
   const remover = async (id: string) => {
     try {
-      await deleteCondominio({ id });
+      await deleteCondominio({ data: { id } });
     } catch (error: any) {
       toast.error(error.message);
       return;

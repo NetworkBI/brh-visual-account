@@ -42,7 +42,7 @@ function Lista() {
 
   const inativar = useMutation({
     mutationFn: async (id: string) => {
-      await inactivatePrestacao({ id, ativo: false });
+      await inactivatePrestacao({ data: { id, ativo: false } });
     },
     onSuccess: () => {
       toast.success("Movimento excluído");

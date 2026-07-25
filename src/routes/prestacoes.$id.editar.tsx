@@ -20,7 +20,7 @@ function EditarPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["prestacao", id],
     queryFn: async () => {
-      const res = await getPrestacaoById({ id });
+      const res = await getPrestacaoById({ data: { id } });
       if (!res) throw new Error("Prestação não encontrada");
       return res;
     },

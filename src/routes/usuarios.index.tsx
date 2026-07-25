@@ -115,7 +115,7 @@ function Pagina() {
       return;
     }
     try {
-      await updatePassword({ password: novaSenha });
+      await updatePassword({ data: { password: novaSenha } });
     } catch (err: any) {
       setSalvandoSenha(false);
       toast.error(err.message || "Erro ao alterar senha");

@@ -60,7 +60,7 @@ function RedefinirSenhaPage() {
   const onSubmit = async (values: FormInput) => {
     setSubmitting(true);
     try {
-      await updatePassword({ password: values.senha });
+      await updatePassword({ data: { password: values.senha } });
     } catch (err: any) {
       setSubmitting(false);
       toast.error("Falha ao atualizar senha: " + err.message);
