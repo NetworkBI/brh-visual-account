@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { loginSchema, type LoginInput } from "@/lib/schemas";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,7 +23,7 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
+  const { user, loading, signInWithPassword } = useAuth();
   const [submitting, setSubmitting] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -36,7 +35,7 @@ function LoginPage() {
 
   const onSubmit = async (values: LoginInput) => {
     setSubmitting(true);
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error } = await signInWithPassword({
       email: values.nome,
       password: values.senha,
     });

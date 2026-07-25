@@ -1,36 +1,30 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireAuth } from "./auth-middleware";
+import { query } from "./db";
+import { hashPassword } from "./auth-service";
 
 const roleSchema = z.enum(["padrao", "adm", "master"]);
 
-async function getCallerRole(supabase: any, userId: string): Promise<"padrao" | "adm" | "master"> {
-  const { data, error } = await supabase
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", userId);
-  if (error) throw new Error(error.message);
-  const roles = (data ?? []).map((r: any) => r.role);
-  if (roles.includes("master")) return "master";
-  if (roles.includes("adm")) return "adm";
+async function getCallerRole(userId: string): Promise<"padrao" | "adm" | "master"> {
+  const roles = await query(`SELECT role FROM ouro.saas_user_roles WHERE user_id = $1`, [userId]);
+  const roleNames = roles.map(r => r.role);
+  if (roleNames.includes("master")) return "master";
+  if (roleNames.includes("adm")) return "adm";
   return "padrao";
 }
 
-async function getTargetRole(admin: any, targetId: string): Promise<"padrao" | "adm" | "master"> {
-  const { data, error } = await admin
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", targetId);
-  if (error) throw new Error(error.message);
-  const roles = (data ?? []).map((r: any) => r.role);
-  if (roles.includes("master")) return "master";
-  if (roles.includes("adm")) return "adm";
+async function getTargetRole(targetId: string): Promise<"padrao" | "adm" | "master"> {
+  const roles = await query(`SELECT role FROM ouro.saas_user_roles WHERE user_id = $1`, [targetId]);
+  const roleNames = roles.map(r => r.role);
+  if (roleNames.includes("master")) return "master";
+  if (roleNames.includes("adm")) return "adm";
   return "padrao";
 }
 
 // ---------- Criar usuário ----------
 export const criarUsuario = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireAuth])
   .inputValidator((input) =>
     z
       .object({
@@ -45,88 +39,90 @@ export const criarUsuario = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
-    const { supabase, userId } = context;
-    const callerRole = await getCallerRole(supabase, userId);
+    const { userId } = context;
+    const callerRole = await getCallerRole(userId);
     if (callerRole === "padrao") throw new Error("Sem permissão para criar usuários.");
     if (data.role === "master" && callerRole !== "master")
       throw new Error("Somente MASTER pode criar usuários MASTER.");
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-
-    const { data: created, error } = await supabaseAdmin.auth.admin.createUser({
-      email: data.email,
-      password: data.senha,
-      email_confirm: true,
-      user_metadata: {
-        primeiro_nome: data.primeiro_nome,
-        segundo_nome: data.segundo_nome,
-        data_nascimento: data.data_nascimento,
-        matricula: data.matricula || null,
-      },
-    });
-    if (error || !created?.user) throw new Error(error?.message ?? "Falha ao criar usuário");
-
-    // O trigger handle_new_user_role já insere 'padrao'. Se for outro papel, atualiza.
-    if (data.role !== "padrao") {
-      const { error: rErr } = await supabaseAdmin
-        .from("user_roles")
-        .upsert({ user_id: created.user.id, role: data.role }, { onConflict: "user_id,role" });
-      // remove o 'padrao' default
-      await supabaseAdmin.from("user_roles").delete().eq("user_id", created.user.id).eq("role", "padrao");
-      // garante novo papel
-      if (rErr) {
-        await supabaseAdmin.from("user_roles").insert({ user_id: created.user.id, role: data.role });
-      }
+    const existing = await query(`SELECT id FROM ouro.saas_profiles WHERE email = $1`, [data.email.toLowerCase().trim()]);
+    if (existing.length > 0) {
+      throw new Error("Este e-mail já está cadastrado.");
     }
-    return { id: created.user.id };
+
+    const hashed = await hashPassword(data.senha);
+
+    const result = await query(
+      `INSERT INTO ouro.saas_profiles (primeiro_nome, segundo_nome, data_nascimento, email, matricula, password_hash)
+       VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+      [data.primeiro_nome, data.segundo_nome, data.data_nascimento, data.email.toLowerCase().trim(), data.matricula || null, hashed]
+    );
+
+    const createdId = result[0].id;
+
+    await query(`INSERT INTO ouro.saas_user_roles (user_id, role) VALUES ($1, $2)`, [createdId, data.role]);
+
+    return { id: createdId };
   });
 
 // ---------- Alterar papel ----------
 export const alterarPapel = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireAuth])
   .inputValidator((input) =>
     z.object({ user_id: z.string().uuid(), role: roleSchema }).parse(input),
   )
   .handler(async ({ data, context }) => {
-    const { supabase, userId } = context;
+    const { userId } = context;
     if (data.user_id === userId) throw new Error("Você não pode alterar seu próprio papel.");
 
-    const callerRole = await getCallerRole(supabase, userId);
+    const callerRole = await getCallerRole(userId);
     if (callerRole === "padrao") throw new Error("Sem permissão.");
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const targetRole = await getTargetRole(supabaseAdmin, data.user_id);
+    const targetRole = await getTargetRole(data.user_id);
 
     if (callerRole === "adm") {
-      if (targetRole === "master") throw new Error("ADM não pode alterar um MASTER.");
-      if (data.role === "master") throw new Error("ADM não pode promover a MASTER.");
+      if (targetRole === "master" || targetRole === "adm") {
+        throw new Error("ADM só pode gerenciar papel de usuários PADRÃO.");
+      }
+      if (data.role === "master" || data.role === "adm") {
+        throw new Error("ADM não pode promover a ADM ou MASTER.");
+      }
     }
 
-    await supabaseAdmin.from("user_roles").delete().eq("user_id", data.user_id);
-    const { error } = await supabaseAdmin
-      .from("user_roles")
-      .insert({ user_id: data.user_id, role: data.role });
-    if (error) throw new Error(error.message);
-    return { ok: true };
+    if (callerRole === "master") {
+      if (targetRole === "master") {
+        throw new Error("Não é possível alterar papel de outro MASTER.");
+      }
+    }
+
+    await query(`DELETE FROM ouro.saas_user_roles WHERE user_id = $1`, [data.user_id]);
+    await query(`INSERT INTO ouro.saas_user_roles (user_id, role) VALUES ($1, $2)`, [data.user_id, data.role]);
+
+    return { success: true };
   });
 
 // ---------- Excluir usuário ----------
 export const excluirUsuario = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireAuth])
   .inputValidator((input) => z.object({ user_id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    const { supabase, userId } = context;
-    if (data.user_id === userId) throw new Error("Você não pode excluir a si mesmo.");
+    const { userId } = context;
+    if (data.user_id === userId) throw new Error("Você não pode se auto-excluir.");
 
-    const callerRole = await getCallerRole(supabase, userId);
-    if (callerRole === "padrao") throw new Error("Sem permissão.");
+    const callerRole = await getCallerRole(userId);
+    if (callerRole === "padrao") throw new Error("Sem permissão para excluir usuários.");
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const targetRole = await getTargetRole(supabaseAdmin, data.user_id);
-    if (callerRole === "adm" && targetRole === "master")
-      throw new Error("ADM não pode excluir um MASTER.");
+    const targetRole = await getTargetRole(data.user_id);
 
-    const { error } = await supabaseAdmin.auth.admin.deleteUser(data.user_id);
-    if (error) throw new Error(error.message);
-    return { ok: true };
+    if (callerRole === "adm" && (targetRole === "master" || targetRole === "adm")) {
+      throw new Error("ADM não pode excluir outros administradores.");
+    }
+
+    if (callerRole === "master" && targetRole === "master") {
+      throw new Error("Não é possível excluir outro MASTER.");
+    }
+
+    await query(`DELETE FROM ouro.saas_profiles WHERE id = $1`, [data.user_id]);
+
+    return { success: true };
   });

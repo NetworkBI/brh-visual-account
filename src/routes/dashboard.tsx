@@ -5,7 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { AppShell } from "@/components/app-shell";
 import { usePrestacoes, useCondominios, useProfiles, useAllProfiles } from "@/lib/queries";
 import { useAuth, useUserRole } from "@/lib/auth";
-import { supabase } from "@/integrations/supabase/client";
+import { inactivatePrestacao } from "@/lib/db.functions";
 import { getCondominiosFromSheet } from "@/lib/sheet.functions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -74,8 +74,12 @@ function Pagina() {
   );
 
   const inativar = async (id: string, ativo: boolean) => {
-    const { error } = await supabase.from("prestacoes").update({ ativo: !ativo } as any).eq("id", id);
-    if (error) { toast.error(error.message); return; }
+    try {
+      await inactivatePrestacao({ id, ativo: !ativo });
+    } catch (error: any) {
+      toast.error(error.message);
+      return;
+    }
     toast.success(ativo ? "Lançamento inativado" : "Lançamento reativado");
     qc.invalidateQueries({ queryKey: ["prestacoes"] });
   };
