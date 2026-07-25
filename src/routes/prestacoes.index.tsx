@@ -20,7 +20,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { inactivatePrestacao } from "@/lib/db.functions";
 import { toast } from "sonner";
 
 import { pageMeta } from "@/lib/seo";
@@ -42,8 +42,7 @@ function Lista() {
 
   const inativar = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("prestacoes").update({ ativo: false }).eq("id", id);
-      if (error) throw error;
+      await inactivatePrestacao({ id, ativo: false });
     },
     onSuccess: () => {
       toast.success("Movimento excluído");

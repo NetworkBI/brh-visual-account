@@ -11,7 +11,7 @@ import {
   roleLabel,
   type AppRole,
 } from "@/lib/auth";
-import { supabase } from "@/integrations/supabase/client";
+import { getAllProfiles, updatePassword } from "@/lib/db.functions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -66,21 +66,15 @@ function useUsuarios() {
   return useQuery({
     queryKey: ["usuarios-com-roles"],
     queryFn: async () => {
-      const [{ data: profiles, error: pe }, { data: roles, error: re }] = await Promise.all([
-        supabase.from("profiles").select("id, primeiro_nome, segundo_nome, email, matricula"),
-        supabase.from("user_roles").select("user_id, role"),
-      ]);
-      if (pe) throw pe;
-      if (re) throw re;
-      return (profiles ?? []).map((p) => {
-        const rs = (roles ?? []).filter((r) => r.user_id === p.id).map((r) => r.role);
-        const role: AppRole = rs.includes("master")
-          ? "master"
-          : rs.includes("adm")
-            ? "adm"
-            : "padrao";
-        return { ...p, role };
-      });
+      const profiles = await getAllProfiles();
+      return (profiles ?? []).map((p: any) => ({
+        id: p.id,
+        primeiro_nome: p.primeiro_nome,
+        segundo_nome: p.segundo_nome,
+        email: p.email,
+        matricula: p.matricula,
+        role: p.role as AppRole,
+      }));
     },
   });
 }
@@ -120,13 +114,14 @@ function Pagina() {
       toast.error(parsed.error.issues[0].message);
       return;
     }
-    setSalvandoSenha(true);
-    const { error } = await supabase.auth.updateUser({ password: novaSenha });
-    setSalvandoSenha(false);
-    if (error) {
-      toast.error(error.message);
+    try {
+      await updatePassword({ password: novaSenha });
+    } catch (err: any) {
+      setSalvandoSenha(false);
+      toast.error(err.message || "Erro ao alterar senha");
       return;
     }
+    setSalvandoSenha(false);
     toast.success("Senha alterada");
     setNovaSenha("");
   };

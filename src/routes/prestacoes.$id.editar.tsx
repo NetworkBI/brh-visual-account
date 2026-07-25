@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { AppShell } from "@/components/app-shell";
 import { PrestacaoForm } from "@/components/prestacao-form";
-import { supabase } from "@/integrations/supabase/client";
+import { getPrestacaoById } from "@/lib/db.functions";
 
 import { pageMeta } from "@/lib/seo";
 
@@ -20,9 +20,9 @@ function EditarPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["prestacao", id],
     queryFn: async () => {
-      const { data, error } = await supabase.from("prestacoes").select("*").eq("id", id).single();
-      if (error) throw error;
-      return data;
+      const res = await getPrestacaoById({ id });
+      if (!res) throw new Error("Prestação não encontrada");
+      return res;
     },
   });
 

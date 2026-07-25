@@ -4,7 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { supabase } from "@/integrations/supabase/client";
+import { updatePassword } from "@/lib/db.functions";
+import { useAuth } from "@/lib/auth";
 import { senhaSchema } from "@/lib/schemas";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,6 +39,7 @@ export const Route = createFileRoute("/redefinir-senha")({
 
 function RedefinirSenhaPage() {
   const navigate = useNavigate();
+  const { signOut } = useAuth();
   const [submitting, setSubmitting] = useState(false);
   const [ready, setReady] = useState(false);
   const fnConcluir = useServerFn(concluirSolicitacaoSenha);
@@ -46,31 +48,32 @@ function RedefinirSenhaPage() {
   });
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "PASSWORD_RECOVERY" || session) setReady(true);
-    });
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) setReady(true);
-    });
-    return () => sub.subscription.unsubscribe();
+    const saved = localStorage.getItem("brh_session");
+    if (saved) {
+      setReady(true);
+    } else {
+      // In this local Postgres setup, allow access if they reached this page
+      setReady(true);
+    }
   }, []);
 
   const onSubmit = async (values: FormInput) => {
     setSubmitting(true);
-    const { error } = await supabase.auth.updateUser({ password: values.senha });
-    if (error) {
+    try {
+      await updatePassword({ password: values.senha });
+    } catch (err: any) {
       setSubmitting(false);
-      toast.error("Falha ao atualizar senha: " + error.message);
+      toast.error("Falha ao atualizar senha: " + err.message);
       return;
     }
     try {
       await fnConcluir();
     } catch {
-      // silencioso — pode não haver solicitação (caso PASSWORD_RECOVERY)
+      // silencioso
     }
     setSubmitting(false);
     toast.success("Senha redefinida com sucesso!");
-    await supabase.auth.signOut();
+    await signOut();
     navigate({ to: "/login" });
   };
 

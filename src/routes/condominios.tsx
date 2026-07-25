@@ -3,8 +3,8 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { AppShell } from "@/components/app-shell";
 import { useCondominios } from "@/lib/queries";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { insertCondominio, deleteCondominio } from "@/lib/db.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,16 +31,24 @@ function Pagina() {
 
   const adicionar = async () => {
     if (!nome.trim() || !user) return;
-    const { error } = await supabase.from("condominios").insert({ nome: nome.trim(), created_by: user.id });
-    if (error) { toast.error(error.message); return; }
+    try {
+      await insertCondominio({ nome: nome.trim() });
+    } catch (error: any) {
+      toast.error(error.message);
+      return;
+    }
     setNome("");
     toast.success("Condomínio adicionado");
     qc.invalidateQueries({ queryKey: ["condominios"] });
   };
 
   const remover = async (id: string) => {
-    const { error } = await supabase.from("condominios").delete().eq("id", id);
-    if (error) { toast.error(error.message); return; }
+    try {
+      await deleteCondominio({ id });
+    } catch (error: any) {
+      toast.error(error.message);
+      return;
+    }
     toast.success("Removido");
     qc.invalidateQueries({ queryKey: ["condominios"] });
   };

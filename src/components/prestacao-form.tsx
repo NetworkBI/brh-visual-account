@@ -7,8 +7,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { prestacaoSchema, PROCESSOS, type PrestacaoInput } from "@/lib/schemas";
 import { useCondominios, useProfiles } from "@/lib/queries";
 import { getCondominiosFromSheet } from "@/lib/sheet.functions";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { insertCondominio, createPrestacao, updatePrestacao } from "@/lib/db.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -68,27 +68,46 @@ export function PrestacaoForm({ initial, mode }: Props) {
       return;
     }
     if (!user) return;
-    const { data, error } = await supabase
-      .from("condominios")
-      .insert({ nome, created_by: user.id })
-      .select("id")
-      .single();
-    if (error || !data) { toast.error(error?.message ?? "Falha ao cadastrar condomínio"); return; }
-    setValue("condominio_id", data.id, { shouldValidate: true });
+    try {
+      const res = await insertCondominio({ nome });
+      if (!res || !res.id) throw new Error("Falha ao cadastrar condomínio");
+      setValue("condominio_id", res.id, { shouldValidate: true });
+    } catch (error: any) {
+      toast.error(error.message ?? "Falha ao cadastrar condomínio");
+    }
   }
 
   const onSubmit = async (v: PrestacaoInput) => {
     if (!user) return;
     setSubmitting(true);
     const payload = { ...v, usuario: user.id };
-    let error;
-    if (mode === "criar") {
-      ({ error } = await supabase.from("prestacoes").insert(payload as any));
-    } else {
-      ({ error } = await supabase.from("prestacoes").update(payload as any).eq("id", initial!.id!));
+    try {
+      if (mode === "criar") {
+        await createPrestacao({
+          mes: v.mes,
+          condominio_id: v.condominio_id,
+          processo: v.processo as any,
+          data_evento: v.data_evento,
+          usuario_responsavel: v.usuario_responsavel,
+          observacoes: v.observacoes,
+        });
+      } else {
+        await updatePrestacao({
+          id: initial!.id!,
+          mes: v.mes,
+          condominio_id: v.condominio_id,
+          processo: v.processo as any,
+          data_evento: v.data_evento,
+          usuario_responsavel: v.usuario_responsavel,
+          observacoes: v.observacoes,
+        });
+      }
+    } catch (err: any) {
+      setSubmitting(false);
+      toast.error(err.message);
+      return;
     }
     setSubmitting(false);
-    if (error) { toast.error(error.message); return; }
     toast.success(mode === "criar" ? "Prestação criada" : "Prestação atualizada");
     navigate({ to: "/dashboard" });
   };
