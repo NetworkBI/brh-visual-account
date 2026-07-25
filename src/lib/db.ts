@@ -7,11 +7,10 @@ const connectionString = process.env.DATABASE_URL;
 
 export const pool = new Pool({
   connectionString,
-  // If connectionString is not provided, pg will automatically fall back to:
-  // PGUSER, PGHOST, PGPASSWORD, PGDATABASE, PGPORT
-  max: 20,
+  max: 10,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  connectionTimeoutMillis: 10000,
+  ssl: false,
 });
 
 // Helper for running queries
