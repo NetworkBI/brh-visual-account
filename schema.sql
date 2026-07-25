@@ -4,6 +4,19 @@
 -- Criar o schema ouro se não existir
 CREATE SCHEMA IF NOT EXISTS ouro;
 
+-- Limpar tabelas antigas caso existam para evitar conflitos de re-execução
+DROP TABLE IF EXISTS ouro.saas_solicitacoes_senha CASCADE;
+DROP TABLE IF EXISTS ouro.saas_prestacao_eventos CASCADE;
+DROP TABLE IF EXISTS ouro.saas_prestacoes CASCADE;
+DROP TABLE IF EXISTS ouro.saas_condominios CASCADE;
+DROP TABLE IF EXISTS ouro.saas_user_roles CASCADE;
+DROP TABLE IF EXISTS ouro.saas_profiles CASCADE;
+
+-- Limpar enums antigos caso existam
+DROP TYPE IF EXISTS ouro.processo_tipo CASCADE;
+DROP TYPE IF EXISTS ouro.evento_tipo CASCADE;
+DROP TYPE IF EXISTS ouro.app_role CASCADE;
+
 -- 1. Enums
 CREATE TYPE ouro.processo_tipo AS ENUM ('Doc/Recebimento', 'Lançamento', 'Montagem', 'Data Fechamento');
 CREATE TYPE ouro.evento_tipo AS ENUM ('criação', 'edição');
