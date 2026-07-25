@@ -1,12 +1,15 @@
 -- Esquema do Banco de Dados para PostgreSQL Local
 -- Schema: ouro | Prefixo: saas_
 
+-- Definir search_path para garantir que o Postgres saiba onde criar os objetos
+SET search_path TO public, ouro;
+
 -- Criar o schema ouro se não existir
 CREATE SCHEMA IF NOT EXISTS ouro;
 
--- Habilitar extensões para geração de UUID
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- Habilitar extensões para geração de UUID no schema public
+CREATE EXTENSION IF NOT EXISTS pgcrypto SCHEMA public;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA public;
 
 -- Limpar tabelas antigas caso existam para evitar conflitos de re-execução
 DROP TABLE IF EXISTS ouro.saas_solicitacoes_senha CASCADE;
