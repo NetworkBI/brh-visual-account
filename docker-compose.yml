@@ -7,20 +7,27 @@ services:
       dockerfile: Dockerfile
     container_name: brh-visual-account
     restart: always
-    network_mode: "host"
+    ports:
+      - "3001:3000"
     environment:
       - NODE_ENV=production
-      - PORT=3001
+      - PORT=3000
       - HOST=0.0.0.0
-      - DATABASE_URL=postgresql://ntw_saas_brhunter:Ntw@27719#BRHunter@localhost:5444/br_hunter
-      - DATABASE_HOST=localhost
+      - DATABASE_URL=postgresql://ntw_saas_brhunter:Ntw@27719#BRHunter@atlas_dw:5432/br_hunter
+      - DATABASE_HOST=atlas_dw
       - DATABASE_NAME=br_hunter
       - DATABASE_USER=ntw_saas_brhunter
       - DATABASE_PASSWORD=Ntw@27719#BRHunter
-      - DATABASE_PORT=5444
+      - DATABASE_PORT=5432
       - JWT_SECRET=brh-super-secret-key-2026-mude-em-producao!
+    networks:
+      - hopdbt-network
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
+
+networks:
+  hopdbt-network:
+    external: true
