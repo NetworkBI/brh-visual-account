@@ -27,7 +27,8 @@ export const PROCESSOS = ["Documentação Recebida", "Lançamento Contábeis", "
 
 export const prestacaoSchema = z.object({
   mes: z.string().min(1, "Obrigatório"),
-  condominio_id: z.string().uuid("Selecione um condomínio"),
+  condominio_id: z.string().uuid("Selecione um condomínio").optional().nullable(),
+  id_condominio: z.number({ required_error: "Selecione um condomínio" }).int(),
   processo: z.enum(PROCESSOS),
   data_evento: z.string().min(1, "Obrigatório"),
   usuario_responsavel: z.string().uuid("Selecione um responsável"),

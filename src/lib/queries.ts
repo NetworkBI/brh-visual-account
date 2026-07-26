@@ -3,12 +3,12 @@ import { getCondominios, getProfiles, getAllProfiles, getPrestacoes, getEventos 
 
 const STALE = 60_000;
 
-export function useCondominios() {
+export function useCondominios(periodo?: string | null) {
   return useQuery({
     staleTime: STALE,
-    queryKey: ["condominios"],
+    queryKey: ["condominios", periodo],
     queryFn: async () => {
-      return getCondominios();
+      return getCondominios({ data: { periodo } });
     },
   });
 }

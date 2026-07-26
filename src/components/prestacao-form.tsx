@@ -25,23 +25,14 @@ interface Props {
 export function PrestacaoForm({ initial, mode }: Props) {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { data: condominios = [] } = useCondominios();
-  const { data: allProfiles = [] } = useAllProfiles();
   const [submitting, setSubmitting] = useState(false);
-
-  const fetchSheet = useServerFn(getCondominiosFromSheet);
-  const { data: sheetData, isLoading: sheetLoading } = useQuery({
-    queryKey: ["condominios-sheet"],
-    queryFn: () => fetchSheet(),
-    staleTime: 60_000,
-  });
-  const nomesSheet = sheetData?.nomes ?? [];
 
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<PrestacaoInput>({
     resolver: zodResolver(prestacaoSchema),
     defaultValues: {
       mes: initial?.mes ?? new Date().toISOString().slice(0, 7),
-      condominio_id: initial?.condominio_id ?? "",
+      condominio_id: initial?.condominio_id ?? null,
+      id_condominio: initial?.id_condominio ? Number(initial.id_condominio) : undefined,
       processo: (initial?.processo as any) ?? "Documentação Recebida",
       data_evento: initial?.data_evento ?? new Date().toISOString().slice(0, 10),
       usuario_responsavel: initial?.usuario_responsavel ?? user?.id ?? "",
@@ -49,43 +40,22 @@ export function PrestacaoForm({ initial, mode }: Props) {
     },
   });
 
-  // Lista exibida: nomes da planilha + nomes já no banco (sem duplicar)
-  const nomesUnificados = (() => {
-    const set = new Set<string>();
-    nomesSheet.forEach((n) => set.add(n));
-    condominios.forEach((c) => set.add(c.nome));
-    return Array.from(set).sort((a, b) => a.localeCompare(b, "pt-BR"));
-  })();
+  const mesSelecionado = watch("mes");
+  const { data: condominios = [], isLoading: condominiosLoading } = useCondominios(mesSelecionado);
+  const { data: allProfiles = [] } = useAllProfiles();
 
-  const condominioIdAtual = watch("condominio_id");
-  const nomeSelecionado =
-    condominios.find((c) => c.id === condominioIdAtual)?.nome ?? "";
-
-  async function selecionarCondominioPorNome(nome: string) {
-    const existente = condominios.find((c) => c.nome === nome);
-    if (existente) {
-      setValue("condominio_id", existente.id, { shouldValidate: true });
-      return;
-    }
-    if (!user) return;
-    try {
-      const res = await insertCondominio({ data: { nome } });
-      if (!res || !res.id) throw new Error("Falha ao cadastrar condomínio");
-      setValue("condominio_id", res.id, { shouldValidate: true });
-    } catch (error: any) {
-      toast.error(error.message ?? "Falha ao cadastrar condomínio");
-    }
-  }
+  const idCondominioAtual = watch("id_condominio");
+  const stringIdCondominio = idCondominioAtual !== undefined && idCondominioAtual !== null ? String(idCondominioAtual) : "";
 
   const onSubmit = async (v: PrestacaoInput) => {
     if (!user) return;
     setSubmitting(true);
-    const payload = { ...v, usuario: user.id };
     try {
       if (mode === "criar") {
         await createPrestacao({ data: {
           mes: v.mes,
           condominio_id: v.condominio_id,
+          id_condominio: v.id_condominio,
           processo: v.processo as any,
           data_evento: v.data_evento,
           usuario_responsavel: v.usuario_responsavel,
@@ -96,6 +66,7 @@ export function PrestacaoForm({ initial, mode }: Props) {
           id: initial!.id!,
           mes: v.mes,
           condominio_id: v.condominio_id,
+          id_condominio: v.id_condominio,
           processo: v.processo as any,
           data_evento: v.data_evento,
           usuario_responsavel: v.usuario_responsavel,
@@ -123,20 +94,20 @@ export function PrestacaoForm({ initial, mode }: Props) {
         </div>
         <div className="space-y-1.5 sm:col-span-3">
           <Label>Condomínio *</Label>
-          <Select value={nomeSelecionado} onValueChange={selecionarCondominioPorNome}>
+          <Select 
+            value={stringIdCondominio} 
+            onValueChange={(val) => setValue("id_condominio", Number(val), { shouldValidate: true })}
+          >
             <SelectTrigger>
-              <SelectValue placeholder={sheetLoading ? "Carregando planilha…" : "Selecione…"} />
+              <SelectValue placeholder={condominiosLoading ? "Buscando condomínios históricos…" : "Selecione…"} />
             </SelectTrigger>
             <SelectContent>
-              {nomesUnificados.map((nome) => (
-                <SelectItem key={nome} value={nome}>{nome}</SelectItem>
+              {condominios.map((c) => (
+                <SelectItem key={String(c.id)} value={String(c.id)}>{c.nome}</SelectItem>
               ))}
             </SelectContent>
           </Select>
-          {sheetData?.error && (
-            <p className="text-xs text-destructive">Planilha: {sheetData.error}</p>
-          )}
-          {errors.condominio_id && <p className="text-xs text-destructive">{errors.condominio_id.message}</p>}
+          {errors.id_condominio && <p className="text-xs text-destructive">{errors.id_condominio.message}</p>}
         </div>
 
         {/* Linha 2: Data Ocorrido + Processo + Usuário Responsável */}

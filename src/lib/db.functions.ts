@@ -53,11 +53,29 @@ export const loginUser = createServerFn({ method: "POST" })
     };
   });
 
-// 2. Condominios: List
-export const getCondominios = createServerFn({ method: "GET" })
+// 2. Condominios: List (Historico filtrado por periodo)
+export const getCondominios = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .handler(async () => {
-    return query(`SELECT id, nome, created_by, created_at FROM ouro.saas_condominios ORDER BY nome`);
+  .inputValidator((input) => z.object({ periodo: z.string().optional().nullable() }).parse(input))
+  .handler(async ({ data }) => {
+    // Se não houver período fornecido, pega uma lista geral ordenada
+    if (!data.periodo) {
+      return query(`
+        SELECT DISTINCT ON (id_condominio) id_condominio as id, dsc_nome_condominio as nome
+        FROM ouro.tb_fct_condominio_hist
+        ORDER BY id_condominio, dsc_nome_condominio
+      `);
+    }
+
+    // Normaliza periodo de YYYY-MM para YYYYMM se necessário
+    const normalizedPeriodo = data.periodo.replace("-", "");
+
+    return query(`
+      SELECT DISTINCT ON (id_condominio) id_condominio as id, dsc_nome_condominio as nome
+      FROM ouro.tb_fct_condominio_hist
+      WHERE periodo = $1
+      ORDER BY id_condominio, dsc_nome_condominio
+    `, [normalizedPeriodo]);
   });
 
 // 3. Profiles: Standard users
@@ -90,10 +108,13 @@ export const getPrestacoes = createServerFn({ method: "GET" })
   .middleware([requireAuth])
   .handler(async () => {
     const rows = await query(`
-      SELECT p.id, p.mes, p.condominio_id, p.processo, p.data_evento, p.usuario_responsavel, p.usuario, p.observacoes, p.ativo, p.created_at, p.updated_at,
-             c.nome as condominio_nome
+      SELECT p.id, p.mes, p.condominio_id, p.id_condominio, p.processo, p.data_evento, p.usuario_responsavel, p.usuario, p.observacoes, p.ativo, p.created_at, p.updated_at,
+             COALESCE(
+               (SELECT dsc_nome_condominio FROM ouro.tb_fct_condominio_hist WHERE id_condominio = p.id_condominio AND periodo = replace(p.mes, '-', '') LIMIT 1),
+               c.nome
+             ) as condominio_nome
       FROM ouro.saas_prestacoes p
-      JOIN ouro.saas_condominios c ON p.condominio_id = c.id
+      LEFT JOIN ouro.saas_condominios c ON p.condominio_id = c.id
       ORDER BY p.data_evento DESC
     `);
     
@@ -109,6 +130,7 @@ export const getPrestacoes = createServerFn({ method: "GET" })
       id: r.id,
       mes: r.mes,
       condominio_id: r.condominio_id,
+      id_condominio: r.id_condominio ? Number(r.id_condominio) : null,
       processo: REVERSE_MAP[r.processo] || r.processo,
       data_evento: r.data_evento,
       usuario_responsavel: r.usuario_responsavel,
@@ -246,7 +268,8 @@ export const updatePrestacao = createServerFn({ method: "POST" })
     z.object({
       id: z.string().uuid(),
       mes: z.string(),
-      condominio_id: z.string().uuid(),
+      condominio_id: z.string().uuid().optional().nullable(),
+      id_condominio: z.number().int(),
       processo: z.enum(["Documentação Recebida", "Lançamento Contábeis", "Montagem Balancete", "Data da Entrega"]),
       data_evento: z.string(),
       usuario_responsavel: z.string().uuid(),
@@ -277,9 +300,9 @@ export const updatePrestacao = createServerFn({ method: "POST" })
 
     await query(
       `UPDATE ouro.saas_prestacoes 
-       SET mes = $1, condominio_id = $2, processo = $3, data_evento = $4, usuario_responsavel = $5, observacoes = $6, updated_at = now()
-       WHERE id = $7`,
-      [data.mes, data.condominio_id, dbProcesso, data.data_evento, data.usuario_responsavel, data.observacoes || null, data.id]
+       SET mes = $1, condominio_id = $2, id_condominio = $3, processo = $4, data_evento = $5, usuario_responsavel = $6, observacoes = $7, updated_at = now()
+       WHERE id = $8`,
+      [data.mes, data.condominio_id || null, data.id_condominio, dbProcesso, data.data_evento, data.usuario_responsavel, data.observacoes || null, data.id]
     );
 
     await query(
@@ -296,7 +319,8 @@ export const createPrestacao = createServerFn({ method: "POST" })
   .inputValidator((input) =>
     z.object({
       mes: z.string(),
-      condominio_id: z.string().uuid(),
+      condominio_id: z.string().uuid().optional().nullable(),
+      id_condominio: z.number().int(),
       processo: z.enum(["Documentação Recebida", "Lançamento Contábeis", "Montagem Balancete", "Data da Entrega"]),
       data_evento: z.string(),
       usuario_responsavel: z.string().uuid(),
@@ -316,9 +340,9 @@ export const createPrestacao = createServerFn({ method: "POST" })
     const dbProcesso = PROCESS_MAP[data.processo] || data.processo;
     
     const result = await query(
-      `INSERT INTO ouro.saas_prestacoes (mes, condominio_id, processo, data_evento, usuario_responsavel, usuario, observacoes) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-      [data.mes, data.condominio_id, dbProcesso, data.data_evento, data.usuario_responsavel, userId, data.observacoes || null]
+      `INSERT INTO ouro.saas_prestacoes (mes, condominio_id, id_condominio, processo, data_evento, usuario_responsavel, usuario, observacoes) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
+      [data.mes, data.condominio_id || null, data.id_condominio, dbProcesso, data.data_evento, data.usuario_responsavel, userId, data.observacoes || null]
     );
 
     const newId = result[0].id;
