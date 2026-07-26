@@ -35,15 +35,16 @@ function EditarPage() {
         ) : (
           <PrestacaoForm
             mode="editar"
-            initial={{
-              id: data.id,
-              mes: data.mes,
-              condominio_id: data.condominio_id,
-              processo: data.processo,
-              data_evento: data.data_evento,
-              usuario_responsavel: data.usuario_responsavel,
-              observacoes: data.observacoes ?? "",
-            }}
+              initial={{
+                id: data.id,
+                mes: data.mes,
+                condominio_id: data.condominio_id,
+                id_condominio: data.id_condominio ? Number(data.id_condominio) : undefined,
+                processo: data.processo,
+                data_evento: data.data_evento,
+                usuario_responsavel: data.usuario_responsavel,
+                observacoes: data.observacoes ?? "",
+              }}
           />
         )}
       </div>

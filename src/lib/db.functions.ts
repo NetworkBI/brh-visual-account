@@ -304,11 +304,33 @@ export const updatePrestacao = createServerFn({ method: "POST" })
     };
     const dbProcesso = PROCESS_MAP[data.processo] || data.processo;
 
+    // Resolve name of the selected id_condominio from history
+    const histRows = await query(
+      `SELECT dsc_nome_condominio as nome FROM ouro.tb_fct_condominio_hist WHERE id_condominio = $1 LIMIT 1`,
+      [data.id_condominio]
+    );
+    const condominioNome = histRows[0]?.nome || "Condomínio Histórico";
+
+    // Find or create in saas_condominios to sync condominio_id
+    let finalCondominioId = data.condominio_id;
+    if (!finalCondominioId) {
+      const condRows = await query(`SELECT id FROM ouro.saas_condominios WHERE nome = $1 LIMIT 1`, [condominioNome]);
+      if (condRows.length > 0) {
+        finalCondominioId = condRows[0].id;
+      } else {
+        const insertRes = await query(
+          `INSERT INTO ouro.saas_condominios (nome, created_by) VALUES ($1, $2) RETURNING id`,
+          [condominioNome, userId]
+        );
+        finalCondominioId = insertRes[0].id;
+      }
+    }
+
     await query(
       `UPDATE ouro.saas_prestacoes 
        SET mes = $1, condominio_id = $2, id_condominio = $3, processo = $4, data_evento = $5, usuario_responsavel = $6, observacoes = $7, updated_at = now()
        WHERE id = $8`,
-      [data.mes, data.condominio_id || null, data.id_condominio, dbProcesso, data.data_evento, data.usuario_responsavel, data.observacoes || null, data.id]
+      [data.mes, finalCondominioId, data.id_condominio, dbProcesso, data.data_evento, data.usuario_responsavel, data.observacoes || null, data.id]
     );
 
     await query(
@@ -344,11 +366,33 @@ export const createPrestacao = createServerFn({ method: "POST" })
       "Data da Entrega": "Data Fechamento",
     };
     const dbProcesso = PROCESS_MAP[data.processo] || data.processo;
+
+    // Resolve name of the selected id_condominio from history
+    const histRows = await query(
+      `SELECT dsc_nome_condominio as nome FROM ouro.tb_fct_condominio_hist WHERE id_condominio = $1 LIMIT 1`,
+      [data.id_condominio]
+    );
+    const condominioNome = histRows[0]?.nome || "Condomínio Histórico";
+
+    // Find or create in saas_condominios to sync condominio_id
+    let finalCondominioId = data.condominio_id;
+    if (!finalCondominioId) {
+      const condRows = await query(`SELECT id FROM ouro.saas_condominios WHERE nome = $1 LIMIT 1`, [condominioNome]);
+      if (condRows.length > 0) {
+        finalCondominioId = condRows[0].id;
+      } else {
+        const insertRes = await query(
+          `INSERT INTO ouro.saas_condominios (nome, created_by) VALUES ($1, $2) RETURNING id`,
+          [condominioNome, userId]
+        );
+        finalCondominioId = insertRes[0].id;
+      }
+    }
     
     const result = await query(
       `INSERT INTO ouro.saas_prestacoes (mes, condominio_id, id_condominio, processo, data_evento, usuario_responsavel, usuario, observacoes) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
-      [data.mes, data.condominio_id || null, data.id_condominio, dbProcesso, data.data_evento, data.usuario_responsavel, userId, data.observacoes || null]
+      [data.mes, finalCondominioId, data.id_condominio, dbProcesso, data.data_evento, data.usuario_responsavel, userId, data.observacoes || null]
     );
 
     const newId = result[0].id;

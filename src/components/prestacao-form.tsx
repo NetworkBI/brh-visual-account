@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { prestacaoSchema, PROCESSOS, type PrestacaoInput } from "@/lib/schemas";
@@ -53,6 +53,13 @@ export function PrestacaoForm({ initial, mode }: Props) {
   const condominiosFiltrados = condominios.filter((c) =>
     c.nome.toLowerCase().includes(filtroTexto.toLowerCase())
   );
+
+  // Garante que o valor inicial seja sincronizado caso a lista demore a carregar
+  useEffect(() => {
+    if (initial?.id_condominio && !idCondominioAtual) {
+      setValue("id_condominio", Number(initial.id_condominio), { shouldValidate: true });
+    }
+  }, [condominios, initial, setValue]);
 
   const onSubmit = async (v: PrestacaoInput) => {
     if (!user) return;
