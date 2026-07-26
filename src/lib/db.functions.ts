@@ -97,12 +97,19 @@ export const getPrestacoes = createServerFn({ method: "GET" })
       ORDER BY p.data_evento DESC
     `);
     
+    const REVERSE_MAP: Record<string, string> = {
+      "Doc/Recebimento": "Documentação Recebida",
+      "Lançamento": "Lançamento Contábeis",
+      "Montagem": "Montagem Balancete",
+      "Data Fechamento": "Data da Entrega",
+    };
+
     // Format to match the nested object shape: { ..., condominios: { nome: '...' } }
     return rows.map(r => ({
       id: r.id,
       mes: r.mes,
       condominio_id: r.condominio_id,
-      processo: r.processo,
+      processo: REVERSE_MAP[r.processo] || r.processo,
       data_evento: r.data_evento,
       usuario_responsavel: r.usuario_responsavel,
       usuario: r.usuario,
@@ -217,7 +224,19 @@ export const getPrestacaoById = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const rows = await query(`SELECT * FROM ouro.saas_prestacoes WHERE id = $1`, [data.id]);
     if (rows.length === 0) return null;
-    return rows[0];
+    
+    const row = rows[0];
+    const REVERSE_MAP: Record<string, string> = {
+      "Doc/Recebimento": "Documentação Recebida",
+      "Lançamento": "Lançamento Contábeis",
+      "Montagem": "Montagem Balancete",
+      "Data Fechamento": "Data da Entrega",
+    };
+
+    return {
+      ...row,
+      processo: REVERSE_MAP[row.processo] || row.processo,
+    };
   });
 
 // 11. Prestacoes: Update
@@ -247,11 +266,20 @@ export const updatePrestacao = createServerFn({ method: "POST" })
       throw new Error("Sem permissão para alterar esta prestação.");
     }
 
+    // Map friendly display names to database enum values
+    const PROCESS_MAP: Record<string, string> = {
+      "Documentação Recebida": "Doc/Recebimento",
+      "Lançamento Contábeis": "Lançamento",
+      "Montagem Balancete": "Montagem",
+      "Data da Entrega": "Data Fechamento",
+    };
+    const dbProcesso = PROCESS_MAP[data.processo] || data.processo;
+
     await query(
       `UPDATE ouro.saas_prestacoes 
        SET mes = $1, condominio_id = $2, processo = $3, data_evento = $4, usuario_responsavel = $5, observacoes = $6, updated_at = now()
        WHERE id = $7`,
-      [data.mes, data.condominio_id, data.processo, data.data_evento, data.usuario_responsavel, data.observacoes || null, data.id]
+      [data.mes, data.condominio_id, dbProcesso, data.data_evento, data.usuario_responsavel, data.observacoes || null, data.id]
     );
 
     await query(
@@ -277,11 +305,20 @@ export const createPrestacao = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { userId } = context;
+
+    // Map friendly display names to database enum values
+    const PROCESS_MAP: Record<string, string> = {
+      "Documentação Recebida": "Doc/Recebimento",
+      "Lançamento Contábeis": "Lançamento",
+      "Montagem Balancete": "Montagem",
+      "Data da Entrega": "Data Fechamento",
+    };
+    const dbProcesso = PROCESS_MAP[data.processo] || data.processo;
     
     const result = await query(
       `INSERT INTO ouro.saas_prestacoes (mes, condominio_id, processo, data_evento, usuario_responsavel, usuario, observacoes) 
        VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-      [data.mes, data.condominio_id, data.processo, data.data_evento, data.usuario_responsavel, userId, data.observacoes || null]
+      [data.mes, data.condominio_id, dbProcesso, data.data_evento, data.usuario_responsavel, userId, data.observacoes || null]
     );
 
     const newId = result[0].id;
