@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Home, Users, FileText, Building, Moon, Sun, Palette as PaletteIcon, ArrowLeft, LogOut } from "lucide-react";
+import { Home, Users, FileText, Building, Sun, Moon, Palette, ArrowLeft, LogOut } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -15,21 +15,25 @@ import {
 } from "@/components/ui/sidebar";
 import logo from "@/assets/logo.png";
 import { useAuth, useUserRole, canManageUsers } from "@/lib/auth";
-import { useTheme } from "@/lib/theme";
-import { usePalette } from "@/lib/palette";
+import { useTheme, THEME_MODES, type Mode } from "@/lib/theme";
 
 const NAV_BASE = [
   { to: "/home", label: "Início", icon: Home },
-  { to: "/prestacoes", label: "Prestação de contas", icon: FileText },
+  { to: "/dashboard", label: "Prestação de contas", icon: FileText },
   { to: "/condominios", label: "Condomínios", icon: Building },
   { to: "/usuarios", label: "Usuários", icon: Users, requiresManage: true },
 ] as const;
 
+const MODE_ICONS: Record<Mode, React.ElementType> = {
+  claro: Sun,
+  escuro: Moon,
+  alternativo: Palette,
+};
+
 export function AppSidebar() {
   const currentPath = useRouterState({ select: (r) => r.location.pathname });
   const { data: role } = useUserRole();
-  const { theme, toggle } = useTheme();
-  const { next: nextPalette, label: paletteLabel } = usePalette();
+  const { mode, setMode } = useTheme();
   const { signOut } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -85,7 +89,8 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {NAV.map((item) => {
-                const active = currentPath === item.to;
+                const active = currentPath === item.to ||
+                  (item.to === "/dashboard" && currentPath === "/prestacoes");
                 return (
                   <SidebarMenuItem key={item.to}>
                     <SidebarMenuButton asChild isActive={active} tooltip={item.label} size="lg">
@@ -104,21 +109,24 @@ export function AppSidebar() {
 
       <SidebarFooter className="border-t border-sidebar-border bg-sidebar/80 p-2">
         <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton onClick={nextPalette} tooltip={paletteLabel}>
-              <PaletteIcon className="h-4 w-4" />
-              <span className="truncate">{paletteLabel}</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              onClick={toggle}
-              tooltip={theme === "dark" ? "Modo claro" : "Modo escuro"}
-            >
-              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              <span>{theme === "dark" ? "Modo claro" : "Modo escuro"}</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {/* Tema: 3 opções listadas individualmente */}
+          {THEME_MODES.map((m) => {
+            const Icon = MODE_ICONS[m.key];
+            const isActive = mode === m.key;
+            return (
+              <SidebarMenuItem key={m.key}>
+                <SidebarMenuButton
+                  onClick={() => setMode(m.key)}
+                  tooltip={m.label}
+                  isActive={isActive}
+                  className={isActive ? "font-semibold" : ""}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span>{m.label}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
 
           <SidebarSeparator className="my-1" />
 
