@@ -228,7 +228,7 @@ export const updatePrestacao = createServerFn({ method: "POST" })
       id: z.string().uuid(),
       mes: z.string(),
       condominio_id: z.string().uuid(),
-      processo: z.enum(['Doc/Recebimento', 'Lançamento', 'Montagem', 'Data Fechamento']),
+      processo: z.enum(["Documentação Recebida", "Lançamento Contábeis", "Montagem Balancete", "Data da Entrega"]),
       data_evento: z.string(),
       usuario_responsavel: z.string().uuid(),
       observacoes: z.string().optional().nullable(),
@@ -269,7 +269,7 @@ export const createPrestacao = createServerFn({ method: "POST" })
     z.object({
       mes: z.string(),
       condominio_id: z.string().uuid(),
-      processo: z.enum(['Doc/Recebimento', 'Lançamento', 'Montagem', 'Data Fechamento']),
+      processo: z.enum(["Documentação Recebida", "Lançamento Contábeis", "Montagem Balancete", "Data da Entrega"]),
       data_evento: z.string(),
       usuario_responsavel: z.string().uuid(),
       observacoes: z.string().optional().nullable(),
