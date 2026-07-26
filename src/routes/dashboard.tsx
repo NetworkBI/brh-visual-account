@@ -12,7 +12,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { FileText, Building2, CalendarClock, ListChecks, Pencil, EyeOff, Eye, Plus, Sparkles, History } from "lucide-react";
+import { FileText, Building2, CalendarClock, ListChecks, Pencil, Trash2, Plus, Sparkles, History } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { PROCESSOS } from "@/lib/schemas";
 import { toast } from "sonner";
 
@@ -86,6 +96,7 @@ function Pagina() {
 
   // ----- Filtros da lista (apenas busca por condomínio + mês do topo) -----
   const [q, setQ] = useState("");
+  const [confirmInativar, setConfirmInativar] = useState<{ id: string; ativo: boolean } | null>(null);
   const filtered = useMemo(() => {
     const ql = q.toLowerCase();
     return prestacoes.filter((p) =>
@@ -253,8 +264,15 @@ function Pagina() {
                               <Link to="/prestacoes/$id/editar" params={{ id: p.id }}><Pencil className="h-4 w-4" /></Link>
                             </Button>
                             {(role === "padrao" || role === "adm" || p.usuario === user?.id) && (
-                              <Button variant="ghost" size="sm" onClick={() => inativar(p.id, ativo)} title="Inativar" aria-label="Inativar lançamento">
-                                <EyeOff className="h-4 w-4" />
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setConfirmInativar({ id: p.id, ativo })}
+                                title="Excluir lançamento"
+                                aria-label="Excluir lançamento"
+                                className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                              >
+                                <Trash2 className="h-4 w-4" />
                               </Button>
                             )}
                           </div>
@@ -268,6 +286,31 @@ function Pagina() {
           </div>
         </CardContent>
       </Card>
+      {/* Dialog de confirmação de inativação */}
+      <AlertDialog open={!!confirmInativar} onOpenChange={(open) => { if (!open) setConfirmInativar(null); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja inativar este lançamento? Ele não aparecerá mais na listagem ativa.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setConfirmInativar(null)}>Desconsiderar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={async () => {
+                if (confirmInativar) {
+                  await inativar(confirmInativar.id, confirmInativar.ativo);
+                  setConfirmInativar(null);
+                }
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Ok, inativar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

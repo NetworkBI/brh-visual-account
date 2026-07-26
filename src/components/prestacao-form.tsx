@@ -27,18 +27,40 @@ export function PrestacaoForm({ initial, mode }: Props) {
   const { user } = useAuth();
   const [submitting, setSubmitting] = useState(false);
 
-  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<PrestacaoInput>({
+  const normalizeDate = (v?: string | null) => {
+    if (!v) return new Date().toISOString().slice(0, 10);
+    // Se vier com timestamp (ex: 2025-07-15T00:00:00.000Z) trunca para YYYY-MM-DD
+    return v.slice(0, 10);
+  };
+
+  const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm<PrestacaoInput>({
     resolver: zodResolver(prestacaoSchema),
     defaultValues: {
       mes: initial?.mes ?? new Date().toISOString().slice(0, 7),
       condominio_id: initial?.condominio_id ?? null,
       id_condominio: initial?.id_condominio ? Number(initial.id_condominio) : undefined,
       processo: (initial?.processo as any) ?? "Documentação Recebida",
-      data_evento: initial?.data_evento ?? new Date().toISOString().slice(0, 10),
+      data_evento: normalizeDate(initial?.data_evento),
       usuario_responsavel: initial?.usuario_responsavel ?? user?.id ?? "",
       observacoes: initial?.observacoes ?? "",
     },
   });
+
+  // Quando em modo editar, reinicializa o form quando o initial completo chegar (async load)
+  useEffect(() => {
+    if (mode === "editar" && initial?.id) {
+      reset({
+        mes: initial.mes ?? new Date().toISOString().slice(0, 7),
+        condominio_id: initial.condominio_id ?? null,
+        id_condominio: initial.id_condominio ? Number(initial.id_condominio) : undefined,
+        processo: (initial.processo as any) ?? "Documentação Recebida",
+        data_evento: normalizeDate(initial.data_evento),
+        usuario_responsavel: initial.usuario_responsavel ?? user?.id ?? "",
+        observacoes: initial.observacoes ?? "",
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initial?.id]);
 
   const [filtroTexto, setFiltroTexto] = useState("");
 

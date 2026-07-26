@@ -295,7 +295,13 @@ export const updatePrestacao = createServerFn({ method: "POST" })
       throw new Error("Sem permissão para alterar esta prestação.");
     }
 
-    // Map friendly display names to database enum values
+    // --- Validação cronológica ---
+    const ORDEM_PROCESSOS_UPD = [
+      "Doc/Recebimento",
+      "Lançamento",
+      "Montagem",
+      "Data Fechamento",
+    ];
     const PROCESS_MAP: Record<string, string> = {
       "Documentação Recebida": "Doc/Recebimento",
       "Lançamento Contábeis": "Lançamento",
@@ -303,6 +309,22 @@ export const updatePrestacao = createServerFn({ method: "POST" })
       "Data da Entrega": "Data Fechamento",
     };
     const dbProcesso = PROCESS_MAP[data.processo] || data.processo;
+    const indiceDesejadoUpd = ORDEM_PROCESSOS_UPD.indexOf(dbProcesso);
+
+    if (indiceDesejadoUpd > 0) {
+      // Busca os processos já lançados para esse condomínio+mês (excluindo o próprio registro)
+      const existentesUpd = await query(
+        `SELECT processo FROM ouro.saas_prestacoes WHERE id_condominio = $1 AND mes = $2 AND ativo = true AND id != $3`,
+        [data.id_condominio, data.mes, data.id]
+      );
+      const processosExistentesUpd = new Set(existentesUpd.map((r: any) => r.processo));
+
+      for (let i = 0; i < indiceDesejadoUpd; i++) {
+        if (!processosExistentesUpd.has(ORDEM_PROCESSOS_UPD[i])) {
+          throw new Error("Existe uma etapa pendente a ser lançada.");
+        }
+      }
+    }
 
     // Resolve name of the selected id_condominio from history
     const histRows = await query(
@@ -358,7 +380,13 @@ export const createPrestacao = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { userId } = context;
 
-    // Map friendly display names to database enum values
+    // --- Validação cronológica ---
+    const ORDEM_PROCESSOS = [
+      "Doc/Recebimento",
+      "Lançamento",
+      "Montagem",
+      "Data Fechamento",
+    ];
     const PROCESS_MAP: Record<string, string> = {
       "Documentação Recebida": "Doc/Recebimento",
       "Lançamento Contábeis": "Lançamento",
@@ -366,6 +394,23 @@ export const createPrestacao = createServerFn({ method: "POST" })
       "Data da Entrega": "Data Fechamento",
     };
     const dbProcesso = PROCESS_MAP[data.processo] || data.processo;
+    const indiceDesejado = ORDEM_PROCESSOS.indexOf(dbProcesso);
+
+    if (indiceDesejado > 0) {
+      // Busca os processos já lançados para esse condomínio+mês
+      const existentes = await query(
+        `SELECT processo FROM ouro.saas_prestacoes WHERE id_condominio = $1 AND mes = $2 AND ativo = true`,
+        [data.id_condominio, data.mes]
+      );
+      const processosExistentes = new Set(existentes.map((r: any) => r.processo));
+
+      // Verifica se todos os processos anteriores foram lançados
+      for (let i = 0; i < indiceDesejado; i++) {
+        if (!processosExistentes.has(ORDEM_PROCESSOS[i])) {
+          throw new Error("Existe uma etapa pendente a ser lançada.");
+        }
+      }
+    }
 
     // Resolve name of the selected id_condominio from history
     const histRows = await query(
