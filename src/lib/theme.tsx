@@ -163,12 +163,20 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   // 2. Apply configuration properties to CSS variables on theme mode or config change
   useEffect(() => {
     const root = document.documentElement;
-    const activeVariables = config.modes[mode] || DEFAULT_THEME_CONFIG.modes[mode];
+    const allModes = config.modes || DEFAULT_THEME_CONFIG.modes;
+    const activeVariables = allModes[mode] || DEFAULT_THEME_CONFIG.modes[mode];
 
     // Toggle dark class for Tailwind dark variant support
     root.classList.toggle("dark", mode === "escuro");
 
-    // Apply all color variables dynamically
+    // First: CLEAR all variables from ALL modes to prevent pollution between modes
+    Object.values(allModes).forEach((modeVars: any) => {
+      Object.keys(modeVars).forEach((key) => {
+        root.style.removeProperty(`--${key}`);
+      });
+    });
+
+    // Then: Apply only the active mode's variables
     Object.entries(activeVariables).forEach(([key, val]) => {
       root.style.setProperty(`--${key}`, val as string);
     });

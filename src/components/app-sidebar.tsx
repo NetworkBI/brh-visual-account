@@ -109,24 +109,31 @@ export function AppSidebar() {
 
       <SidebarFooter className="border-t border-sidebar-border bg-sidebar/80 p-2">
         <SidebarMenu>
-          {/* Tema: 3 opções listadas individualmente */}
-          {THEME_MODES.map((m) => {
-            const Icon = MODE_ICONS[m.key];
-            const isActive = mode === m.key;
-            return (
-              <SidebarMenuItem key={m.key}>
-                <SidebarMenuButton
-                  onClick={() => setMode(m.key)}
-                  tooltip={m.label}
-                  isActive={isActive}
-                  className={isActive ? "font-semibold" : ""}
-                >
-                  <Icon className="h-4 w-4" />
-                  <span>{m.label}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            );
-          })}
+          {/* Tema: 3 ícones lado a lado (sem texto) */}
+          <SidebarMenuItem>
+            <div className="flex items-center gap-1 px-2 py-1">
+              {THEME_MODES.map((m) => {
+                const Icon = MODE_ICONS[m.key];
+                const isActive = mode === m.key;
+                return (
+                  <button
+                    key={m.key}
+                    onClick={() => setMode(m.key)}
+                    title={m.label}
+                    aria-label={m.label}
+                    className={[
+                      "flex h-8 w-8 items-center justify-center rounded-md transition-colors",
+                      isActive
+                        ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm ring-1 ring-sidebar-border"
+                        : "text-sidebar-foreground/60 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground",
+                    ].join(" ")}
+                  >
+                    <Icon className="h-4 w-4" />
+                  </button>
+                );
+              })}
+            </div>
+          </SidebarMenuItem>
 
           <SidebarSeparator className="my-1" />
 
