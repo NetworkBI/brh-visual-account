@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { prestacaoSchema, PROCESSOS, type PrestacaoInput } from "@/lib/schemas";
-import { useCondominios, useProfiles } from "@/lib/queries";
+import { useCondominios, useProfiles, useAllProfiles } from "@/lib/queries";
 import { getCondominiosFromSheet } from "@/lib/sheet.functions";
 import { useAuth } from "@/lib/auth";
 import { insertCondominio, createPrestacao, updatePrestacao } from "@/lib/db.functions";
@@ -26,7 +26,7 @@ export function PrestacaoForm({ initial, mode }: Props) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { data: condominios = [] } = useCondominios();
-  const { data: profiles = [] } = useProfiles();
+  const { data: allProfiles = [] } = useAllProfiles();
   const [submitting, setSubmitting] = useState(false);
 
   const fetchSheet = useServerFn(getCondominiosFromSheet);
@@ -159,7 +159,7 @@ export function PrestacaoForm({ initial, mode }: Props) {
           <Select value={watch("usuario_responsavel")} onValueChange={(v) => setValue("usuario_responsavel", v, { shouldValidate: true })}>
             <SelectTrigger><SelectValue placeholder="Selecione…" /></SelectTrigger>
             <SelectContent>
-              {profiles.filter((p) => p.id).map((p) => (
+              {allProfiles.filter((p) => p.id).map((p) => (
                 <SelectItem key={p.id!} value={p.id!}>{p.primeiro_nome} {p.segundo_nome}</SelectItem>
               ))}
             </SelectContent>
