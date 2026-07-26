@@ -61,9 +61,12 @@ export const getCondominios = createServerFn({ method: "POST" })
     // Se não houver período fornecido, pega uma lista geral ordenada
     if (!data.periodo) {
       return query(`
-        SELECT DISTINCT ON (id_condominio) id_condominio as id, dsc_nome_condominio as nome
-        FROM ouro.tb_fct_condominio_hist
-        ORDER BY id_condominio, dsc_nome_condominio
+        SELECT id, nome FROM (
+          SELECT DISTINCT ON (id_condominio) id_condominio as id, dsc_nome_condominio as nome
+          FROM ouro.tb_fct_condominio_hist
+          ORDER BY id_condominio, dsc_nome_condominio
+        ) sub
+        ORDER BY nome ASC
       `);
     }
 
@@ -71,10 +74,13 @@ export const getCondominios = createServerFn({ method: "POST" })
     const normalizedPeriodo = data.periodo.replace("-", "");
 
     return query(`
-      SELECT DISTINCT ON (id_condominio) id_condominio as id, dsc_nome_condominio as nome
-      FROM ouro.tb_fct_condominio_hist
-      WHERE periodo = $1
-      ORDER BY id_condominio, dsc_nome_condominio
+      SELECT id, nome FROM (
+        SELECT DISTINCT ON (id_condominio) id_condominio as id, dsc_nome_condominio as nome
+        FROM ouro.tb_fct_condominio_hist
+        WHERE periodo = $1
+        ORDER BY id_condominio, dsc_nome_condominio
+      ) sub
+      ORDER BY nome ASC
     `, [normalizedPeriodo]);
   });
 

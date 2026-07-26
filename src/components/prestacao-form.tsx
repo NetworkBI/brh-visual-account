@@ -40,12 +40,19 @@ export function PrestacaoForm({ initial, mode }: Props) {
     },
   });
 
+  const [filtroTexto, setFiltroTexto] = useState("");
+
   const mesSelecionado = watch("mes");
   const { data: condominios = [], isLoading: condominiosLoading } = useCondominios(mesSelecionado);
   const { data: allProfiles = [] } = useAllProfiles();
 
   const idCondominioAtual = watch("id_condominio");
   const stringIdCondominio = idCondominioAtual !== undefined && idCondominioAtual !== null ? String(idCondominioAtual) : "";
+
+  // Filtra condominios localmente pelo texto digitado
+  const condominiosFiltrados = condominios.filter((c) =>
+    c.nome.toLowerCase().includes(filtroTexto.toLowerCase())
+  );
 
   const onSubmit = async (v: PrestacaoInput) => {
     if (!user) return;
@@ -101,10 +108,23 @@ export function PrestacaoForm({ initial, mode }: Props) {
             <SelectTrigger>
               <SelectValue placeholder={condominiosLoading ? "Buscando condomínios históricos…" : "Selecione…"} />
             </SelectTrigger>
-            <SelectContent>
-              {condominios.map((c) => (
-                <SelectItem key={String(c.id)} value={String(c.id)}>{c.nome}</SelectItem>
-              ))}
+            <SelectContent className="max-h-80 overflow-y-auto">
+              <div className="p-2 sticky top-0 bg-popover z-50">
+                <Input 
+                  type="text" 
+                  placeholder="Pesquisar condomínio..." 
+                  value={filtroTexto}
+                  onChange={(e) => setFiltroTexto(e.target.value)}
+                  className="h-8 text-xs"
+                />
+              </div>
+              {condominiosFiltrados.length === 0 ? (
+                <div className="text-xs text-muted-foreground p-3 text-center">Nenhum condomínio encontrado</div>
+              ) : (
+                condominiosFiltrados.map((c) => (
+                  <SelectItem key={String(c.id)} value={String(c.id)}>{c.nome}</SelectItem>
+                ))
+              )}
             </SelectContent>
           </Select>
           {errors.id_condominio && <p className="text-xs text-destructive">{errors.id_condominio.message}</p>}
