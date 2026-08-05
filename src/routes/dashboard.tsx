@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { AppShell } from "@/components/app-shell";
@@ -50,12 +50,12 @@ function Pagina() {
   const { user } = useAuth();
   const { data: role } = useUserRole();
   const { data: prestacoes = [], isLoading } = usePrestacoes();
-  const { data: condominios = [] } = useCondominios();
-  const { data: profiles = [] } = useProfiles();
-  const { data: allProfiles = [] } = useAllProfiles();
   const mesAtual = new Date().toISOString().slice(0, 7);
   const [mesSelecionado, setMesSelecionado] = useState(mesAtual);
+  const { data: condominios = [], isLoading: condominiosLoading } = useCondominios(mesSelecionado);
   const { data: quantCondominiosElegiveis = 0 } = useQuantCondominiosElegiveis(mesSelecionado);
+  const { data: profiles = [] } = useProfiles();
+  const { data: allProfiles = [] } = useAllProfiles();
 
   const nomeUsuario = (id?: string | null) => {
     if (!id) return "—";
@@ -89,16 +89,33 @@ function Pagina() {
   };
 
   // ----- Filtros da lista (apenas busca por condomínio + mês do topo) -----
-  const [q, setQ] = useState("");
+  const [condominioFiltro, setCondominioFiltro] = useState<string>("all");
+  const [buscaFiltroTexto, setBuscaFiltroTexto] = useState("");
   const [confirmInativar, setConfirmInativar] = useState<{ id: string; ativo: boolean } | null>(null);
-  const filtered = useMemo(() => {
-    const ql = q.toLowerCase();
-    return prestacoes.filter((p) =>
-      (p as any).ativo !== false &&
-      (p.mes || "").startsWith(mesSelecionado) &&
-      (!ql || p.condominios?.nome?.toLowerCase().includes(ql)),
+
+  // Reset do filtro ao alterar o mês
+  useEffect(() => {
+    setCondominioFiltro("all");
+    setBuscaFiltroTexto("");
+  }, [mesSelecionado]);
+
+  const condominiosFiltrados = useMemo(() => {
+    return condominios.filter((c) =>
+      c.nome.toLowerCase().includes(buscaFiltroTexto.toLowerCase())
     );
-  }, [prestacoes, q, mesSelecionado]);
+  }, [condominios, buscaFiltroTexto]);
+
+  const filtered = useMemo(() => {
+    return prestacoes.filter((p) => {
+      const matchesAtivo = (p as any).ativo !== false;
+      const matchesMes = (p.mes || "").startsWith(mesSelecionado);
+      const matchesCondominio =
+        condominioFiltro === "all" ||
+        String(p.id_condominio) === condominioFiltro ||
+        String(p.condominio_id) === condominioFiltro;
+      return matchesAtivo && matchesMes && matchesCondominio;
+    });
+  }, [prestacoes, mesSelecionado, condominioFiltro]);
 
   return (
     <div className="space-y-6">
@@ -210,7 +227,37 @@ function Pagina() {
             <p className="text-xs text-muted-foreground">Competência selecionada ({mesSelecionado})</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Input placeholder="Buscar condomínio" value={q} onChange={(e) => setQ(e.target.value)} className="max-w-xs" />
+            <Select 
+              value={condominioFiltro} 
+              onValueChange={setCondominioFiltro}
+            >
+              <SelectTrigger className="w-64">
+                <SelectValue placeholder={condominiosLoading ? "Buscando condomínios..." : "Filtrar por condomínio"} />
+              </SelectTrigger>
+              <SelectContent className="max-h-80 overflow-y-auto z-[100]">
+                <div className="p-2 sticky top-0 bg-popover z-50">
+                  <Input 
+                    type="text" 
+                    placeholder="Pesquisar condomínio..." 
+                    value={buscaFiltroTexto}
+                    onChange={(e) => setBuscaFiltroTexto(e.target.value)}
+                    className="h-8 text-xs"
+                  />
+                </div>
+                <SelectItem value="all">Todos os condomínios</SelectItem>
+                {condominiosFiltrados.length === 0 ? (
+                  buscaFiltroTexto ? (
+                    <SelectItem value="none" disabled>Nenhum condomínio encontrado</SelectItem>
+                  ) : null
+                ) : (
+                  condominiosFiltrados.map((c) => (
+                    <SelectItem key={c.id} value={String(c.id)}>
+                      {c.nome}
+                    </SelectItem>
+                  ))
+                )}
+              </SelectContent>
+            </Select>
           </div>
         </CardHeader>
         <CardContent className="p-0">
