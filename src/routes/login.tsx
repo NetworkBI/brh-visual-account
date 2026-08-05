@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { User, KeyRound, ArrowRight } from "lucide-react";
-import logo from "@/assets/logo.png";
+import mascot from "@/assets/mascot.png";
 import loginBg from "@/assets/login-bg.jpg";
 import { pageMeta } from "@/lib/seo";
 
@@ -61,75 +61,94 @@ function LoginPage() {
     navigate({ to: "/home" });
   };
 
-
   return (
     <div
       className="relative min-h-screen flex items-center justify-center p-4 bg-cover bg-center"
       style={{ backgroundImage: `url(${loginBg})` }}
     >
+      {/* Overlay clean */}
       <div aria-hidden="true" className="absolute inset-0 bg-white/30 backdrop-blur-[2px]" />
 
-      <div className="relative z-10 w-full max-w-md overflow-hidden rounded-2xl bg-white/95 shadow-[0_25px_80px_-15px_rgba(140,20,25,0.6)] ring-1 ring-white/20 backdrop-blur-xl">
-        <div className="flex justify-center bg-gradient-to-r from-[#7a1418] via-[#a01c22] to-[#c0282e] px-8 py-5">
-          <img src={logo} alt="BR Hunter" width={640} height={640} className="h-12 w-12 rounded-md bg-white/95 p-1 shadow-lg object-fill" />
-        </div>
-        <div className="bg-gradient-to-r from-[#7a1418] via-[#a01c22] to-[#c0282e] px-8 pb-5 text-center -mt-2">
-          <h2 className="font-display text-xl font-bold text-white tracking-wide drop-shadow-sm">
+      <div className="relative z-10 w-full max-w-sm overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/30">
+        {/* Header cinza escuro */}
+        <div className="bg-[#3a3f4b] px-8 py-4 text-center">
+          <h2 className="text-base font-bold text-white tracking-widest uppercase">
             Controle Operacional
           </h2>
         </div>
-        <div className="px-8 py-7">
-          <h1 className="mb-5 text-center font-display text-lg font-bold text-[#a01c22]">Faça o seu login</h1>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-1.5">
-              <p className="text-center text-xs text-muted-foreground">Seu usuário ou e-mail</p>
-              <div className="flex items-stretch overflow-hidden rounded-md border border-[#a01c22]/30 bg-[#a01c22]/5 focus-within:ring-2 focus-within:ring-[#a01c22]/50">
-                <div className="flex w-11 items-center justify-center bg-gradient-to-b from-[#a01c22] to-[#7a1418] text-white">
+
+        {/* Corpo */}
+        <div className="bg-white/90 backdrop-blur-md px-8 pt-8 pb-7 flex flex-col items-center gap-5">
+          {/* Logo mascot centralizada */}
+          <img
+            src={mascot}
+            alt="Grupo BR Hunter"
+            className="h-32 w-32 object-contain drop-shadow-md"
+          />
+
+          <h1 className="text-lg font-bold text-[#3a3f4b] tracking-tight">
+            Faça o seu login
+          </h1>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
+            {/* Campo e-mail */}
+            <div className="space-y-1">
+              <p className="text-center text-xs text-slate-400">Seu usuário ou e-mail</p>
+              <div className="flex items-stretch overflow-hidden rounded-lg border border-slate-200 bg-slate-50 focus-within:ring-2 focus-within:ring-slate-400 transition">
+                <div className="flex w-10 items-center justify-center bg-[#3a3f4b] text-white shrink-0">
                   <User className="h-4 w-4" />
                 </div>
                 <Input
                   id="nome"
                   type="email"
                   autoComplete="email"
-                  aria-label="NOME"
-                  className="flex-1 rounded-none border-0 bg-transparent text-black placeholder:text-black/60 shadow-none focus-visible:ring-0"
+                  aria-label="E-mail"
+                  placeholder=""
+                  className="flex-1 rounded-none border-0 bg-transparent text-slate-700 shadow-none focus-visible:ring-0 text-sm"
                   {...register("nome")}
                 />
               </div>
               {errors.nome && <p className="text-xs text-destructive">{errors.nome.message}</p>}
             </div>
-            <div className="space-y-1.5">
-              <p className="text-center text-xs text-muted-foreground">Sua Senha</p>
-              <div className="flex items-stretch overflow-hidden rounded-md border border-[#a01c22]/30 bg-[#a01c22]/5 focus-within:ring-2 focus-within:ring-[#a01c22]/50">
-                <div className="flex w-11 items-center justify-center bg-gradient-to-b from-[#a01c22] to-[#7a1418] text-white">
+
+            {/* Campo senha */}
+            <div className="space-y-1">
+              <p className="text-center text-xs text-slate-400">Sua Senha</p>
+              <div className="flex items-stretch overflow-hidden rounded-lg border border-slate-200 bg-slate-50 focus-within:ring-2 focus-within:ring-slate-400 transition">
+                <div className="flex w-10 items-center justify-center bg-[#3a3f4b] text-white shrink-0">
                   <KeyRound className="h-4 w-4" />
                 </div>
                 <Input
                   id="senha"
                   type="password"
                   autoComplete="current-password"
-                  aria-label="SENHA"
-                  className="flex-1 rounded-none border-0 bg-transparent text-black placeholder:text-black/60 shadow-none focus-visible:ring-0"
+                  aria-label="Senha"
+                  placeholder=""
+                  className="flex-1 rounded-none border-0 bg-transparent text-slate-700 shadow-none focus-visible:ring-0 text-sm"
                   {...register("senha")}
                 />
               </div>
               {errors.senha && <p className="text-xs text-destructive">{errors.senha.message}</p>}
             </div>
-            <div className="flex justify-center pt-2">
+
+            {/* Botão */}
+            <div className="flex justify-center pt-1">
               <Button
                 type="submit"
                 disabled={submitting}
-                className="rounded-full bg-gradient-to-r from-[#a01c22] to-[#7a1418] px-8 text-white shadow-lg shadow-[#7a1418]/40 hover:from-[#7a1418] hover:to-[#5a0e12]"
+                className="rounded-full bg-[#3a3f4b] hover:bg-[#2e333d] text-white px-10 shadow-lg transition"
               >
                 {submitting ? "Entrando..." : "Entrar"}
                 <ArrowRight className="ml-1 h-4 w-4" />
               </Button>
             </div>
-            <div className="flex flex-col items-center gap-1 pt-2 text-xs">
-              <Link to="/esqueci-senha" className="font-medium text-primary hover:underline">
+
+            {/* Links auxiliares */}
+            <div className="flex flex-col items-center gap-1 pt-1 text-xs">
+              <Link to="/esqueci-senha" className="font-medium text-slate-500 hover:text-[#a01c22] hover:underline transition">
                 Esqueci minha senha
               </Link>
-              <p className="text-muted-foreground">
+              <p className="text-slate-400">
                 Acesso restrito. Solicite uma conta ao administrador.
               </p>
             </div>
