@@ -67,7 +67,7 @@ function LoginPage() {
       className="relative min-h-screen flex items-center justify-center p-4 bg-cover bg-center"
       style={{ backgroundImage: `url(${loginBg})` }}
     >
-      <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(0,0,0,0.45)_0%,_rgba(0,0,0,0.8)_100%)]" />
+      <div aria-hidden="true" className="absolute inset-0 bg-white/30 backdrop-blur-[2px]" />
 
       <div className="relative z-10 w-full max-w-md overflow-hidden rounded-2xl bg-white/95 shadow-[0_25px_80px_-15px_rgba(140,20,25,0.6)] ring-1 ring-white/20 backdrop-blur-xl">
         <div className="flex justify-center bg-gradient-to-r from-[#7a1418] via-[#a01c22] to-[#c0282e] px-8 py-5">
