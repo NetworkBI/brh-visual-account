@@ -65,11 +65,21 @@ function Pagina() {
 
   const doMes = useMemo(() => prestacoes.filter((p) => (p.mes || "").startsWith(mesSelecionado) && (p as any).ativo !== false), [prestacoes, mesSelecionado]);
 
-  const porProcesso = PROCESSOS.map((proc) => {
-    const count = doMes.filter((p) => p.processo === proc).length;
-    const pct = Math.min(100, Math.round((count / META_POR_PROCESSO) * 100));
-    return { proc, count, pct };
-  });
+  const porProcesso = useMemo(() =>
+    PROCESSOS.map((proc) => {
+      // Conta condomínios distintos que possuem pelo menos 1 lançamento ativo neste processo
+      const condominiosComProcesso = new Set(
+        doMes
+          .filter((p) => p.processo === proc)
+          .map((p) => (p as any).id_condominio ?? p.condominio_id)
+          .filter(Boolean)
+      );
+      const count = condominiosComProcesso.size;
+      const total = quantCondominiosElegiveis || 1;
+      const pct = Math.min(100, Math.round((count / total) * 100));
+      return { proc, count, pct };
+    })
+  , [doMes, quantCondominiosElegiveis]);
 
   // Top 5 últimos lançamentos do ciclo do mês (com animação ao surgir)
   const top5 = useMemo(
@@ -158,7 +168,7 @@ function Pagina() {
         <Card>
           <CardHeader>
             <h2 className="font-semibold leading-none tracking-tight">Por processo</h2>
-            <p className="text-xs text-muted-foreground">% concluído do ciclo · meta de {META_POR_PROCESSO} por processo</p>
+            <p className="text-xs text-muted-foreground">% de condomínios com pelo menos 1 atividade por processo · de {quantCondominiosElegiveis} elegíveis</p>
           </CardHeader>
           <CardContent className="space-y-4">
             <TooltipProvider delayDuration={100}>
@@ -175,7 +185,7 @@ function Pagina() {
                       </div>
                     </TooltipTrigger>
                     <TooltipContent side="top">
-                      <p className="text-xs"><b>{r.pct}%</b> realizado · {r.count} de {META_POR_PROCESSO} esperados</p>
+                      <p className="text-xs"><b>{r.pct}%</b> dos condomínios · {r.count} de {quantCondominiosElegiveis} com {r.proc}</p>
                     </TooltipContent>
                   </Tooltip>
                   <span className="w-12 text-right text-sm font-semibold tabular-nums">{r.pct}%</span>
