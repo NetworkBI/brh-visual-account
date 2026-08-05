@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Home, Users, FileText, Building, Sun, Moon, Palette, ArrowLeft, LogOut } from "lucide-react";
+import { Home, Users, FileText, Sun, Moon, Palette, ArrowLeft, LogOut } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -20,7 +20,6 @@ import { useTheme, THEME_MODES, type Mode } from "@/lib/theme";
 const NAV_BASE = [
   { to: "/home", label: "Início", icon: Home },
   { to: "/dashboard", label: "Prestação de contas", icon: FileText },
-  { to: "/condominios", label: "Condomínios", icon: Building },
   { to: "/usuarios", label: "Usuários", icon: Users, requiresManage: true },
 ] as const;
 
