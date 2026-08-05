@@ -27,16 +27,22 @@ export function PrestacaoForm({ initial, mode }: Props) {
   const { user } = useAuth();
   const [submitting, setSubmitting] = useState(false);
 
-  const normalizeDate = (v?: string | null) => {
+  const normalizeDate = (v?: any) => {
     if (!v) return new Date().toISOString().slice(0, 10);
-    // Se vier com timestamp (ex: 2025-07-15T00:00:00.000Z) trunca para YYYY-MM-DD
-    return v.slice(0, 10);
+    if (v instanceof Date) return v.toISOString().slice(0, 10);
+    return String(v).slice(0, 10);
+  };
+
+  const normalizeMonth = (v?: any) => {
+    if (!v) return new Date().toISOString().slice(0, 7);
+    if (v instanceof Date) return v.toISOString().slice(0, 7);
+    return String(v).slice(0, 7);
   };
 
   const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm<PrestacaoInput>({
     resolver: zodResolver(prestacaoSchema),
     defaultValues: {
-      mes: initial?.mes ?? new Date().toISOString().slice(0, 7),
+      mes: normalizeMonth(initial?.mes),
       condominio_id: initial?.condominio_id ?? null,
       id_condominio: initial?.id_condominio ? Number(initial.id_condominio) : undefined,
       processo: (initial?.processo as any) ?? "Documentação Recebida",
@@ -50,7 +56,7 @@ export function PrestacaoForm({ initial, mode }: Props) {
   useEffect(() => {
     if (mode === "editar" && initial?.id) {
       reset({
-        mes: initial.mes ?? new Date().toISOString().slice(0, 7),
+        mes: normalizeMonth(initial.mes),
         condominio_id: initial.condominio_id ?? null,
         id_condominio: initial.id_condominio ? Number(initial.id_condominio) : undefined,
         processo: (initial.processo as any) ?? "Documentação Recebida",

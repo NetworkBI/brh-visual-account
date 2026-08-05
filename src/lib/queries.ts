@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getCondominios, getProfiles, getAllProfiles, getPrestacoes, getEventos } from "./db.functions";
+import { getCondominios, getQuantCondominiosElegiveis, getProfiles, getAllProfiles, getPrestacoes, getEventos } from "./db.functions";
 
 const STALE = 60_000;
 
@@ -9,6 +9,16 @@ export function useCondominios(periodo?: string | null) {
     queryKey: ["condominios", periodo],
     queryFn: async () => {
       return getCondominios({ data: { periodo } });
+    },
+  });
+}
+
+export function useQuantCondominiosElegiveis(mes?: string | null) {
+  return useQuery({
+    staleTime: STALE,
+    queryKey: ["quant-condominios-elegiveis", mes],
+    queryFn: async () => {
+      return getQuantCondominiosElegiveis({ data: { mes } });
     },
   });
 }

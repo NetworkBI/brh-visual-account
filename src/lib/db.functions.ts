@@ -84,6 +84,28 @@ export const getCondominios = createServerFn({ method: "POST" })
     `, [normalizedPeriodo]);
   });
 
+// 2b. Quantidade de condominios elegiveis por periodo (YYYYMM)
+export const getQuantCondominiosElegiveis = createServerFn({ method: "POST" })
+  .middleware([requireAuth])
+  .inputValidator((input) => z.object({ mes: z.string().optional().nullable() }).parse(input))
+  .handler(async ({ data }) => {
+    if (!data.mes) {
+      const rows = await query(`
+        SELECT COUNT(DISTINCT id_condominio)::int AS quant_condominios
+        FROM ouro.tb_fct_condominio_hist
+      `);
+      return Number(rows[0]?.quant_condominios ?? 0);
+    }
+    const periodo = data.mes.replace("-", "");
+    const rows = await query(`
+      SELECT COUNT(DISTINCT id_condominio)::int AS quant_condominios
+      FROM ouro.tb_fct_condominio_hist
+      WHERE periodo = $1
+    `, [periodo]);
+    return Number(rows[0]?.quant_condominios ?? 0);
+  });
+
+
 // 3. Profiles: Standard users
 export const getProfiles = createServerFn({ method: "GET" })
   .middleware([requireAuth])
@@ -261,8 +283,22 @@ export const getPrestacaoById = createServerFn({ method: "GET" })
       "Data Fechamento": "Data da Entrega",
     };
 
+    const dataEventoStr = row.data_evento
+      ? row.data_evento instanceof Date
+        ? row.data_evento.toISOString().slice(0, 10)
+        : String(row.data_evento).slice(0, 10)
+      : "";
+
+    const mesStr = row.mes
+      ? row.mes instanceof Date
+        ? row.mes.toISOString().slice(0, 7)
+        : String(row.mes).slice(0, 7)
+      : "";
+
     return {
       ...row,
+      mes: mesStr,
+      data_evento: dataEventoStr,
       processo: REVERSE_MAP[row.processo] || row.processo,
     };
   });

@@ -3,7 +3,7 @@ import { useState, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { AppShell } from "@/components/app-shell";
-import { usePrestacoes, useCondominios, useProfiles, useAllProfiles } from "@/lib/queries";
+import { usePrestacoes, useCondominios, useQuantCondominiosElegiveis, useProfiles, useAllProfiles } from "@/lib/queries";
 import { useAuth, useUserRole } from "@/lib/auth";
 import { inactivatePrestacao } from "@/lib/db.functions";
 import { getCondominiosFromSheet } from "@/lib/sheet.functions";
@@ -53,13 +53,9 @@ function Pagina() {
   const { data: condominios = [] } = useCondominios();
   const { data: profiles = [] } = useProfiles();
   const { data: allProfiles = [] } = useAllProfiles();
-  const fetchSheetCondos = useServerFn(getCondominiosFromSheet);
-  const { data: sheetCondos } = useQuery({
-    queryKey: ["sheet-condominios"],
-    queryFn: () => fetchSheetCondos(),
-    staleTime: 5 * 60_000,
-  });
-  const totalCondominiosPlanilha = sheetCondos?.nomes?.length ?? 0;
+  const mesAtual = new Date().toISOString().slice(0, 7);
+  const [mesSelecionado, setMesSelecionado] = useState(mesAtual);
+  const { data: quantCondominiosElegiveis = 0 } = useQuantCondominiosElegiveis(mesSelecionado);
 
   const nomeUsuario = (id?: string | null) => {
     if (!id) return "—";
@@ -67,8 +63,6 @@ function Pagina() {
     return p ? `${p.primeiro_nome ?? ""} ${p.segundo_nome ?? ""}`.trim() || "—" : "—";
   };
 
-  const mesAtual = new Date().toISOString().slice(0, 7);
-  const [mesSelecionado, setMesSelecionado] = useState(mesAtual);
   const doMes = useMemo(() => prestacoes.filter((p) => (p.mes || "").startsWith(mesSelecionado) && (p as any).ativo !== false), [prestacoes, mesSelecionado]);
 
   const porProcesso = PROCESSOS.map((proc) => {
@@ -133,9 +127,13 @@ function Pagina() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard icon={Building2} label="Quant de condomínios elegíveis" value={totalCondominiosPlanilha} />
-        <StatCard icon={FileText} label="Quantidade de lançamentos realizados" value={prestacoes.length} />
-        <StatCard icon={Building2} label="Quantidade de condomínios sem nenhum processo" value={Math.max(0, condominios.length - new Set(doMes.map((p) => p.condominio_id)).size)} />
+        <StatCard icon={Building2} label="Quant de condomínios elegíveis" value={quantCondominiosElegiveis} />
+        <StatCard icon={FileText} label="Quantidade de lançamentos realizados" value={doMes.length} />
+        <StatCard
+          icon={Building2}
+          label="Quantidade de condomínios sem nenhum processo"
+          value={Math.max(0, quantCondominiosElegiveis - new Set(doMes.map((p) => (p as any).id_condominio || p.condominio_id)).size)}
+        />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -292,7 +290,7 @@ function Pagina() {
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja inativar este lançamento? Ele não aparecerá mais na listagem ativa.
+              Realmente tem certeza que deseja excluir esse lançamento?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
